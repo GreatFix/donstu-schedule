@@ -49,11 +49,9 @@ const App = () => {
                 <PanelHeader>Новости</PanelHeader>
               </Panel>
             </View>
-            <View id="shedule" activePanel="shedule">
-				<Panel id="shedule">
-              		<Shedule/>
-			  	</Panel>
-            </View>
+
+            <Shedule id="shedule" />
+            
             <View id="profile" activePanel="profile">
               <Panel id="profile">
                 <PanelHeader>Профиль</PanelHeader>
