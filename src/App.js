@@ -12,7 +12,7 @@ import Icon20CalendarOutline from '@vkontakte/icons/dist/20/calendar_outline';
 import Icon20Users3Outline from '@vkontakte/icons/dist/20/users_3_outline';
 import '@vkontakte/vkui/dist/vkui.css';
 
-import Shedule from './views/schedule/Schedule';
+import Schedule from './views/schedule/Schedule';
 
 const App = () => {
 	let [activeStory,setActiveStory]=useState('feed');
@@ -32,8 +32,8 @@ const App = () => {
               ><Icon28NewsfeedOutline /></TabbarItem>
               <TabbarItem
                 onClick={onStoryChange}
-                selected={activeStory === 'shedule'}
-                data-story="shedule"
+                selected={activeStory === 'schedule'}
+                data-story="schedule"
                 text="Расписание"
               ><Icon20CalendarOutline /></TabbarItem>
               <TabbarItem
@@ -50,7 +50,7 @@ const App = () => {
               </Panel>
             </View>
 
-            <Shedule id="shedule" />
+            <Schedule id="schedule" />
             
             <View id="profile" activePanel="profile">
               <Panel id="profile">
