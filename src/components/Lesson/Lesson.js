@@ -46,18 +46,28 @@ const Lesson = (props) =>{
         : null
       }
     >
-        <Caption level="4" weight="bold" style={{ marginBottom: 8 }}>{lesson.start}-{lesson.end}    <span style={{ position: 'absolute',right: 5 }}>{lesson.type}</span></Caption>
+        <Caption level="4" weight="bold" style={{ marginBottom: 4 }}>Время: {lesson.start}-{lesson.end}     <span style={{ position: 'absolute',right: 5 }}>{lesson.type}</span></Caption>
         <p style={{ 
             fontSize: "8px",
-            fontWeight: 600
+            fontWeight: 600,
+            margin: 0
           }}
-        >{lesson.teacher}
+        >Преподаватель: {lesson.teacher}
         </p>               
         <p style={{ 
             fontSize: "8px",
-            fontWeight: 600
+            fontWeight: 600,
+            margin: 0
           }}
-        >{lesson.name}</p>
+        >Предмет: {lesson.name} </p>
+        <span style={{
+          position: 'absolute',
+          right: 5,
+          bottom: 5,
+          fontSize: "8px",
+          fontWeight: 600,
+          margin: 0
+          }} > Аудитория: {lesson.aud} </span>
         
     </Cell>
   )

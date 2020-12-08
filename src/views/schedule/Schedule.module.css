@@ -7,5 +7,9 @@
 }
 
 .PanelPadding{
-    padding-bottom: 20%;
+    padding-bottom: 15%;
+}
+.NullOtstup{
+    margin:0;
+    padding: 0
 }

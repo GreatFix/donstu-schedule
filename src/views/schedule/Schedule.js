@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List} from '@vkontakte/vkui';
+import { View, Caption, Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List} from '@vkontakte/vkui';
 import axios from 'axios'
 import Lesson from '../../components/Lesson/Lesson'
 import classes from './Schedule.module.css'
@@ -103,32 +103,37 @@ const Schedule = (props) => {
       };
       getSchedule();
     },[])
-    
+    console.log(data)
 
     return(
 
         <View id="shedule" activePanel="active">
-              <Panel className={classes.PanelPadding}  id="active">
+              <Panel   id="active">
               <PanelHeader separator={false}> Расписание </PanelHeader>
-              <div style={{height:'60%'}}>
-                {query
-                ?<List style={{overflow: 'visible'}}>
-                    {Object.keys(data.days[curDay].lessons).map((item, index) => {
-                      return (
-                          <div key={`key-${Math.random()}`} style={{ 
-                            border: "2px solid #2975cc",
-                            borderRadius: "5px",
-                            boxSizing:'border-box',
-                            margin: "5px"
-                          }}>
-                              <Lesson lesson={data.days[curDay].lessons[item]} />
-                          </div>
 
-                      )
-                    })}
-                </List> 
-                : null }
-              </div>
+              
+                {query
+                ?
+                <div style={{height:'60%'}}>
+                  <Title level="3" weight="semibold" style={{ margin: 0, padding:10,textAlign: 'center' }}>{data.days[curDay].dayWeek}</Title>
+                    <List className={classes.PanelPadding} style={{overflow: 'visible'}}>
+                        {Object.keys(data.days[curDay].lessons).map((item, index) => {
+                          return (
+                              <div key={`key-${Math.random()}`} style={{ 
+                                border: "2px solid #2975cc",
+                                borderRadius: "5px",
+                                boxSizing:'border-box',
+                                margin: "5px"
+                              }}>
+                                  <Lesson lesson={data.days[curDay].lessons[item]} />
+                              </div>
+
+                          )
+                        })}
+                    </List> 
+                    </div>
+                    : null }
+              
                  <FixedLayout className={classes.Fixed} vertical="bottom">
                 <Tabs>
                 <HorizontalScroll>
