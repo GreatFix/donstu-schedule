@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
-import { View, Div, Caption, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Cell, Title, Card} from '@vkontakte/vkui';
+import { View, Caption, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List} from '@vkontakte/vkui';
 import axios from 'axios'
+import Lesson from '../../components/Lesson/Lesson'
+import classes from './Schedule.module.css'
 //const osName = platform();
 
 const dataToState = (data) =>{
@@ -32,14 +34,27 @@ const dataToState = (data) =>{
         days[key].date = key ;
         days[key].day = dateToDay(key)
       }
+      if(!days[key].lessons[`${data.rasp[les].начало}-${data.rasp[les].конец}`])
+         days[key].lessons[`${data.rasp[les].начало}-${data.rasp[les].конец}`] = []
+        ;
+      
+      let type = ''
+       switch(data.rasp[les].дисциплина.split(' ')[0]){
+        case 'лек': type = 'Лекция'; break;
+        case 'лаб': type = 'Лабораторная'; break;
+        case 'пр.': type = 'Практика'; break;
+        default: type = '';
+      }
 
-      days[key].lessons.push({
+      
+      days[key].lessons[`${data.rasp[les].начало}-${data.rasp[les].конец}`].push({
         start: data.rasp[les].начало,
         end: data.rasp[les].конец,
-        name: data.rasp[les].дисциплина,
+        name: data.rasp[les].дисциплина.split(' ').slice(1).join(' '),
         aud: data.rasp[les].аудитория,
-        teacher: data.rasp[les].преподаватель
-      }) 
+        teacher: data.rasp[les].преподаватель,
+        type: type
+      })
 
     })
 
@@ -84,39 +99,37 @@ const Schedule = (props) => {
         
         setData(dataToState(result.data.data))
         setQuery(true)
-
+        
       };
       getSchedule();
     },[])
     
-    
+
     return(
 
         <View id="shedule" activePanel="active">
-              <Panel  id="active">
+              <Panel className={classes.PanelPadding}  id="active">
               <PanelHeader separator={false}> Расписание </PanelHeader>
-              {query
-              ?<List>
-                  {data.days[curDay].lessons.map((item, index) => {
-                    return (
-                      //<Cell key={`key-${Math.random()}`}>
-                        <div key={`key-${Math.random()}`} style={{ 
-                          border: "2px solid #2975cc",
-                          borderRadius: "5px",
-                          padding: "10px",
-                          margin: "10px"
-                        }}>
-                        <Caption level="4" weight="bold" style={{ marginBottom: 8 }}>{item.start}-{item.end}</Caption>
-                        <Caption level="4" weight="semibold" style={{ marginBottom: 8 }}>{item.name}</Caption>
-                        <Caption level="4" weight="semibold" style={{ marginBottom: 8 }}>{item.teacher}</Caption>                
-                        </div>
-                      //</Cell>
-                    )
-                  })}
-              </List> 
-              : null }
+              <div style={{height:'60%'}}>
+                {query
+                ?<List style={{overflow: 'visible'}}>
+                    {Object.keys(data.days[curDay].lessons).map((item, index) => {
+                      return (
+                          <div key={`key-${Math.random()}`} style={{ 
+                            border: "2px solid #2975cc",
+                            borderRadius: "5px",
+                            boxSizing:'border-box',
+                            margin: "5px"
+                          }}>
+                              <Lesson lesson={data.days[curDay].lessons[item]} />
+                          </div>
 
-                 <FixedLayout vertical="bottom">
+                      )
+                    })}
+                </List> 
+                : null }
+              </div>
+                 <FixedLayout className={classes.Fixed} vertical="bottom">
                 <Tabs>
                 <HorizontalScroll>
                       {data.days 

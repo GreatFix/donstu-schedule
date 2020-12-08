@@ -17,8 +17,8 @@ const App = () => {
     }
 
 	return (
-		<Epic activeStory={activeStory} tabbar={
-            <Tabbar>
+		<Epic  activeStory={activeStory} tabbar={
+            <Tabbar >
               <TabbarItem
                 onClick={onStoryChange}
                 selected={activeStory === 'feed'}

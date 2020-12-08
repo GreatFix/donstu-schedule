@@ -1,0 +1,11 @@
+.divBorder{
+    border: 3px solid #000;
+}
+.Fixed{
+    position: fixed;
+    z-index: 2;
+}
+
+.PanelPadding{
+    padding-bottom: 20%;
+}
