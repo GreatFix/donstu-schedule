@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import bridge from '@vkontakte/vk-bridge';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Epic from '@vkontakte/vkui/dist/components/Epic/Epic';
-import Tabbar from '@vkontakte/vkui/dist/components/Tabbar/Tabbar';
-import TabbarItem from '@vkontakte/vkui/dist/components/TabbarItem/TabbarItem';
-import View from '@vkontakte/vkui/dist/components/View/View';
+import React, { useState} from 'react';
+//import bridge from '@vkontakte/vk-bridge';
+import {Panel, PanelHeader, Epic, Tabbar, TabbarItem, View, Div} from '@vkontakte/vkui';
+
 import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline';
 import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline';
 import Icon20CalendarOutline from '@vkontakte/icons/dist/20/calendar_outline';
-import Icon20Users3Outline from '@vkontakte/icons/dist/20/users_3_outline';
 import '@vkontakte/vkui/dist/vkui.css';
 
 import Schedule from './views/schedule/Schedule';
 
 const App = () => {
-	let [activeStory,setActiveStory]=useState('feed');
+	let [activeStory,setActiveStory]=useState('schedule');
 
     const onStoryChange = (event)=> {
         setActiveStory(event.currentTarget.dataset.story);
@@ -47,6 +42,7 @@ const App = () => {
             <View id="feed" activePanel="feed">
               <Panel id="feed">
                 <PanelHeader>Новости</PanelHeader>
+                <Div>В разработке...</Div>
               </Panel>
             </View>
 
@@ -55,6 +51,7 @@ const App = () => {
             <View id="profile" activePanel="profile">
               <Panel id="profile">
                 <PanelHeader>Профиль</PanelHeader>
+                <Div>В разработке...</Div>
               </Panel>
             </View>
           </Epic>

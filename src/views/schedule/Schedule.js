@@ -1,15 +1,23 @@
 import React, {useState, useEffect} from 'react'
-import { View, Div, Text, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Cell} from '@vkontakte/vkui';
+import { View, Div, Caption, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Cell, Title, Card} from '@vkontakte/vkui';
 import axios from 'axios'
-
 //const osName = platform();
 
-const dataToState = (_data) =>{
-  if(_data){
+const dataToState = (data) =>{
+
+  const dateToDay=(date)=>{
+    let temp = date.split('-')[2]
+    if(/^0/.test(temp))
+      return temp.split('')[1];
+    else
+      return temp;
+  }
+
+  if(data){
     let days ={};
-    let lessons = Object.keys(_data.rasp)
+    let lessons = Object.keys(data.rasp)
     lessons.forEach(les => {
-      let key = _data.rasp[les].дата.split('T')[0];
+      let key = data.rasp[les].дата.split('T')[0];
       if(!days[key]){
         days[key]={
           dayWeek:'',
@@ -18,27 +26,29 @@ const dataToState = (_data) =>{
         }
       }
       if(!days[key].dayWeek)  
-        days[key].dayWeek = _data.rasp[les].день_недели ;
+        days[key].dayWeek = data.rasp[les].день_недели ;
 
-      if(!days[key].day) 
-        days[key].day = key ;
+      if(!days[key].day) {
+        days[key].date = key ;
+        days[key].day = dateToDay(key)
+      }
 
       days[key].lessons.push({
-        start: _data.rasp[les].начало,
-        end: _data.rasp[les].конец,
-        name: _data.rasp[les].дисциплина,
-        aud: _data.rasp[les].аудитория,
-        teacher: _data.rasp[les].преподаватель
+        start: data.rasp[les].начало,
+        end: data.rasp[les].конец,
+        name: data.rasp[les].дисциплина,
+        aud: data.rasp[les].аудитория,
+        teacher: data.rasp[les].преподаватель
       }) 
 
     })
 
     let temp = {
-      WeekID: _data.info.selectedNumNed,
-      Day: _data.info.curNumNed,
-      Semester: _data.info.curSem,
-      Year: _data.info.year,
-      GroupName: _data.info.group.name,
+      WeekID: data.info.selectedNumNed,
+      Day: data.info.curNumNed,
+      Semester: data.info.curSem,
+      Year: data.info.year,
+      GroupName: data.info.group.name,
       days: {...days}
     }
 
@@ -60,12 +70,10 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-    let [activeTab, setActiveTab] = useState(1);
     let [curDay, setCurDay] = useState(curDate(new Date()));
     let [data, setData] = useState({})
     let [query, setQuery] = useState(false)
 
-  
 
 
     useEffect(()=>{
@@ -73,14 +81,15 @@ const Schedule = (props) => {
         const result = await axios({url:
           'https://edu.donstu.ru/api/Rasp?idGroup=34915&sdate=2020-12-7',crossDomain: true}
         );
-
+        
         setData(dataToState(result.data.data))
         setQuery(true)
 
       };
       getSchedule();
     },[])
-
+    
+    
     return(
 
         <View id="shedule" activePanel="active">
@@ -90,38 +99,43 @@ const Schedule = (props) => {
               ?<List>
                   {data.days[curDay].lessons.map((item, index) => {
                     return (
-                      <Cell key={`key-${Math.random()}`}>
-                        <Div>
-                          {item.start}-{item.end}
-                        </Div>
-                        <Div>
-                        <p >{item.name}</p>
-                          {item.teacher}
-                        </Div>
-                      </Cell>
+                      //<Cell key={`key-${Math.random()}`}>
+                        <div key={`key-${Math.random()}`} style={{ 
+                          border: "2px solid #2975cc",
+                          borderRadius: "5px",
+                          padding: "10px",
+                          margin: "10px"
+                        }}>
+                        <Caption level="4" weight="bold" style={{ marginBottom: 8 }}>{item.start}-{item.end}</Caption>
+                        <Caption level="4" weight="semibold" style={{ marginBottom: 8 }}>{item.name}</Caption>
+                        <Caption level="4" weight="semibold" style={{ marginBottom: 8 }}>{item.teacher}</Caption>                
+                        </div>
+                      //</Cell>
                     )
                   })}
               </List> 
               : null }
 
-                 {/* <FixedLayout vertical="bottom">
+                 <FixedLayout vertical="bottom">
                 <Tabs>
                 <HorizontalScroll>
-                      {for(let el of data.days) {
-                        retur<TabsItem
-                        key={Math.random()}
-                        onClick={() =>  setActiveTab(el.id) }
-                        selected={activeTab === el.id}
-                        >
-                        {el.dayWeek}
-                        </TabsItem>
-                        }
+                      {data.days 
+                        ? Object.keys(data.days).map((date)=> {
+                            return (
+                              <TabsItem
+                                key={Math.random()}
+                                onClick={() =>  setCurDay(data.days[date].date) }
+                                selected={curDay === data.days[date].date}
+                              >
+                                <Caption level="4" weight="bold" caps>{data.days[date].day}</Caption>
+                              </TabsItem>
+                            )
+                          })
+                        : null
                       }
-                      
-                      
                   </HorizontalScroll>
                 </Tabs>
-                </FixedLayout > */}
+                </FixedLayout >
                 </Panel>
           </View>
     )
