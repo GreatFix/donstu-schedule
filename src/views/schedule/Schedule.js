@@ -3,6 +3,7 @@ import { View, Caption,PanelSpinner,PullToRefresh, Title, HorizontalScroll,Fixed
 import axios from 'axios'
 import Lesson from '../../components/Lesson/Lesson'
 import classes from './Schedule.module.css'
+import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 //const osName = platform();
 
 const dataToState = (data) =>{
@@ -137,8 +138,10 @@ const Schedule = (props) => {
                     {errorFetch
                     ?  <Snackbar
                             layout="vertical"
-                            onClose={onRefresh}
-                          //  before={<Icon24Favorite fill="#fff" width={14} height={14} />}
+                            onClose={()=> {}}
+                            action="Повторить загрузку"
+                            onActionClick={() => {onRefresh(); setErrorFetch(null)}}
+                            before={<Icon28CancelCircleFillRed/>}
                         >
                             Error:{errorFetch}
                         </Snackbar>
