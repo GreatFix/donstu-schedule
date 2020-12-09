@@ -1,5 +1,4 @@
 import React, { useState} from 'react';
-//import bridge from '@vkontakte/vk-bridge';
 import {Panel, PanelHeader, Epic, Tabbar, TabbarItem, View, Div} from '@vkontakte/vkui';
 
 import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline';
@@ -8,14 +7,16 @@ import Icon20CalendarOutline from '@vkontakte/icons/dist/20/calendar_outline';
 import '@vkontakte/vkui/dist/vkui.css';
 
 import Schedule from './views/schedule/Schedule';
+import Profile from './views/Profile/Profile';
 
 const App = () => {
-	let [activeStory,setActiveStory]=useState('schedule');
+	let [activeStory,setActiveStory]=useState('feed');
 
     const onStoryChange = (event)=> {
         setActiveStory(event.currentTarget.dataset.story);
     }
 
+ // bridge.send("VKWebAppStorageSet", {"key":"GROUP_ID", "value": "34915"});
 	return (
 		<Epic  activeStory={activeStory} tabbar={
             <Tabbar >
@@ -48,12 +49,7 @@ const App = () => {
 
             <Schedule id="schedule" />
             
-            <View id="profile" activePanel="profile">
-              <Panel id="profile">
-                <PanelHeader>Профиль</PanelHeader>
-                <Div>В разработке...</Div>
-              </Panel>
-            </View>
+            <Profile id="profile"/>
           </Epic>
 
 	);

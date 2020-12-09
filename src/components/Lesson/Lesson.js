@@ -4,12 +4,13 @@ import Icon24ChevronLeft from '@vkontakte/icons/dist/24/chevron_left';
 import Icon24ChevronRight from '@vkontakte/icons/dist/24/chevron_right';
 const Lesson = (props) =>{
   let [curLesson,setCurLesson]= useState('left');
-  let length = props.lesson.length;
+  let keys = Object.keys(props.lesson);
+  let length = keys.length;
   let lesson = {}
 
   curLesson==='left'
-  ?lesson= props.lesson[0]
-  :lesson= props.lesson[1];
+  ?lesson= props.lesson[keys[0]]
+  :lesson= props.lesson[keys[1]];
 
   return (
     <Cell 
