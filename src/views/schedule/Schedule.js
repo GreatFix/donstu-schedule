@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,Group,Div,PullToRefresh, Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
 import axios from 'axios'
+import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
 import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 //const osName = platform();
+
 
 const dataToState = (data) =>{
 
@@ -36,8 +38,11 @@ const dataToState = (data) =>{
         days[key].date = key ;
         days[key].day = dateToDay(key)
       }
-      if(!days[key].lessons[`${data.rasp[les].начало}-${data.rasp[les].конец}`])
-         days[key].lessons[`${data.rasp[les].начало}-${data.rasp[les].конец}`] = {}
+
+      const start = data.rasp[les].начало.replace('-',':');
+      const end = data.rasp[les].конец.replace('-',':');
+      if(!days[key].lessons[`${start}-${end}`])
+         days[key].lessons[`${start}-${end}`] = {}
         ;
       
       let type = ''
@@ -47,15 +52,29 @@ const dataToState = (data) =>{
         case 'пр.': type = 'Практика'; break;
         default: type = '';
       }
+      let number =0;
+      switch(start){
+        case '8:30': number = 1; break;
+        case '10:15': number = 2; break;
+        case '12:00': number = 3; break;
+        case '14:15': number = 4; break;
+        case '16:00': number = 5; break;
+        case '17:45': number = 6; break;
+        default: number = 0;
+      }
 
+      const name= data.rasp[les].дисциплина.split(' ').slice(1).join(' ');
+      const aud= data.rasp[les].аудитория;
+      const teacher= data.rasp[les].преподаватель;
       
-      days[key].lessons[`${data.rasp[les].начало}-${data.rasp[les].конец}`][data.rasp[les].код]={
-        start: data.rasp[les].начало,
-        end: data.rasp[les].конец,
-        name: data.rasp[les].дисциплина.split(' ').slice(1).join(' '),
-        aud: data.rasp[les].аудитория,
-        teacher: data.rasp[les].преподаватель,
-        type: type
+      days[key].lessons[`${start}-${end}`][data.rasp[les].код]={
+        start,
+        end,
+        name,
+        aud,
+        teacher,
+        type,
+        number
       }
 
     })
@@ -87,6 +106,10 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
+  const GROUP_ID = localStorage.getItem('GROUP_ID');
+
+
+
     let [curDay, setCurDay] = useState(curDate(new Date()));
     let [data, setData] = useState({})
     let [fetching, setFetching] = useState(false)
@@ -102,7 +125,7 @@ const Schedule = (props) => {
 
     const getSchedule = async () => {
         const result = await axios({url:
-          'https://edu.donstu.ru/api/Rasp?idGroup=34915&sdate=2020-12-7',crossDomain: true}
+          `https://edu.donstu.ru/api/Rasp?idGroup=${GROUP_ID}&sdate=${curDay}`,crossDomain: true}
         );
         if(result.status===200){
             let tempData = dataToState(result.data.data);
@@ -116,8 +139,6 @@ const Schedule = (props) => {
     };
 
     useEffect(()=>{
-        
-
       if(localStorage.getItem('SCHEDULE')){
         setData(JSON.parse(localStorage.getItem('SCHEDULE')));
         setInitFetching(false);
@@ -126,7 +147,7 @@ const Schedule = (props) => {
         getSchedule();
     },[])
 
-    console.log(data)
+
     return(
 
         <View id="shedule" activePanel="active">
@@ -150,14 +171,7 @@ const Schedule = (props) => {
                     <List className={classes.PanelPadding} style={{overflow: 'visible'}}>
                         {Object.keys(data.days[curDay].lessons).map((item, index) => {
                         return (
-                            <div key={`key-${Math.random()}`} style={{ 
-                                border: "2px solid #2975cc",
-                                borderRadius: "5px",
-                                boxSizing:'border-box',
-                                margin: "5px"
-                            }}>
-                                <Lesson lesson={data.days[curDay].lessons[item]} />
-                            </div>
+                                <Lesson key={index} lesson={data.days[curDay].lessons[item]} />
 
                         )
                         })}

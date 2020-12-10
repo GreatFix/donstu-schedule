@@ -8,7 +8,7 @@ const getGroups = async () => {
     const result = await axios({url:
       'https://edu.donstu.ru/api/raspGrouplist?year=2020-2021',crossDomain: true}
     );
-
+    console.log(result.data)
     return result.data;
 }
 
@@ -17,6 +17,7 @@ const Profile = () => {
     bridge.send("VKWebAppStorageGet", {"keys": ["GROUP_ID"]}).then((res)=>{
         console.log(res)
     }) 
+    console.log(getGroups())
     return(
 
         <View id="profile" activePanel="active">

@@ -10,7 +10,7 @@ import Schedule from './views/schedule/Schedule';
 import Profile from './views/Profile/Profile';
 
 const App = () => {
-	let [activeStory,setActiveStory]=useState('feed');
+	let [activeStory,setActiveStory]=useState('schedule');
 
     const onStoryChange = (event)=> {
         setActiveStory(event.currentTarget.dataset.story);
