@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,Group,Div,PullToRefresh, Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
 import axios from 'axios'
-import bridge from '@vkontakte/vk-bridge';
+//import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
 import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
@@ -106,7 +106,7 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-  const GROUP_ID = localStorage.getItem('GROUP_ID');
+let GROUP_ID = sessionStorage.getItem('GROUP_ID');
 
 
 
@@ -127,10 +127,11 @@ const Schedule = (props) => {
         const result = await axios({url:
           `https://edu.donstu.ru/api/Rasp?idGroup=${GROUP_ID}&sdate=${curDay}`,crossDomain: true}
         );
-        if(result.status===200){
+        if(result.data.data.rasp && GROUP_ID){
             let tempData = dataToState(result.data.data);
             setData(tempData);
-            localStorage.setItem('SCHEDULE', JSON.stringify(tempData));
+            sessionStorage.setItem('SCHEDULE', JSON.stringify(tempData));
+            setErrorFetch(null);
         } else {
             setErrorFetch('Неудачный запрос к API');
         }
@@ -139,8 +140,8 @@ const Schedule = (props) => {
     };
 
     useEffect(()=>{
-      if(localStorage.getItem('SCHEDULE')){
-        setData(JSON.parse(localStorage.getItem('SCHEDULE')));
+      if(sessionStorage.getItem('SCHEDULE')){
+        setData(JSON.parse(sessionStorage.getItem('SCHEDULE')));
         setInitFetching(false);
     }
       else 
@@ -156,13 +157,14 @@ const Schedule = (props) => {
                 {initFetching
                 ?   <PanelSpinner />
                 :<PullToRefresh onRefresh={onRefresh} isFetching={fetching}>
-                    {errorFetch
+                    {errorFetch && !initFetching
                     ?  <Snackbar
                             layout="vertical"
-                            onClose={()=> {}}
+                            onClose={()=> {setInitFetching(true); }}
                             action="Повторить загрузку"
-                            onActionClick={() => {onRefresh(); setErrorFetch(null)}}
+                            onActionClick={() => {onRefresh(); }}
                             before={<Icon28CancelCircleFillRed/>}
+                            duration="60000"
                         >
                             Error:{errorFetch}
                         </Snackbar>

@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
-import {Cell, Caption, Div} from '@vkontakte/vkui';
-import Icon24ChevronLeft from '@vkontakte/icons/dist/24/chevron_left';
-import Icon24ChevronRight from '@vkontakte/icons/dist/24/chevron_right';
+import { Div} from '@vkontakte/vkui';
 import classes from './Lesson.module.css'
 
 const COLORS= {

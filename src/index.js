@@ -10,7 +10,7 @@ bridge.send("VKWebAppInit");
 bridge.send("VKWebAppStorageSet",{"key":"GROUP_ID", "value":"34915"});
 bridge.send("VKWebAppStorageGet", {"keys": ["GROUP_ID"]}).then((res)=>{
   res.keys.forEach((obj)=>{
-    localStorage.setItem(obj.key, obj.value);
+    sessionStorage.setItem(obj.key, obj.value);
   })
 }) 
 ReactDOM.render(<App />, document.getElementById("root"));
