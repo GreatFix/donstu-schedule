@@ -63,11 +63,8 @@
                             "Description Description Description Time";
 }
 .Lesson:hover {
-    border: 1px solid #2975cc;
-    border-radius: 5px;
-    box-sizing:border-box;
+
     box-shadow: 0.25px 0.5px 1.5px 1.5px #2975cc;
-    margin: 5px;
 }
 
 
@@ -92,9 +89,14 @@
 .Aud {
     grid-area: Aud;
     justify-self: start;
+    display: flex;
+    align-items: center;
     max-width: 100%;
     font-size: 0.9em;
     font-weight: 700;
+}
+.Aud span{
+    margin-left: 5px;
 }
 
 
@@ -141,14 +143,22 @@
     flex-direction: column;
 }
 .Name{
-
+    display: flex;
+    align-items: center;
     font-size: 0.9em;
     font-weight: 700;
 }
+.Name span{
+    margin-left: 5px;
+}
 .Teacher{
-
+    display: flex;
+    align-items: center;
     font-size: 0.8em;
     font-weight: 500;
+}
+.Teacher span {
+    margin-left: 5px;
 }
 
 

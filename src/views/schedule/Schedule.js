@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead} from '@vkontakte/vkui';
 import axios from 'axios'
 //import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
 import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
+import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
+import Icon28ChevronDownOutline from '@vkontakte/icons/dist/28/chevron_down_outline';
 //const osName = platform();
 
 const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
@@ -111,7 +113,7 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-let GROUP_ID = sessionStorage.getItem('GROUP_ID');
+let GROUP_ID = localStorage.getItem('GROUP_ID');
 
 
 
@@ -177,9 +179,18 @@ let GROUP_ID = sessionStorage.getItem('GROUP_ID');
                             Error:{errorFetch}
                         </Snackbar>
                     :data.days[curDay] 
-                      ? <div style={{position:"relative"}}>
-                          <Title level="3" weight="semibold" style={{ padding:8,textAlign: 'center', backgroundColor: '#FFFFFF' }}>{data.days[curDay].dayWeek}</Title>
-                          <div className={typeWeek}>{TYPES_WEEK[data.WeekID]}</div>
+                      ? <div >
+                          <Title level="3" weight="semibold" className={classes.Title}>
+                            {data.days[curDay].dayWeek}
+                            <div className={typeWeek}>
+                              { data.WeekID===1
+                                ? <Icon28ChevronUpOutline width={20} height={20}/>
+                                : <Icon28ChevronDownOutline width={20} height={20}/>
+                              }
+                              <Subhead >{TYPES_WEEK[data.WeekID]}</Subhead>
+                            </div>
+                          </Title>
+                          
                           <List className={classes.List} style={{overflow: 'visible'}}>
                             {
                               Object.keys(data.days[curDay].lessons).map((item, index) => {

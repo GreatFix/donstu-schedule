@@ -6,16 +6,23 @@
     min-width: 0 !important;
 }
 
-
+.Title{
+    position: relative; 
+    padding: 8px;
+    text-align: center; 
+    background-color: #FFFFFF; 
+}
 
 .TypeWeek{
     position: absolute;
+    display: flex;
+    align-items: center;
     font-size: small;
-    top: 0;
+    right: 0;
 }
 .TypeWeekTop{
-    left: 0;
+    top: 0;
 }
 .TypeWeekBottom{
-    right: 0;
+    bottom: 0;
 }
