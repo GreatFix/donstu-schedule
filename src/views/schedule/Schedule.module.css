@@ -11,13 +11,11 @@
 .TypeWeek{
     position: absolute;
     font-size: small;
-    left: 0;
-    width: 100%;
-    background-color:#E2E4E7;
+    top: 0;
 }
 .TypeWeekTop{
-    top: 0px;
+    left: 0;
 }
 .TypeWeekBottom{
-    bottom: 0;
+    right: 0;
 }

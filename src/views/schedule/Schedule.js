@@ -7,8 +7,8 @@ import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 //const osName = platform();
 
-const DAYS_WEEK = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
-const TYPES_WEEK = ['none',"В", "Н"]
+const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
+const TYPES_WEEK = ['none',"Верхняя", "Нижняя"]
 
 const dataToState = (data) =>{
 
@@ -111,7 +111,7 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-let GROUP_ID = localStorage.getItem('GROUP_ID');
+let GROUP_ID = sessionStorage.getItem('GROUP_ID');
 
 
 
@@ -177,8 +177,9 @@ let GROUP_ID = localStorage.getItem('GROUP_ID');
                             Error:{errorFetch}
                         </Snackbar>
                     :data.days[curDay] 
-                      ? <div>
+                      ? <div style={{position:"relative"}}>
                           <Title level="3" weight="semibold" style={{ padding:8,textAlign: 'center', backgroundColor: '#FFFFFF' }}>{data.days[curDay].dayWeek}</Title>
+                          <div className={typeWeek}>{TYPES_WEEK[data.WeekID]}</div>
                           <List className={classes.List} style={{overflow: 'visible'}}>
                             {
                               Object.keys(data.days[curDay].lessons).map((item, index) => {
@@ -199,7 +200,6 @@ let GROUP_ID = localStorage.getItem('GROUP_ID');
                  <FixedLayout vertical="bottom">
                  
                 <Tabs>
-                <div className={typeWeek}>{TYPES_WEEK[data.WeekID]}</div>
                 <HorizontalScroll >
                       {data.days 
                         ? Object.keys(data.days).map((date)=> {
@@ -215,7 +215,7 @@ let GROUP_ID = localStorage.getItem('GROUP_ID');
                               </TabsItem>
                             )
                           })
-                        : <p>Хм, дней недели не найдено(</p>
+                        : null
                       }
                   </HorizontalScroll>
                 </Tabs>
