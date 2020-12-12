@@ -7,8 +7,8 @@ import App from "./App";
 
 // Init VK  Mini App
 bridge.send("VKWebAppInit");
-bridge.send("VKWebAppStorageSet",{"key":"GROUP_ID", "value":"34915"});
-bridge.send("VKWebAppStorageGet", {"keys": ["GROUP_ID"]}).then((res)=>{
+
+bridge.send("VKWebAppStorageGet", {"keys": ["GROUP_ID", "GROUP_NAME", "FACULTY"]}).then((res)=>{
   res.keys.forEach((obj)=>{
     sessionStorage.setItem(obj.key, obj.value);
   })

@@ -8,7 +8,7 @@ import Icon16Place from '@vkontakte/icons/dist/16/place';
 const COLORS= {
   "1":'#32BE32',//'#00FF00',
   "2":'#CDC236',//'#40E0D0',
-  "3":'#CD4036',//'#0FC0FC',
+  "3":'#DF5248',//'#0FC0FC',
   "4":'#70CE9B',//'#BA55D3',
   "5":'#937ACC',//'#008080',
   "6":'#00BE96',//'#D40000',
@@ -18,7 +18,6 @@ const COLORS= {
 const Lesson = (props) =>{
   let [curLesson,setCurLesson]= useState('left');
   let keys = Object.keys(props.lesson);
-  let length = keys.length;
   let lesson = {}
 
   curLesson==='left'

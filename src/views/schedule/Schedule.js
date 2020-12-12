@@ -7,7 +7,7 @@ import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
 import Icon28ChevronDownOutline from '@vkontakte/icons/dist/28/chevron_down_outline';
-//const osName = platform();
+
 
 const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
 const TYPES_WEEK = ['none',"Верхняя", "Нижняя"]
@@ -113,7 +113,7 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-let GROUP_ID = localStorage.getItem('GROUP_ID');
+    let GROUP_ID = sessionStorage.getItem('GROUP_ID');
 
 
 
