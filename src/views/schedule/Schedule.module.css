@@ -6,6 +6,18 @@
     min-width: 0 !important;
 }
 
-.Panel__in{
-   background-color: var(--background_page) !important;
+
+
+.TypeWeek{
+    position: absolute;
+    font-size: small;
+    left: 0;
+    width: 100%;
+    background-color:#E2E4E7;
+}
+.TypeWeekTop{
+    top: 0px;
+}
+.TypeWeekBottom{
+    bottom: 0;
 }

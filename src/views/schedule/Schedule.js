@@ -8,6 +8,8 @@ import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fi
 //const osName = platform();
 
 const DAYS_WEEK = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
+const TYPES_WEEK = ['none',"В", "Н"]
+
 const dataToState = (data) =>{
 
   const dateToDay=(date)=>{
@@ -151,11 +153,14 @@ let GROUP_ID = localStorage.getItem('GROUP_ID');
         getSchedule();
     },[])
 
-
+    let typeWeek = classes.TypeWeek;
+    data.WeekID===1
+    ? typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekTop
+    : typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekBottom;
     return(
 
         <View id="shedule" activePanel="active">
-              <Panel className={classes.Panel__in} id="active">
+              <Panel id="active">
               <PanelHeader > Расписание </PanelHeader>
                 {initFetching
                 ?   <PanelSpinner />
@@ -191,9 +196,11 @@ let GROUP_ID = localStorage.getItem('GROUP_ID');
                 </PullToRefresh>
                  }
               
-                 <FixedLayout  vertical="bottom">
+                 <FixedLayout vertical="bottom">
+                 
                 <Tabs>
-                <HorizontalScroll>
+                <div className={typeWeek}>{TYPES_WEEK[data.WeekID]}</div>
+                <HorizontalScroll >
                       {data.days 
                         ? Object.keys(data.days).map((date)=> {
                             return (
@@ -208,7 +215,7 @@ let GROUP_ID = localStorage.getItem('GROUP_ID');
                               </TabsItem>
                             )
                           })
-                        : null
+                        : <p>Хм, дней недели не найдено(</p>
                       }
                   </HorizontalScroll>
                 </Tabs>
