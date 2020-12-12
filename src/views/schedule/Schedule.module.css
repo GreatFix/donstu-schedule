@@ -1,15 +1,11 @@
-.divBorder{
-    border: 3px solid #000;
-}
-.Fixed{
-    position: fixed;
-    z-index: 2;
+.List{
+    padding-bottom: 76px; /* высота fixed-layout */
 }
 
-.PanelPadding{
-    padding-bottom: 15%;
+.TabsItem{
+    min-width: 0 !important;
 }
-.NullOtstup{
-    margin:0;
-    padding: 0
+
+.Panel__in{
+   background-color: var(--background_page) !important;
 }

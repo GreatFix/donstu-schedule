@@ -6,6 +6,7 @@ import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outlin
 import Icon20CalendarOutline from '@vkontakte/icons/dist/20/calendar_outline';
 import '@vkontakte/vkui/dist/vkui.css';
 
+import classes from './App.css'
 import Schedule from './views/schedule/Schedule';
 import Profile from './views/Profile/Profile';
 
@@ -31,7 +32,7 @@ const App = () => {
                 selected={activeStory === 'schedule'}
                 data-story="schedule"
                 text="Расписание"
-              ><Icon20CalendarOutline /></TabbarItem>
+              ><Icon20CalendarOutline width={28} height={28}/></TabbarItem>
               <TabbarItem
                 onClick={onStoryChange}
                 selected={activeStory === 'profile'}
@@ -41,7 +42,7 @@ const App = () => {
             </Tabbar>
           }>
             <View id="feed" activePanel="feed">
-              <Panel id="feed">
+              <Panel className={classes.Panel} id="feed">
                 <PanelHeader>Новости</PanelHeader>
                 <Div>В разработке...</Div>
               </Panel>

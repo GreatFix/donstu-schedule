@@ -50,14 +50,13 @@
 
 
 .Lesson {
-    border: 1px solid #2975cc;
-    border-radius: 5px;
-    box-sizing:border-box;
-    box-shadow: 0.25px 0.5px 1.5px 0.5px #2975cc;
-    margin: 5px;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 0 #d3d9de;
+    margin-top: 8px;
     min-height: 12vh;
     position: relative;
     font-size: 12px;
+    background-color: white;
 }
 .Lesson:hover {
     border: 1px solid #2975cc;
@@ -87,15 +86,10 @@
     color: #00C0FF ;
 }
 
-.Lesson span {
-    position: absolute;
-}
-
-.Aud, .Number, .Type, .Start{
-    top:0;
-}
 
 .Aud {
+    position: absolute;
+    top:0;
     width: 40%;
     left: 45%;
     font-size: 0.9em;
@@ -103,30 +97,35 @@
 }
 
 .Number {
-    width: 10%;
     font-size: 1em;
     font-weight: 800;
 }
 
 .Type {
+    position: absolute;
+    top:0;
     left:10%;
     font-size: 0.8em;
     font-weight: 700;
 }
 
 .Start {
+    position: absolute;
+    top:0;
     right: 5%;
     font-size: 0.9em;
     font-weight: 700;
 }
 
 .End{
+    position: absolute;
     bottom:0;
     right: 5%;
     font-size: 0.9em;
     font-weight: 700;
 }
 .Name{
+    position: absolute;
     top:25%;
     left: 10%;
     width: 75%;
@@ -135,6 +134,7 @@
 }
 
 .Teacher{
+    position: absolute;
     top: 50%;
     left: 10%;
     font-size: 0.8em;
@@ -150,11 +150,11 @@
 
 .Rect {
     position: absolute;
+    display: flex;
+    justify-content: center;
     border-radius: 5px;
     top:0;
     transform: translateX(-5px);
-    
     width: 5%; 
     height: 25%; 
-    z-index: -2;
 }

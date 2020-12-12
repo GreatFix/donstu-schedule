@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar} from '@vkontakte/vkui';
 import axios from 'axios'
 //import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
@@ -7,7 +7,7 @@ import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 //const osName = platform();
 
-
+const DAYS_WEEK = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
 const dataToState = (data) =>{
 
   const dateToDay=(date)=>{
@@ -33,6 +33,9 @@ const dataToState = (data) =>{
       }
       if(!days[key].dayWeek)  
         days[key].dayWeek = data.rasp[les].день_недели ;
+        
+        if(!days[key].dayWeekNum)  
+        days[key].dayWeekNum = data.rasp[les].деньНедели ;
 
       if(!days[key].day) {
         days[key].date = key ;
@@ -106,7 +109,7 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-let GROUP_ID = sessionStorage.getItem('GROUP_ID');
+let GROUP_ID = localStorage.getItem('GROUP_ID');
 
 
 
@@ -152,11 +155,11 @@ let GROUP_ID = sessionStorage.getItem('GROUP_ID');
     return(
 
         <View id="shedule" activePanel="active">
-              <Panel   id="active">
-              <PanelHeader separator={false}> Расписание </PanelHeader>
+              <Panel className={classes.Panel__in} id="active">
+              <PanelHeader > Расписание </PanelHeader>
                 {initFetching
                 ?   <PanelSpinner />
-                :<PullToRefresh onRefresh={onRefresh} isFetching={fetching}>
+                :<PullToRefresh  onRefresh={onRefresh} isFetching={fetching}>
                     {errorFetch && !initFetching
                     ?  <Snackbar
                             layout="vertical"
@@ -168,21 +171,27 @@ let GROUP_ID = sessionStorage.getItem('GROUP_ID');
                         >
                             Error:{errorFetch}
                         </Snackbar>
-                    :<div>
-                    <Title level="3" weight="semibold" style={{ margin: 0, padding:10,textAlign: 'center' }}>{data.days[curDay].dayWeek}</Title>
-                    <List className={classes.PanelPadding} style={{overflow: 'visible'}}>
-                        {Object.keys(data.days[curDay].lessons).map((item, index) => {
-                        return (
-                                <Lesson key={index} lesson={data.days[curDay].lessons[item]} />
-
-                        )
-                        })}
-                    </List> 
-                    </div>}
+                    :data.days[curDay] 
+                      ? <div>
+                          <Title level="3" weight="semibold" style={{ padding:8,textAlign: 'center', backgroundColor: '#FFFFFF' }}>{data.days[curDay].dayWeek}</Title>
+                          <List className={classes.List} style={{overflow: 'visible'}}>
+                            {
+                              Object.keys(data.days[curDay].lessons).map((item, index) => {
+                                return (
+                                        <Lesson key={index} lesson={data.days[curDay].lessons[item]} />
+                                )
+                              })
+                            }
+                          </List> 
+                        </div>
+                      :<Title level="3" weight="semibold" style={{ margin: 0, padding:10,textAlign: 'center' }}>Сегодня пар нет - раслабься)</Title>
+                    
+                 
+                    }
                 </PullToRefresh>
                  }
               
-                 <FixedLayout className={classes.Fixed} vertical="bottom">
+                 <FixedLayout  vertical="bottom">
                 <Tabs>
                 <HorizontalScroll>
                       {data.days 
@@ -192,7 +201,9 @@ let GROUP_ID = sessionStorage.getItem('GROUP_ID');
                                 key={Math.random()}
                                 onClick={() =>  setCurDay(data.days[date].date) }
                                 selected={curDay === data.days[date].date}
+                                className={classes.TabsItem}
                               >
+                                <Headline weight="medium" style={{ marginBottom: 16 }}>{DAYS_WEEK[data.days[date].dayWeekNum]}</Headline>
                                 <Caption level="4" weight="bold" caps>{data.days[date].day}</Caption>
                               </TabsItem>
                             )
