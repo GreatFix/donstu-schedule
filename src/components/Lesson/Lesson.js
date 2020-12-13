@@ -41,11 +41,11 @@ const Lesson = (props) =>{
   const handlers = useSwipeable({
     onSwipedRight: () => {
       if(length===2) 
-        setCurLesson('right')
+        setCurLesson('left')
     },
     onSwipedLeft: () => {
       if(length===2)
-        setCurLesson('left')
+        setCurLesson('right')
     }
   });
 
