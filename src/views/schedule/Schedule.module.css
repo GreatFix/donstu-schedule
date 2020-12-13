@@ -1,9 +1,9 @@
 .List{
-    padding-bottom: 76px; /* высота fixed-layout */
+    padding-bottom: 80px; /* высота fixed-layout */
 }
 
 .TabsItem{
-    min-width: 0 !important;
+    min-width: 0 !important;  /*не помню что это */
 }
 
 .Title{
@@ -25,4 +25,20 @@
 }
 .TypeWeekBottom{
     bottom: 0;
+}
+
+.DataTimeFetch {
+    position: absolute;
+    top:0px;
+    z-index: 100;
+    left:0;
+    font-size: xx-small;
+    line-height:1em;
+}
+
+.SwiperWeek {
+    position: absolute;
+    bottom: var(--tabbar_height);
+    min-width: 100%;
+    min-height: 80px; /* высота fixed-layout */
 }

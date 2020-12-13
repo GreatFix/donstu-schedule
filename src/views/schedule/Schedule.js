@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead, Tabbar} from '@vkontakte/vkui';
 import axios from 'axios'
 //import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
@@ -7,10 +7,13 @@ import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
 import Icon28ChevronDownOutline from '@vkontakte/icons/dist/28/chevron_down_outline';
+import { useSwipeable } from "react-swipeable";
 
 
-const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
-const TYPES_WEEK = ['none',"Верхняя", "Нижняя"]
+const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+const MONTH = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const TYPES_WEEK = ['none',"Верхняя", "Нижняя"];
+const SEVEN_DAYS = 604800000;
 
 const dataToState = (data) =>{
 
@@ -25,7 +28,8 @@ const dataToState = (data) =>{
   if(data){
     let days ={};
     let lessons = Object.keys(data.rasp)
-
+    let received = false;
+    lessons.length === 0 ?  received = false : received = true; //Проверка на наличие данных в расписании
     lessons.forEach(les => {
       let key = data.rasp[les].дата.split('T')[0];
       if(!days[key]){
@@ -86,20 +90,33 @@ const dataToState = (data) =>{
 
     })
 
+
     let temp = {
       WeekID: data.info.selectedNumNed,
       Day: data.info.curNumNed,
       Semester: data.info.curSem,
       Year: data.info.year,
       GroupName: data.info.group.name,
-      days: {...days}
+      days: {...days},
+      received: received,
+      dateTimeFetch: toTime(new Date())
     }
 
     return temp;  
   }
 }
 
-const curDate=(date)=>{
+function toTime(date){
+  let h = date.getHours();
+  let mm = date.getMinutes();
+  if (mm < 10) mm = '0' + mm;
+  let ss = date.getSeconds();
+  if (ss < 10) ss = '0' + ss;
+
+  return `${h}:${mm}:${ss}`;
+}
+
+function toDate(date){
   let dd = date.getDate();
   if (dd < 10) dd = '0' + dd;
 
@@ -110,14 +127,17 @@ const curDate=(date)=>{
 
   return `${yyyy}-${mm}-${dd}`;
 }
-
+let leftMonth = 0;
+let rightMonth = 0
 
 const Schedule = (props) => {
-    let [curDay, setCurDay] = useState(curDate(new Date()));
+    let [curDay, setCurDay] = useState(toDate(new Date()));
     let [data, setData] = useState({})
     let [fetching, setFetching] = useState(false)
     let [initFetching, setInitFetching] = useState(true);
     let [errorFetch, setErrorFetch] = useState(null);
+    let [curWeekNum, setCurWeekNum] = useState(50);
+
 
 
     
@@ -127,6 +147,7 @@ const Schedule = (props) => {
     }
 
     const getSchedule = async () => {
+        setFetching(true);
         let GROUP_ID = localStorage.getItem('GROUP_ID');
         const result = await axios({url:
           `https://edu.donstu.ru/api/Rasp?idGroup=${GROUP_ID}&sdate=${curDay}`,crossDomain: true}
@@ -158,8 +179,24 @@ const Schedule = (props) => {
     data.WeekID===1
     ? typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekTop
     : typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekBottom;
-    return(
+    
+    useEffect(()=>{
+      if(new Date(curDay).getDate()!==new Date().getDate()) //Если дата текущая, не станет запрашивать 
+        getSchedule();
+    },[curWeekNum])
 
+
+    const handlers = useSwipeable({
+      onSwipedRight: () => {
+        setCurDay((prev)=>{return toDate(new Date(+new Date(prev)-(+SEVEN_DAYS)))})
+        setCurWeekNum((prev)=>{return prev-1})
+      },
+      onSwipedLeft: () => {
+        setCurDay((prev)=>{return toDate(new Date(+new Date(prev)+(+SEVEN_DAYS)))})
+        setCurWeekNum((prev)=>{return prev+1})
+      }
+    });
+    return(
         <View id="shedule" activePanel="active">
               <Panel id="active">
               <PanelHeader > Расписание </PanelHeader>
@@ -179,7 +216,8 @@ const Schedule = (props) => {
                         </Snackbar>
                     :data.days[curDay] 
                       ? <div >
-                          <Title level="3" weight="semibold" className={classes.Title}>
+                          <Title level="3" weight="semibold" className={classes.Title}> 
+                            <div className={classes.DataTimeFetch}>Данные от: {data.dateTimeFetch}</div>          
                             {data.days[curDay].dayWeek}
                             <div className={typeWeek}>
                               { data.WeekID===1
@@ -200,37 +238,37 @@ const Schedule = (props) => {
                             }
                           </List> 
                         </div>
-                      :<Title level="3" weight="semibold" style={{ margin: 0, padding:10,textAlign: 'center' }}>Сегодня пар нет - раслабься)</Title>
+                      :<Title level="3" weight="semibold" style={{ margin: 0, padding:10,textAlign: 'center' }}>В этот день пар нет :)</Title>
                     
                  
                     }
                 </PullToRefresh>
                  }
-              
-                 <FixedLayout vertical="bottom">
-                 
-                <Tabs>
-                <HorizontalScroll >
-                      {data.days 
-                        ? Object.keys(data.days).map((date)=> {
-                            return (
-                              <TabsItem
-                                key={Math.random()}
-                                onClick={() =>  setCurDay(data.days[date].date) }
-                                selected={curDay === data.days[date].date}
-                                className={classes.TabsItem}
-                              >
-                                <Headline weight="medium" style={{ marginBottom: 16 }}>{DAYS_WEEK[data.days[date].dayWeekNum]}</Headline>
-                                <Caption level="4" weight="bold" caps>{data.days[date].day}</Caption>
-                              </TabsItem>
-                            )
-                          })
-                        : null
-                      }
-                  </HorizontalScroll>
-                </Tabs>
-                </FixedLayout >
-                </Panel>
+                <div className={classes.SwiperWeek}  {...handlers} >
+                  <FixedLayout vertical="bottom">
+                    <Tabs>
+                        {data.received
+                          ? Object.keys(data.days).map((date, index)=> {
+                                let month = MONTH[new Date(data.days[date].date).getMonth()]
+                              return (
+                                <TabsItem
+                                  key={index}
+                                  onClick={() =>  setCurDay(data.days[date].date) }
+                                  selected={curDay === data.days[date].date}
+                                  className={classes.TabsItem}
+                                >
+                                  <Headline weight="medium" style={{ marginBottom: 8 }}>{DAYS_WEEK[data.days[date].dayWeekNum]}</Headline>
+                                  <Caption level="4" weight="bold" caps>{data.days[date].day}</Caption>
+                                  <Caption level="4" weight="regular">{month}</Caption>
+                                </TabsItem>
+                              )
+                            })
+                          :<TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
+                        }
+                    </Tabs>
+                  </FixedLayout>
+                </div>
+              </Panel>
           </View>
     )
 }
