@@ -8,7 +8,7 @@ const SearchPanel = ({groups, faculty, kurs, goBack, onFiltersClick}) => {
   let [search, setSearch] = useState('');
 
     const onChange = (event) => setSearch(event.target.value);
-    console.log(groups)
+
     const result = () => {
       return groups.filter((group) =>{
         return( 
@@ -20,12 +20,12 @@ const SearchPanel = ({groups, faculty, kurs, goBack, onFiltersClick}) => {
     }
 
     const HandleClickGroup = (e) => {
-      let cell = e.target;                    //Да, страшное зрелище, позже придумаю получше
-      console.log(cell)
+      let cell = e.target;                    
+
       while(!cell.classList.contains('SimpleCell')) 
         cell = cell.parentNode
       const group = groups[cell.id]
-      console.log('id:'+cell.id+'group'+group)
+
       const id = group.id;
       const facul = group.facul;
       const name = group.name;
@@ -46,13 +46,14 @@ const SearchPanel = ({groups, faculty, kurs, goBack, onFiltersClick}) => {
       return (
         <>
           <PanelHeader left={<PanelHeaderBack onClick={goBack} />} separator={false}>
-            <Search
+            Поиск группы
+          </PanelHeader>
+          <Search
               value={search}
               onChange={onChange}
               icon={<Icon24Filter />}
               onIconClick={onFiltersClick}
             />
-          </PanelHeader>
           <List>
             {(search || kurs || faculty ) && result().map((group) => (
               <SimpleCell

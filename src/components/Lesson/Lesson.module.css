@@ -56,14 +56,14 @@
     font-size: 12px;
     background-color: white;
     display: grid;
-    grid-template-rows:  1fr 2fr 1fr; /*  строки */
+    grid-template-rows:  1fr 2fr 1fr 10px; /*  строки */
     grid-template-columns: 1fr 2fr 3fr 1fr; /*  столбцы */
     grid-template-areas:    "Rect Type Aud Time"  
                             "Description Description Description Time"  
-                            "Description Description Description Time";
+                            "Description Description Description Time"
+                            "Pagination Pagination Pagination Pagination";
 }
 .Lesson:hover {
-
     box-shadow: 0.25px 0.5px 1.5px 1.5px #2975cc;
 }
 
@@ -161,4 +161,18 @@
     margin-left: 5px;
 }
 
-
+.Pagination{
+    grid-area: Pagination;
+    justify-self: center;
+}
+.Pagination div {
+    width:0.4em;
+    height:0.4em;
+    margin: 0.1em;
+    border:1px solid #ccc;
+    display:inline-block;
+    border-radius:50%;
+}
+.Active {
+    background-color: #2975cc;
+}

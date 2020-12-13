@@ -139,8 +139,10 @@ const Schedule = (props) => {
             setData(tempData);
             sessionStorage.setItem('SCHEDULE', JSON.stringify(tempData));
             setErrorFetch(null);
+        } else if(GROUP_ID){
+          setErrorFetch('Неудачный запрос к API');
         } else {
-            setErrorFetch('Неудачный запрос к API');
+          setErrorFetch('Выберите свою группу в "Профиль"');
         }
         setInitFetching(false);
         setFetching(false);
