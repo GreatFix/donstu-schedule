@@ -66,7 +66,10 @@
 .Lesson:hover {
     box-shadow: 0.25px 0.5px 1.5px 1.5px #2975cc;
 }
+.Lesson:hover .Start, .Lesson:hover .End{
+    transform: scale(1.5);
 
+}
 
 
 .Rect {
@@ -117,11 +120,13 @@
                             "Line"  
                             "End";
 }
+
 .Start {
     grid-area: Start;
     justify-self: end;
     font-size: 0.9em;
     font-weight: 700;
+    transition: 0.5s ease-in;
 }
 .Line {
     grid-area: Line;
@@ -133,6 +138,7 @@
     justify-self: end;
     font-size: 0.9em;
     font-weight: 700;
+    transition: 0.5s ease-in;
 }
 
 

@@ -1,16 +1,19 @@
 import React,{useState} from 'react';
-import {View, Panel, PanelHeader, ModalRoot, ModalPage, ModalPageHeader, SimpleCell,FormLayout, Select} from '@vkontakte/vkui';
+import {View, Panel, PanelHeader, ModalRoot, ModalPage, ModalPageHeader,PanelHeaderButton, SimpleCell,FormLayout, Select, IS_PLATFORM_ANDROID, IS_PLATFORM_IOS} from '@vkontakte/vkui';
 import axios from 'axios';
-
+import { usePlatform, ANDROID, IOS } from '@vkontakte/vkui'
 import SearchPanel from '../../components/SearchPanel/SearchPanel'
+import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
+import Icon24Done from '@vkontakte/icons/dist/24/done'
 
-//const osName = platform();
 
 let faculties = [];
 
 const Profile = () => {
     let GROUP_NAME = localStorage.getItem('GROUP_NAME');
     let FACULTY = localStorage.getItem('FACULTY');
+
+    const platform = usePlatform()
 
     let [activePanel, setActivePanel] = useState('main');
     let [activeModal, setActiveModal] = useState(null);
@@ -60,8 +63,8 @@ const Profile = () => {
                     onClose={hideModal}
                     header={
                       <ModalPageHeader
-                        //left={IS_PLATFORM_ANDROID && <PanelHeaderButton onClick={hideModal}><Icon24Cancel /></PanelHeaderButton>}
-                       // right={<PanelHeaderButton onClick={hideModal}>{IS_PLATFORM_IOS ? 'Готово' : <Icon24Done />}</PanelHeaderButton>}
+                        left={platform==='android' && <PanelHeaderButton onClick={hideModal}><Icon24Cancel /></PanelHeaderButton>}
+                        right={<PanelHeaderButton onClick={hideModal}>{platform==='ios' ? 'Готово' : <Icon24Done />}</PanelHeaderButton>}
                       >
                         Фильтры
                       </ModalPageHeader>

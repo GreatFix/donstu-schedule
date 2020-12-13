@@ -127,8 +127,7 @@ function toDate(date){
 
   return `${yyyy}-${mm}-${dd}`;
 }
-let leftMonth = 0;
-let rightMonth = 0
+
 
 const Schedule = (props) => {
     let [curDay, setCurDay] = useState(toDate(new Date()));
@@ -136,7 +135,7 @@ const Schedule = (props) => {
     let [fetching, setFetching] = useState(false)
     let [initFetching, setInitFetching] = useState(true);
     let [errorFetch, setErrorFetch] = useState(null);
-    let [curWeekNum, setCurWeekNum] = useState(50);
+    let [curWeekNum, setCurWeekNum] = useState({});
 
 
 
@@ -181,7 +180,6 @@ const Schedule = (props) => {
     : typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekBottom;
     
     useEffect(()=>{
-      if(new Date(curDay).getDate()!==new Date().getDate()) //Если дата текущая, не станет запрашивать 
         getSchedule();
     },[curWeekNum])
 
@@ -189,11 +187,11 @@ const Schedule = (props) => {
     const handlers = useSwipeable({
       onSwipedRight: () => {
         setCurDay((prev)=>{return toDate(new Date(+new Date(prev)-(+SEVEN_DAYS)))})
-        setCurWeekNum((prev)=>{return prev-1})
+        setCurWeekNum({})
       },
       onSwipedLeft: () => {
         setCurDay((prev)=>{return toDate(new Date(+new Date(prev)+(+SEVEN_DAYS)))})
-        setCurWeekNum((prev)=>{return prev+1})
+        setCurWeekNum({})
       }
     });
     return(
