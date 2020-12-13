@@ -113,7 +113,7 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-    let GROUP_ID = sessionStorage.getItem('GROUP_ID');
+    let GROUP_ID = localStorage.getItem('GROUP_ID');
 
 
 

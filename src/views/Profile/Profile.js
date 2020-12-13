@@ -9,8 +9,8 @@ import SearchPanel from '../../components/SearchPanel/SearchPanel'
 let faculties = [];
 
 const Profile = () => {
-    let GROUP_NAME = sessionStorage.getItem('GROUP_NAME');
-    let FACULTY = sessionStorage.getItem('FACULTY');
+    let GROUP_NAME = localStorage.getItem('GROUP_NAME');
+    let FACULTY = localStorage.getItem('FACULTY');
 
     let [activePanel, setActivePanel] = useState('main');
     let [activeModal, setActiveModal] = useState(null);

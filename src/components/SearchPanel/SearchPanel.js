@@ -31,13 +31,13 @@ const SearchPanel = ({groups, faculty, kurs, goBack, onFiltersClick}) => {
       const name = group.name;
 
       bridge.send("VKWebAppStorageSet",{"key":"GROUP_ID", "value":id});
-      sessionStorage.setItem("GROUP_ID", id);
+      localStorage.setItem("GROUP_ID", id);
 
       bridge.send("VKWebAppStorageSet",{"key":"FACULTY", "value":facul});
-      sessionStorage.setItem("FACULTY", facul);
+      localStorage.setItem("FACULTY", facul);
 
       bridge.send("VKWebAppStorageSet",{"key":"GROUP_NAME", "value":name});
-      sessionStorage.setItem("GROUP_NAME", name);
+      localStorage.setItem("GROUP_NAME", name);
 
       sessionStorage.setItem('SCHEDULE', '');
 
