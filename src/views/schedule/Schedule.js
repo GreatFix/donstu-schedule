@@ -113,10 +113,6 @@ const curDate=(date)=>{
 
 
 const Schedule = (props) => {
-    let GROUP_ID = localStorage.getItem('GROUP_ID');
-
-
-
     let [curDay, setCurDay] = useState(curDate(new Date()));
     let [data, setData] = useState({})
     let [fetching, setFetching] = useState(false)
@@ -131,6 +127,7 @@ const Schedule = (props) => {
     }
 
     const getSchedule = async () => {
+        let GROUP_ID = localStorage.getItem('GROUP_ID');
         const result = await axios({url:
           `https://edu.donstu.ru/api/Rasp?idGroup=${GROUP_ID}&sdate=${curDay}`,crossDomain: true}
         );
