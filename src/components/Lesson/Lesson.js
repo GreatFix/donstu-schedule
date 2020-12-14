@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import { Div} from '@vkontakte/vkui';
+import React, { useState } from 'react';
+import { Div } from '@vkontakte/vkui';
 import classes from './Lesson.module.css'
 import Icon16UserOutline from '@vkontakte/icons/dist/16/user_outline';
 import Icon28BookOutline from '@vkontakte/icons/dist/28/book_outline';
@@ -25,7 +25,7 @@ const Lesson = (props) =>{
   let pagItem_1 = ''
   let pagItem_2 = ''
 
-  if(length==2){
+  if(length===2){
     if(curLesson==='left'){
       lesson = props.lesson[keys[0]];
       pagItem_1=classes.Active;
@@ -81,7 +81,7 @@ const Lesson = (props) =>{
         <div className={classes.Line} style={{backgroundColor: COLORS[lesson.number]}}></div>
         <span className={classes.End}>{lesson.end}</span>
       </div>
-      {length==2 
+      {length===2 
         ? <div className={classes.Pagination}>
             <div className={pagItem_1}></div>
             <div className={pagItem_2}></div>   

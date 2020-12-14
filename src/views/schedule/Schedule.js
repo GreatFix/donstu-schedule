@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title, HorizontalScroll,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead, Tabbar} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead} from '@vkontakte/vkui';
 import axios from 'axios'
 //import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
@@ -171,7 +171,7 @@ const Schedule = (props) => {
         setInitFetching(false);
     }
       else 
-        getSchedule();
+        getSchedule();// eslint-disable-next-line
     },[])
 
     let typeWeek = classes.TypeWeek;
@@ -180,7 +180,7 @@ const Schedule = (props) => {
     : typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekBottom;
     
     useEffect(()=>{
-        getSchedule();
+        getSchedule(); // eslint-disable-next-line
     },[curWeekNum])
 
 
@@ -215,7 +215,7 @@ const Schedule = (props) => {
                     :data.days[curDay] 
                       ? <div >
                           <Title level="3" weight="semibold" className={classes.Title}> 
-                            <div className={classes.DataTimeFetch}>Данные от: {data.dateTimeFetch}</div>          
+                            {/* <div className={classes.DataTimeFetch}>Данные от: {data.dateTimeFetch}</div> проверка времени запроса          */}
                             {data.days[curDay].dayWeek}
                             <div className={typeWeek}>
                               { data.WeekID===1
@@ -261,7 +261,7 @@ const Schedule = (props) => {
                                 </TabsItem>
                               )
                             })
-                          :<TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
+                          :!errorFetch && <TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
                         }
                     </Tabs>
                   </FixedLayout>

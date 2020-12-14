@@ -26,9 +26,9 @@ const SearchPanel = ({groups, faculty, kurs, goBack, onFiltersClick}) => {
         cell = cell.parentNode
       const group = groups[cell.id]
 
-      const id = group.id;
-      const facul = group.facul;
-      const name = group.name;
+      const id = String(group.id);
+      const facul = String(group.facul);
+      const name = String(group.name);
 
       bridge.send("VKWebAppStorageSet",{"key":"GROUP_ID", "value":id});
       localStorage.setItem("GROUP_ID", id);

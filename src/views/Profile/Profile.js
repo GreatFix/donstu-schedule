@@ -1,10 +1,11 @@
-import React,{useState} from 'react';
-import {View, Panel, PanelHeader, ModalRoot, ModalPage, ModalPageHeader,PanelHeaderButton, SimpleCell,FormLayout, Select, IS_PLATFORM_ANDROID, IS_PLATFORM_IOS} from '@vkontakte/vkui';
+import React,{ useState } from 'react';
+import { View, Panel, PanelHeader, ModalRoot, ModalPage, ModalPageHeader,PanelHeaderButton, SimpleCell,FormLayout, Select} from '@vkontakte/vkui';
 import axios from 'axios';
-import { usePlatform, ANDROID, IOS } from '@vkontakte/vkui'
+import { usePlatform } from '@vkontakte/vkui'
 import SearchPanel from '../../components/SearchPanel/SearchPanel'
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
-import Icon24Done from '@vkontakte/icons/dist/24/done'
+import Icon24Done from '@vkontakte/icons/dist/24/done';
+import Icon24ChevronCompactRight from '@vkontakte/icons/dist/24/chevron_compact_right';
 
 
 let faculties = [];
@@ -96,7 +97,17 @@ const Profile = () => {
             <Panel id="main">
                 <PanelHeader separator={false}> Профиль </PanelHeader>
                 <SimpleCell indicator={FACULTY}>Факультет</SimpleCell>
-                <SimpleCell onClick={handleClickSelectGroup} expandable={true} indicator={GROUP_NAME}>Группа</SimpleCell>
+                <SimpleCell 
+                  onClick={handleClickSelectGroup} 
+                  expandable={true} 
+                  indicator={
+                    <div style={{display: 'flex',direction: 'row'}}>
+                      {GROUP_NAME}{ platform!=='ios' && <Icon24ChevronCompactRight style={{marginLeft:4}}/> }
+                    </div>
+                  }
+                >
+                  Группа
+                </SimpleCell>
             </Panel>
             <Panel id="searchGroup">
                 <SearchPanel groups={groups} faculty={faculty} kurs={kurs} onFiltersClick={() => setActiveModal('filtersGroup')} goBack={goMain}/>
