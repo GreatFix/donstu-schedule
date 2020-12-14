@@ -71,6 +71,8 @@ const dataToState = (data) =>{
         case '14:15': number = 4; break;
         case '16:00': number = 5; break;
         case '17:45': number = 6; break;
+        case '19:30': number = 7; break;
+        case '21:15': number = 8; break;
         default: number = 0;
       }
 
