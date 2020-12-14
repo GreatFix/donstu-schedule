@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead, Tooltip} from '@vkontakte/vkui';
 import axios from 'axios'
 //import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
@@ -8,6 +8,7 @@ import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fi
 import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
 import Icon28ChevronDownOutline from '@vkontakte/icons/dist/28/chevron_down_outline';
 import { useSwipeable } from "react-swipeable";
+import bridge from "@vkontakte/vk-bridge";
 
 
 const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
@@ -139,6 +140,14 @@ const Schedule = (props) => {
     let [errorFetch, setErrorFetch] = useState(null);
     let [curWeekNum, setCurWeekNum] = useState({});
 
+    let [tool1, setTool1] = useState(!localStorage.getItem('TOOLTIP'));
+    let [tool2, setTool2] = useState(false);
+
+    if(!tool1 && !tool2){
+      bridge.send("VKWebAppStorageSet",{"key":"TOOLTIP", "value":'true'});
+      localStorage.setItem("TOOLTIP", 'true');
+    }
+      
     
     const onRefresh = ()=>{
         setFetching(true);
@@ -216,29 +225,41 @@ const Schedule = (props) => {
                             Error:{errorFetch}
                         </Snackbar>
                     :data.days[curDay] 
-                      ? <div >
-                          <Title level="3" weight="semibold" className={classes.Title}> 
-                            {/* <div className={classes.DataTimeFetch}>Данные от: {data.dateTimeFetch}</div> проверка времени запроса          */}
-                            {data.days[curDay].dayWeek}
-                            <div className={typeWeek}>
-                              { data.WeekID===1
-                                ? <Icon28ChevronUpOutline width={20} height={20}/>
-                                : <Icon28ChevronDownOutline width={20} height={20}/>
-                              }
-                              <Subhead >{TYPES_WEEK[data.WeekID]}</Subhead>
-                            </div>
-                          </Title>
-                          
-                          <List className={classes.List} style={{overflow: 'visible'}}>
-                            {
-                              Object.keys(data.days[curDay].lessons).map((item, index) => {
-                                return (
-                                        <Lesson key={index} lesson={data.days[curDay].lessons[item]} />
-                                )
-                              })
-                            }
-                          </List> 
-                        </div>
+                      ?<Tooltip
+                          mode="light"
+                          header="Подсказка 2:"
+                          text="Если пара делится на группы, смахните, чтобы перейти к другой"
+                          isShown={tool2}
+                          alignX="right"
+                          alignY="bottom"
+                          offsetY={-72}
+                          onClose={() => setTool2(false)}
+                        >
+                          <div >
+                            <Title level="3" weight="semibold" className={classes.Title}> 
+                              {/* <div className={classes.DataTimeFetch}>Данные от: {data.dateTimeFetch}</div> проверка времени запроса          */}
+                              {data.days[curDay].dayWeek}
+                              <div className={typeWeek}>
+                                { data.WeekID===1
+                                  ? <Icon28ChevronUpOutline width={20} height={20}/>
+                                  : <Icon28ChevronDownOutline width={20} height={20}/>
+                                }
+                                <Subhead >{TYPES_WEEK[data.WeekID]}</Subhead>
+                              </div>
+                            </Title>
+      
+                              <List className={classes.List} style={{overflow: 'visible'}}>
+                                {
+                                  Object.keys(data.days[curDay].lessons).map((item, index) => {
+                                    return (
+                                            <Lesson key={index} lesson={data.days[curDay].lessons[item]} />
+                                    )
+                                  })
+                                }
+                              </List>
+                            
+                          </div>
+                        </Tooltip>
                       :<Title level="3" weight="semibold" style={{ margin: 0, padding:10,textAlign: 'center' }}>В этот день пар нет :)</Title>
                     
                  
@@ -247,6 +268,15 @@ const Schedule = (props) => {
                  }
                 <div className={classes.SwiperWeek}  {...handlers} >
                   <FixedLayout vertical="bottom">
+                  <Tooltip
+                    mode="light"
+                    header="Подсказка 1:"
+                    text="Смахните, чтобы перейти к следующей или предыдущей неделе или нажмите, чтобы выбрать день!"
+                    isShown={tool1}
+                    alignX="right"
+                    alignY="top"
+                    onClose={() => {setTool1(false); setTool2(true)}}
+                  >
                     <Tabs>
                         {data.received
                           ? Object.keys(data.days).map((date, index)=> {
@@ -264,9 +294,10 @@ const Schedule = (props) => {
                                 </TabsItem>
                               )
                             })
-                          :!errorFetch && <TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
+                          :!errorFetch && !initFetching && <TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
                         }
                     </Tabs>
+                    </Tooltip>
                   </FixedLayout>
                 </div>
               </Panel>
