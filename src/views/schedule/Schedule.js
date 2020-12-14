@@ -139,8 +139,6 @@ const Schedule = (props) => {
     let [errorFetch, setErrorFetch] = useState(null);
     let [curWeekNum, setCurWeekNum] = useState({});
 
-
-
     
     const onRefresh = ()=>{
         setFetching(true);
@@ -150,8 +148,11 @@ const Schedule = (props) => {
     const getSchedule = async () => {
         setFetching(true);
         let GROUP_ID = localStorage.getItem('GROUP_ID');
-        const result = await axios({url:
-          `https://edu.donstu.ru/api/Rasp?idGroup=${GROUP_ID}&sdate=${curDay}`,crossDomain: true}
+        const result = await axios({
+          url:`https://edu.donstu.ru/api/Rasp?idGroup=${GROUP_ID}&sdate=${curDay}`,
+          crossDomain: true,
+          timeout:20000
+        }
         );
         if(result.data.data.rasp && GROUP_ID){
             let tempData = dataToState(result.data.data);
