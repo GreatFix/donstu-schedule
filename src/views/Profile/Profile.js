@@ -101,7 +101,7 @@ const Profile = () => {
                   onClick={handleClickSelectGroup} 
                   expandable={true} 
                   indicator={
-                    <div style={{display: 'flex',direction: 'row'}}>
+                    <div style={{display: 'flex',direction: 'row', alignItems: 'center'}}>
                       {GROUP_NAME}{ platform!=='ios' && <Icon24ChevronCompactRight style={{marginLeft:4}}/> }
                     </div>
                   }
