@@ -1,12 +1,12 @@
 import React,{ useState } from 'react';
-import { View, Panel, PanelHeader, ModalRoot, ModalPage, ModalPageHeader,PanelHeaderButton, SimpleCell,FormLayout, Select} from '@vkontakte/vkui';
+import { View, Panel, PanelHeader, Avatar, RichCell, ModalRoot,Link, ModalPage, ModalPageHeader,PanelHeaderButton, SimpleCell,FormLayout, Select} from '@vkontakte/vkui';
 import axios from 'axios';
 import { usePlatform } from '@vkontakte/vkui'
 import SearchPanel from '../../components/SearchPanel/SearchPanel'
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon24ChevronCompactRight from '@vkontakte/icons/dist/24/chevron_compact_right';
-
+import logo from '../../img/logo.png';
 
 let faculties = [];
 
@@ -25,7 +25,13 @@ const Profile = () => {
 
     const getGroups = async () => {
         const result = await axios({url:'https://edu.donstu.ru/api/raspGrouplist?year=2020-2021',crossDomain: true});
-        
+            // const METHOD_NAME = 'groups.getById';
+            // const PARAMETERS = 'group_id=201108040&test_mode=1';
+            // const ACCESS_TOKEN = '6829aa39812d9591adca16533803334d634862c22deb7611ba15cd0d889bd4bb452fa3c9b8d2b28fbbce3';
+            // const V = '5.126'
+            // axios({url:`https://api.vk.com/method/${METHOD_NAME}?${PARAMETERS}&access_token=${ACCESS_TOKEN}&v=${V}`, crossDomain: true}).then(
+            //   res => console.log(res)
+            // )
         const keys = Object.keys(result.data.data);
         const data = result.data.data;
         keys.forEach((key)=>{data[key].key = key}) //Нужно для обработки клика в seacrhPanel
@@ -51,6 +57,8 @@ const Profile = () => {
         setFaculty('')
         setKurs(0)
     }; 
+
+
 
     return(
 
@@ -96,6 +104,14 @@ const Profile = () => {
         >
             <Panel id="main">
                 <PanelHeader separator={false}> Профиль </PanelHeader>
+                <RichCell
+                  disabled
+                  //after={<Icon28UserAddOutline />}
+                  before={<Avatar size={48} src={logo} />}
+                  caption={<Link style={{fontSize:'0.8em'}} href="https://vk.com/donstushedule">Подпишитесь, чтобы поддержать автора</Link>}
+                >
+                  ДГТУ - Расписание
+                </RichCell>
                 <SimpleCell indicator={FACULTY}>Факультет</SimpleCell>
                 <SimpleCell 
                   onClick={handleClickSelectGroup} 
@@ -108,6 +124,7 @@ const Profile = () => {
                 >
                   Группа
                 </SimpleCell>
+                
             </Panel>
             <Panel id="searchGroup">
                 <SearchPanel groups={groups} faculty={faculty} kurs={kurs} onFiltersClick={() => setActiveModal('filtersGroup')} goBack={goMain}/>

@@ -1,19 +1,19 @@
 import React, {useState, useEffect} from 'react'
-import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Subhead, Tooltip} from '@vkontakte/vkui';
+import { View, Caption,PanelSpinner,PullToRefresh, Headline,Title,FixedLayout,Tabs,PanelHeader,TabsItem,Panel,List, Snackbar, Tooltip} from '@vkontakte/vkui';
 import axios from 'axios'
 //import bridge from '@vkontakte/vk-bridge';
 import Lesson from '../../components/Lesson/Lesson'
 import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
-import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
-import Icon28ChevronDownOutline from '@vkontakte/icons/dist/28/chevron_down_outline';
+// import Icon28ChevronUpOutline from '@vkontakte/icons/dist/28/chevron_up_outline';
+// import Icon28ChevronDownOutline from '@vkontakte/icons/dist/28/chevron_down_outline';
 import { useSwipeable } from "react-swipeable";
 import bridge from "@vkontakte/vk-bridge";
 
 
 const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 const MONTH = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const TYPES_WEEK = ['none',"Верхняя", "Нижняя"];
+//onst TYPES_WEEK = ['none',"Верхняя", "Нижняя"];
 const SEVEN_DAYS = 604800000;
 
 const dataToState = (data) =>{
@@ -154,6 +154,7 @@ const Schedule = (props) => {
         getSchedule();
     }
 
+    
     const getSchedule = async () => {
         setFetching(true);
         let GROUP_ID = localStorage.getItem('GROUP_ID');
@@ -178,18 +179,21 @@ const Schedule = (props) => {
     };
 
     useEffect(()=>{
-      if(sessionStorage.getItem('SCHEDULE')){
-        setData(JSON.parse(sessionStorage.getItem('SCHEDULE')));
-        setInitFetching(false);
-    }
-      else 
-        getSchedule();// eslint-disable-next-line
+      const temp = async()=>{
+        if(sessionStorage.getItem('SCHEDULE')){
+          setData(JSON.parse(sessionStorage.getItem('SCHEDULE')));
+          setInitFetching(false);
+        }
+        else 
+          await getSchedule();
+      }
+      temp()// eslint-disable-next-line
     },[])
 
-    let typeWeek = classes.TypeWeek;
-    data.WeekID===1
-    ? typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekTop
-    : typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekBottom;
+    // let typeWeek = classes.TypeWeek;   //Вывод типа недели
+    // data.WeekID===1
+    // ? typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekTop
+    // : typeWeek = classes.TypeWeek + ' ' + classes.TypeWeekBottom;
     
     useEffect(()=>{
         getSchedule(); // eslint-disable-next-line
@@ -209,7 +213,7 @@ const Schedule = (props) => {
     return(
         <View id="shedule" activePanel="active">
               <Panel id="active">
-              <PanelHeader > Расписание </PanelHeader>
+              <PanelHeader> Расписание </PanelHeader>
                 {initFetching
                 ?   <PanelSpinner />
                 :<PullToRefresh  onRefresh={onRefresh} isFetching={fetching}>
@@ -226,26 +230,26 @@ const Schedule = (props) => {
                         </Snackbar>
                     :data.days[curDay] 
                       ?<Tooltip
-                          mode="light"
+                          mode="accent"
                           header="Подсказка 2:"
                           text="Если пара делится на группы, смахните, чтобы перейти к другой"
                           isShown={tool2}
                           alignX="right"
-                          alignY="bottom"
-                          offsetY={-72}
+                          alignY="top"
+                          offsetY={-150}
                           onClose={() => setTool2(false)}
                         >
                           <div >
                             <Title level="3" weight="semibold" className={classes.Title}> 
                               {/* <div className={classes.DataTimeFetch}>Данные от: {data.dateTimeFetch}</div> проверка времени запроса          */}
                               {data.days[curDay].dayWeek}
-                              <div className={typeWeek}>
+                              {/* <div className={typeWeek}> //Вывод типа недели
                                 { data.WeekID===1
                                   ? <Icon28ChevronUpOutline width={20} height={20}/>
                                   : <Icon28ChevronDownOutline width={20} height={20}/>
                                 }
                                 <Subhead >{TYPES_WEEK[data.WeekID]}</Subhead>
-                              </div>
+                              </div> */}
                             </Title>
       
                               <List className={classes.List} style={{overflow: 'visible'}}>
@@ -268,36 +272,39 @@ const Schedule = (props) => {
                  }
                 <div className={classes.SwiperWeek}  {...handlers} >
                   <FixedLayout vertical="bottom">
-                  <Tooltip
-                    mode="light"
-                    header="Подсказка 1:"
-                    text="Смахните, чтобы перейти к следующей или предыдущей неделе или нажмите, чтобы выбрать день!"
-                    isShown={tool1}
-                    alignX="right"
-                    alignY="top"
-                    onClose={() => {setTool1(false); setTool2(true)}}
-                  >
-                    <Tabs>
-                        {data.received
-                          ? Object.keys(data.days).map((date, index)=> {
-                                let month = MONTH[new Date(data.days[date].date).getMonth()]
-                              return (
-                                <TabsItem
-                                  key={index}
-                                  onClick={() =>  setCurDay(data.days[date].date) }
-                                  selected={curDay === data.days[date].date}
-                                  className={classes.TabsItem}
-                                >
-                                  <Headline weight="medium" style={{ marginBottom: 8 }}>{DAYS_WEEK[data.days[date].dayWeekNum]}</Headline>
-                                  <Caption level="4" weight="bold" caps>{data.days[date].day}</Caption>
-                                  <Caption level="4" weight="regular">{month}</Caption>
-                                </TabsItem>
-                              )
-                            })
-                          :!errorFetch && !initFetching && <TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
-                        }
-                    </Tabs>
+                  {data.received
+                          &&
+                    <Tooltip
+                      mode="accent"
+                      header="Подсказка 1:"
+                      text="Смахните, чтобы перейти к следующей или предыдущей неделе или нажмите, чтобы выбрать день!"
+                      isShown={tool1}
+                      alignX="right"
+                      alignY="top"
+                      onClose={() => {setTool1(false); setTool2(true)}}
+                    >
+                      <Tabs>
+                          {data.received
+                            ? Object.keys(data.days).map((date, index)=> {
+                                  let month = MONTH[new Date(data.days[date].date).getMonth()]
+                                return (
+                                  <TabsItem
+                                    key={index}
+                                    onClick={() =>  setCurDay(data.days[date].date) }
+                                    selected={curDay === data.days[date].date}
+                                    className={classes.TabsItem}
+                                  >
+                                    <Headline weight="medium" style={{ marginBottom: 8 }}>{DAYS_WEEK[data.days[date].dayWeekNum]}</Headline>
+                                    <Caption level="4" weight="bold" caps>{data.days[date].day}</Caption>
+                                    <Caption level="4" weight="regular">{month}</Caption>
+                                  </TabsItem>
+                                )
+                              })
+                            :!errorFetch && !initFetching && <TabsItem> <Title level="3" weight="semibold">На этой неделе пар нет :)</Title></TabsItem>
+                          }
+                      </Tabs>
                     </Tooltip>
+                    }
                   </FixedLayout>
                 </div>
               </Panel>
