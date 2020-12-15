@@ -224,7 +224,7 @@ const Schedule = (props) => {
                 {!errorFetch 
                     ?   <div className={classes.SwiperWeek}  {...handlers} >
                             <FixedLayout vertical="bottom">
-                                <DayWeekTabs days={data.days} onChangeCurDay={onChangeCurDay} curDay={curDay} />
+                                <DayWeekTabs data={data} onChangeCurDay={onChangeCurDay} curDay={curDay} />
                             </FixedLayout>
                         </div>
                     :  <Snackbar

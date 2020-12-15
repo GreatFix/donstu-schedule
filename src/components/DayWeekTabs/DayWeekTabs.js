@@ -3,16 +3,16 @@ import {Tabs, Title, TabsItem} from '@vkontakte/vkui';
 
 import DayWeekTabsItem from './DayWeekTabsItem/DayWeekTabsItem';
 
-const DayWeekTabs = ({days, onChangeCurDay, curDay}) => {
+const DayWeekTabs = ({data, onChangeCurDay, curDay}) => {
 
     return(
         <Tabs>
-            {days 
-                ?   Object.keys(days).map((date, index)=> {
+            {data.received 
+                ?   Object.keys(data.days).map((date, index)=> {
                         return(
                             <DayWeekTabsItem 
                                 key={index} 
-                                dayWeek={days[date]} 
+                                dayWeek={data.days[date]} 
                                 onChangeCurDay={onChangeCurDay} 
                                 curDay={curDay} 
                             />
