@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useReducer} from 'react'
+import React, {useEffect, useState, useCallback, useReducer} from 'react'
 import { View,PullToRefresh,FixedLayout,PanelHeader,Panel, Snackbar} from '@vkontakte/vkui';
 import { useSwipeable } from "react-swipeable";
 import axios from 'axios'
@@ -167,8 +167,6 @@ function reducerDATA (state, action) {
     switch (action.type) {
         case 'setData': 
           return {...state, data: action.data };
-        case 'setUrl':
-            return {...state, url: `https://edu.donstu.ru/api/Rasp?idGroup=${action.groupId}&sdate=${action.date}`, data: {} };
         case 'setGroupId':
             return {...state, groupId: action.groupId };
         default:
@@ -180,6 +178,7 @@ const Schedule = (props) => {
     const [stateFetch, dispatchFetch] = useReducer(reducerFetch, initialFetch);
     const [stateDate, dispatchDate] = useReducer(reducerDate, initialDate);
     const [stateDATA, dispatchDATA] = useReducer(reducerDATA, initialDATA);
+    const [url, setUrl] = useState(false)
     
   
 
@@ -202,16 +201,15 @@ const Schedule = (props) => {
 
     useEffect(()=>{
         if(stateDATA.groupId)
-            dispatchDATA({ type: 'setUrl', groupId: stateDATA.groupId, date: stateDate.date });
+            setUrl(`https://edu.donstu.ru/api/Rasp?idGroup=${stateDATA.groupId}&sdate=${stateDate.date}`)
     },[stateDATA.groupId, stateDate.toggleWeek])
 
-    console.log('RENDER')
 
     const fetchData = useCallback(
         () => {
             dispatchFetch({type: 'fetching'})
             axios({
-                url: stateDATA.url,
+                url: url,
                 crossDomain: true,
                 timeout:20000
             }).then(res =>{
@@ -222,17 +220,17 @@ const Schedule = (props) => {
                         dispatchDATA({ type: 'setData', data: tempData });
                         dispatchFetch({type: 'success'})
                 } else if(!stateDATA.groupId){
-                    dispatchFetch({type: 'errorID'})
+                    dispatchFetch({type: 'errorID', errorFetch: 'Выберите свою группу в "Профиль"'})
                     } 
             },(err => {
-                dispatchFetch({type: 'errorID'})
+                dispatchFetch({type: 'errorID', errorFetch: 'Ошибка запроса к API'})
                 throw new Error(err)
             })
-        ,[stateDATA.url]);
+        ,[url]);
     })
 
     useEffect(()=>{
-        if(stateDATA.url!=false){
+        if(url!=false){
             if(stateDate.toggleWeek){
                 fetchData();
                 dispatchDate({type: 'toggleOff'})
@@ -240,7 +238,7 @@ const Schedule = (props) => {
             else 
                 fetchData();
         }
-    },[stateDATA.url])
+    },[url])
  
 
     const handlers = useSwipeable({
