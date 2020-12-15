@@ -1,19 +1,16 @@
-import React, {useState, useEffect, useCallback} from 'react'
-import { View,PanelSpinner,PullToRefresh,FixedLayout,PanelHeader,Panel, Snackbar} from '@vkontakte/vkui';
+import React, {useEffect, useCallback, useReducer} from 'react'
+import { View,PullToRefresh,FixedLayout,PanelHeader,Panel, Snackbar} from '@vkontakte/vkui';
+import { useSwipeable } from "react-swipeable";
 import axios from 'axios'
-
-import SheduleDay from '../../components/SheduleDay/SheduleDay'
-import classes from './Schedule.module.css'
+import bridge from "@vkontakte/vk-bridge";
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 
-import { useSwipeable } from "react-swipeable";
+import classes from './Schedule.module.css'
 import DayWeekTabs from '../../components/DayWeekTabs/DayWeekTabs';
+import SheduleDay from '../../components/SheduleDay/SheduleDay'
 
 
-
-const SEVEN_DAYS = 604800000;
-
-const dataToState = (data) =>{
+const dataTransformation = (data) =>{
 
 	const dateToDay=(date)=>{
 		let temp = date.split('-')[2]
@@ -98,23 +95,13 @@ const dataToState = (data) =>{
 			Year: data.info.year,
 			GroupName: data.info.group.name,
 			days: {...days},
-			received: received,
-			dateTimeFetch: toTime(new Date())
+			received: received
 		}
 
 		return temp;  
 	}
 }
 
-function toTime(date){
-	let h = date.getHours();
-	let mm = date.getMinutes();
-	if (mm < 10) mm = '0' + mm;
-	let ss = date.getSeconds();
-	if (ss < 10) ss = '0' + ss;
-
-	return `${h}:${mm}:${ss}`;
-}
 
 function toDate(date){
 	let dd = date.getDate();
@@ -128,84 +115,140 @@ function toDate(date){
 	return `${yyyy}-${mm}-${dd}`;
 }
 
+const initialFetch = {
+    fetching: true,
+    errorFetch: false
+};
+
+function reducerFetch(state, action) {
+  switch (action.type) {
+    case 'errorID':
+      return {...state, errorFetch: 'Выберите свою группу в "Профиль"'};
+    case 'error':
+        return {...state, errorFetch: 'Ошибка запроса к API'};
+    case 'success':
+        return {...state,fetching: false, errorFetch: false};
+    case 'fetching':
+        return {...state, fetching: true};
+    default:
+      throw new Error();
+  }
+}
+
+const initialDate ={
+    date: toDate(new Date()),
+    toggleWeek: false
+}
+
+function reducerDate(state, action) {
+    const SEVEN_DAYS = 604800000;
+
+    switch (action.type) {
+        case 'nextWeek': 
+          return {...state, date: toDate(new Date(+new Date(state.date)+(+SEVEN_DAYS))), toggleWeek: true };
+        case 'prevWeek':
+            return {...state, date: toDate(new Date(+new Date(state.date)-(+SEVEN_DAYS))), toggleWeek: true };
+        case 'setDate':
+            return {...state, date: action.date};
+        case 'toggleOff': 
+        return {...state, toggleWeek:false};
+        default:
+          throw new Error();
+      }
+}
+
+const initialDATA = {
+    data: {},
+    url: false,
+    groupId: false
+}
+
+function reducerDATA (state, action) {
+    switch (action.type) {
+        case 'setData': 
+          return {...state, data: action.data };
+        case 'setUrl':
+            return {...state, url: `https://edu.donstu.ru/api/Rasp?idGroup=${action.groupId}&sdate=${action.date}`, data: {} };
+        case 'setGroupId':
+            return {...state, groupId: action.groupId };
+        default:
+          throw new Error();
+      }
+}
 
 const Schedule = (props) => {
-    let [curDay, setCurDay] = useState(toDate(new Date()));
-    let [data, setData] = useState({})
-    let [fetching, setFetching] = useState(false)
-    let [initFetching, setInitFetching] = useState(true);
-    let [url, setUrl] = useState(false);
-    let [errorFetch, setErrorFetch] = useState('')
-    let [curWeekNum, setCurWeekNum] = useState(false);
-
-    let [groupId, setGroupId] = useState(localStorage.getItem('GROUP_ID'));
-
-
-
+    const [stateFetch, dispatchFetch] = useReducer(reducerFetch, initialFetch);
+    const [stateDate, dispatchDate] = useReducer(reducerDate, initialDate);
+    const [stateDATA, dispatchDATA] = useReducer(reducerDATA, initialDATA);
+    
   
 
     useEffect(()=>{
-        setUrl(`https://edu.donstu.ru/api/Rasp?idGroup=${groupId}&sdate=${curDay}`);
-    },[groupId,curWeekNum])
+        async function getInBridge(){
+            const res = await bridge.send("VKWebAppStorageGet", {"keys": ["GROUP_ID", "GROUP_NAME", "FACULTY"]});
+            res.keys.forEach((obj)=>{
+                localStorage.setItem(obj.key, obj.value);
+            }) 
+    
+            dispatchDATA({ type: 'setGroupId', groupId: localStorage.getItem('GROUP_ID') })
+    
+        }
+    
+        getInBridge();// получение данных из хранилища bridge
+
+    },[])
 
 
-    const getSchedule = useCallback(
+
+    useEffect(()=>{
+        if(stateDATA.groupId)
+            dispatchDATA({ type: 'setUrl', groupId: stateDATA.groupId, date: stateDate.date });
+    },[stateDATA.groupId, stateDate.toggleWeek])
+
+    console.log('RENDER')
+
+    const fetchData = useCallback(
         () => {
-            setFetching(true);
+            dispatchFetch({type: 'fetching'})
             axios({
-                url:url,
+                url: stateDATA.url,
                 crossDomain: true,
                 timeout:20000
             }).then(res =>{
-                if(res.data.data.info.group.groupID==groupId && groupId){// eslint-disable-next-line
-                        let tempData = dataToState(res.data.data);
-                        setData(tempData);
+                if(res.data.data.info.group.groupID == stateDATA.groupId && stateDATA.groupId){// eslint-disable-next-line
+                        let tempData = dataTransformation(res.data.data);
                         sessionStorage.setItem('SCHEDULE', JSON.stringify(tempData));
-                        setErrorFetch(null);
-                        setInitFetching(false);
-                        setFetching(false);
-                } else if(!groupId){
-                        setErrorFetch('Выберите свою группу в "Профиль"');
+                        
+                        dispatchDATA({ type: 'setData', data: tempData });
+                        dispatchFetch({type: 'success'})
+                } else if(!stateDATA.groupId){
+                    dispatchFetch({type: 'errorID'})
                     } 
             },(err => {
-                setErrorFetch('Неудачный запрос к API');
+                dispatchFetch({type: 'errorID'})
                 throw new Error(err)
             })
-        ,[url]);
+        ,[stateDATA.url]);
     })
 
     useEffect(()=>{
-        if(url!=false){// eslint-disable-next-line
-            if(curWeekNum){
-                getSchedule();// eslint-disable-next-line
-                setCurWeekNum(false)// eslint-disable-next-line
+        if(stateDATA.url!=false){
+            if(stateDate.toggleWeek){
+                fetchData();
+                dispatchDate({type: 'toggleOff'})
             }
             else 
-                getSchedule();// eslint-disable-next-line
+                fetchData();
         }
-    },[url])
+    },[stateDATA.url])
  
-
-            
-    const onRefresh = ()=>{
-        setFetching(true);
-        getSchedule();
-    }
-
-    const onChangeCurDay=(date)=>{
-        setCurDay(date)
-    }
-
-
 
     const handlers = useSwipeable({
         onSwipedRight: () => {
-            setCurDay((prev)=>{return toDate(new Date(+new Date(prev)-(+SEVEN_DAYS)))})
-            setCurWeekNum(true)
+            dispatchDate({type: 'prevWeek'})
         },
         onSwipedLeft: () => {
-            setCurDay((prev)=>{return toDate(new Date(+new Date(prev)+(+SEVEN_DAYS)))})
-            setCurWeekNum(true)
+            dispatchDate({type: 'nextWeek'})
         }
     });
 
@@ -214,28 +257,25 @@ const Schedule = (props) => {
         <View id="shedule" activePanel="active">
             <Panel id="active">
                 <PanelHeader> Расписание </PanelHeader>
-                {initFetching
-                    ?   <PanelSpinner />
-                    :   <PullToRefresh  onRefresh={onRefresh} isFetching={fetching}>
-                            <SheduleDay dayData={data.days[curDay]}/>
-                        </PullToRefresh>
-                }
+                    <PullToRefresh  onRefresh={fetchData} isFetching={stateFetch.fetching}>
+                      {!stateFetch.fetching &&  <SheduleDay dayData={stateDATA.data.days[stateDate.date]}/>}
+                    </PullToRefresh>
 
-                {!errorFetch 
+                {!stateFetch.errorFetch 
                     ?   <div className={classes.SwiperWeek}  {...handlers} >
                             <FixedLayout vertical="bottom">
-                                <DayWeekTabs data={data} onChangeCurDay={onChangeCurDay} curDay={curDay} />
+                                <DayWeekTabs data={stateDATA.data} dispatchDate={dispatchDate} curDate={stateDate.date} />
                             </FixedLayout>
                         </div>
                     :  <Snackbar
                             layout="vertical"
-                            onClose={()=> {setInitFetching(true); }}
+                            onClose={()=> {fetchData(); }}
                             action="Повторить загрузку"
-                            onActionClick={() => {onRefresh(); }}
+                            onActionClick={() => {fetchData(); }}
                             before={<Icon28CancelCircleFillRed/>}
                             duration="60000"
                         >
-                            Error:{errorFetch}
+                            Error:{stateFetch.errorFetch}
                         </Snackbar>
                     }
 

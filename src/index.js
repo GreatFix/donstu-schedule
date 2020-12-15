@@ -9,10 +9,7 @@ import App from "./App";
 const initApp = async() => {
   await bridge.send("VKWebAppInit");
 
-  const res = await bridge.send("VKWebAppStorageGet", {"keys": ["GROUP_ID", "GROUP_NAME", "FACULTY", "TOOLTIP"]});
-  res.keys.forEach((obj)=>{
-      localStorage.setItem(obj.key, obj.value);
-  }) 
+
 }
 
 initApp();

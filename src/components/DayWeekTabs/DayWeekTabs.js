@@ -3,7 +3,7 @@ import {Tabs, Title, TabsItem} from '@vkontakte/vkui';
 
 import DayWeekTabsItem from './DayWeekTabsItem/DayWeekTabsItem';
 
-const DayWeekTabs = ({data, onChangeCurDay, curDay}) => {
+const DayWeekTabs = ({data, dispatchDate, curDate}) => {
 
     return(
         <Tabs>
@@ -13,8 +13,8 @@ const DayWeekTabs = ({data, onChangeCurDay, curDay}) => {
                             <DayWeekTabsItem 
                                 key={index} 
                                 dayWeek={data.days[date]} 
-                                onChangeCurDay={onChangeCurDay} 
-                                curDay={curDay} 
+                                dispatchDate={dispatchDate} 
+                                curDate={curDate} 
                             />
                         )
                     })

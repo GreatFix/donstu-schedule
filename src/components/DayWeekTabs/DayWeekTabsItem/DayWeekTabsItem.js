@@ -6,14 +6,14 @@ import classes from './DayWeekTabsItem.module.css'
 const DAYS_WEEK = ['none',"Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 
-const DayWeekTabsItem = ({dayWeek, onChangeCurDay, curDay}) => {
+const DayWeekTabsItem = ({dayWeek, dispatchDate, curDate}) => {
 	
 	const MONTH = MONTHS[new Date(dayWeek.date).getMonth()]
-	
+
     return(
         <TabsItem
-        onClick={() =>  onChangeCurDay(dayWeek.date) }
-        selected={curDay === dayWeek.date}
+        onClick={() =>  dispatchDate({type: 'setDate', date: dayWeek.date}) }
+        selected={curDate === dayWeek.date}
         className={classes.TabsItem}
       >
         <Headline weight="medium" style={{ marginBottom: 8 }}>{DAYS_WEEK[dayWeek.dayWeekNum]}</Headline>
