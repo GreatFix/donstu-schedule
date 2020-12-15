@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {List} from '@vkontakte/vkui';
 
 import classes from './LessonList.module.css'

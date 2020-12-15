@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react'
-import { View,PanelSpinner,PullToRefresh,FixedLayout,PanelHeader,Panel, Snackbar, Tooltip} from '@vkontakte/vkui';
+import { View,PanelSpinner,PullToRefresh,FixedLayout,PanelHeader,Panel, Snackbar} from '@vkontakte/vkui';
 import axios from 'axios'
 
 import SheduleDay from '../../components/SheduleDay/SheduleDay'
@@ -7,7 +7,6 @@ import classes from './Schedule.module.css'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red';
 
 import { useSwipeable } from "react-swipeable";
-import bridge from "@vkontakte/vk-bridge";
 import DayWeekTabs from '../../components/DayWeekTabs/DayWeekTabs';
 
 
@@ -141,13 +140,7 @@ const Schedule = (props) => {
 
     let [groupId, setGroupId] = useState(localStorage.getItem('GROUP_ID'));
 
-    let [tool1, setTool1] = useState(!localStorage.getItem('TOOLTIP'));
-    let [tool2, setTool2] = useState(false);
 
-    if(!tool1 && !tool2){
-        bridge.send("VKWebAppStorageSet",{"key":"TOOLTIP", "value":'true'});
-        localStorage.setItem("TOOLTIP", 'true');
-    }
 
   
 
@@ -164,8 +157,7 @@ const Schedule = (props) => {
                 crossDomain: true,
                 timeout:20000
             }).then(res =>{
-                console.log(res)
-                if(res.data.data.info.group.groupID==groupId && groupId){
+                if(res.data.data.info.group.groupID==groupId && groupId){// eslint-disable-next-line
                         let tempData = dataToState(res.data.data);
                         setData(tempData);
                         sessionStorage.setItem('SCHEDULE', JSON.stringify(tempData));
@@ -177,20 +169,19 @@ const Schedule = (props) => {
                     } 
             },(err => {
                 setErrorFetch('Неудачный запрос к API');
-                console.log('tut')
                 throw new Error(err)
             })
         ,[url]);
     })
-    console.log('render')
+
     useEffect(()=>{
-        if(url!=false){
+        if(url!=false){// eslint-disable-next-line
             if(curWeekNum){
-                getSchedule();
-                setCurWeekNum(false)
+                getSchedule();// eslint-disable-next-line
+                setCurWeekNum(false)// eslint-disable-next-line
             }
             else 
-                getSchedule();
+                getSchedule();// eslint-disable-next-line
         }
     },[url])
  
@@ -217,44 +208,36 @@ const Schedule = (props) => {
             setCurWeekNum(true)
         }
     });
+
+
     return(
         <View id="shedule" activePanel="active">
             <Panel id="active">
                 <PanelHeader> Расписание </PanelHeader>
                 {initFetching
                     ?   <PanelSpinner />
-                    :   <Tooltip
-                            mode="accent"
-                            header="Подсказка 2:"
-                            text="Если пара делится на группы, смахните, чтобы перейти к другой"
-                            isShown={tool2}
-                            alignX="right"
-                            alignY="top"
-                            offsetY={-150}
-                            onClose={() => setTool2(false)}
-                        >
-                            <PullToRefresh  onRefresh={onRefresh} isFetching={fetching}>
-                                <SheduleDay dayData={data.days[curDay]}/>
-                            </PullToRefresh>
-                        </Tooltip>
+                    :   <PullToRefresh  onRefresh={onRefresh} isFetching={fetching}>
+                            <SheduleDay dayData={data.days[curDay]}/>
+                        </PullToRefresh>
                 }
-                
-                    <div className={classes.SwiperWeek}  {...handlers} >
-                    <Tooltip
-                      mode="accent"
-                      header="Подсказка 1:"
-                      text="Смахните, чтобы перейти к следующей или предыдущей неделе или нажмите, чтобы выбрать день!"
-                      isShown={tool1}
-                      alignX="right"
-                      alignY="top"
-                      onClose={() => {setTool1(false); setTool2(true)}}
-                >   
-                        <FixedLayout vertical="bottom">
-                            <DayWeekTabs days={data.days} onChangeCurDay={onChangeCurDay} curDay={curDay} />
-                        </FixedLayout>
-                    </Tooltip>
-                    </div>
-              
+
+                {!errorFetch 
+                    ?   <div className={classes.SwiperWeek}  {...handlers} >
+                            <FixedLayout vertical="bottom">
+                                <DayWeekTabs days={data.days} onChangeCurDay={onChangeCurDay} curDay={curDay} />
+                            </FixedLayout>
+                        </div>
+                    :  <Snackbar
+                            layout="vertical"
+                            onClose={()=> {setInitFetching(true); }}
+                            action="Повторить загрузку"
+                            onActionClick={() => {onRefresh(); }}
+                            before={<Icon28CancelCircleFillRed/>}
+                            duration="60000"
+                        >
+                            Error:{errorFetch}
+                        </Snackbar>
+                    }
 
             </Panel>
         </View>
