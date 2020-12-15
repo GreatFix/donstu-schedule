@@ -9,6 +9,8 @@ import classes from './Schedule.module.css'
 import DayWeekTabs from '../../components/DayWeekTabs/DayWeekTabs';
 import SheduleDay from '../../components/SheduleDay/SheduleDay'
 
+import { Transition  } from 'react-transition-group'
+
 
 const dataTransformation = (data) =>{
 
@@ -179,8 +181,13 @@ const Schedule = (props) => {
     const [stateDate, dispatchDate] = useReducer(reducerDate, initialDate);
     const [stateDATA, dispatchDATA] = useReducer(reducerDATA, initialDATA);
     const [url, setUrl] = useState(false)
+    const [anim, setAnim] = useState(true)
     
-  
+    
+    useEffect(()=>{
+        setAnim(false);
+        setTimeout(()=>setAnim(true),150)
+    },[stateDate.toggleWeek])
 
     useEffect(()=>{
         async function getInBridge(){
@@ -249,7 +256,19 @@ const Schedule = (props) => {
             dispatchDate({type: 'nextWeek'})
         }
     });
+    console.log(anim)
 
+    const defaultStyle = {
+        transition: `opacity 150ms linear`,
+        opacity: 0,
+      }
+      
+      const transitionStyles = {
+        entering: { opacity: 1 },
+        entered:  { opacity: 1 },
+        exiting:  { opacity: 0 },
+        exited:  { opacity: 0 },
+      };
 
     return(
         <View id="shedule" activePanel="active">
@@ -262,7 +281,13 @@ const Schedule = (props) => {
                 {!stateFetch.errorFetch 
                     ?   <div className={classes.SwiperWeek}  {...handlers} >
                             <FixedLayout vertical="bottom">
-                                <DayWeekTabs data={stateDATA.data} dispatchDate={dispatchDate} curDate={stateDate.date} />
+                                <Transition  in={anim} timeout={50} classNames="my-node">
+                                {state => (<DayWeekTabs 
+                                            style={{...defaultStyle, ...transitionStyles[state] }} 
+                                            data={stateDATA.data} 
+                                            dispatchDate={dispatchDate} 
+                                            curDate={stateDate.date} />)}
+                                </Transition>
                             </FixedLayout>
                         </div>
                     :  <Snackbar
@@ -279,7 +304,6 @@ const Schedule = (props) => {
 
             </Panel>
         </View>
-    )
+    )    
 }
-
 export default Schedule;

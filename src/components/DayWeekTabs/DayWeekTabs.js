@@ -3,10 +3,10 @@ import {Tabs, Title, TabsItem} from '@vkontakte/vkui';
 
 import DayWeekTabsItem from './DayWeekTabsItem/DayWeekTabsItem';
 
-const DayWeekTabs = ({data, dispatchDate, curDate}) => {
+const DayWeekTabs = ({data, dispatchDate, curDate, style}) => {
 
     return(
-        <Tabs>
+        <Tabs style={{...style}}>
             {data.received 
                 ?   Object.keys(data.days).map((date, index)=> {
                         return(
