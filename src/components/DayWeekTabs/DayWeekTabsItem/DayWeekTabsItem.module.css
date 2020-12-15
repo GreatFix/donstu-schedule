@@ -1,0 +1,7 @@
+.TabsItem{
+    min-width: 0 !important;  /*не помню что это */
+}
+.TabsItem:hover{
+    transform: scale(1.2);
+    transition: 0.2s linear;
+}
