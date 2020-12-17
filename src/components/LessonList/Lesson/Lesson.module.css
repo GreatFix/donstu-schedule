@@ -1,184 +1,177 @@
-@media (max-width:340px){
-    .Lesson {
-        font-size: 14px !important;
-    }
-    .Aud {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .Line {
-        right: 10% !important;
-    }
-   
+@media (max-width: 340px) {
+  .Lesson {
+    font-size: 14px !important;
+  }
+  .Aud {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .Line {
+    right: 10% !important;
+  }
 }
 
-@media (min-width:340px) and (max-width: 540px){
-    .Lesson {
-        font-size: 14px !important;
-    }
-    .Aud,.Name,.Teacher {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+@media (min-width: 340px) and (max-width: 540px) {
+  .Lesson {
+    font-size: 14px !important;
+  }
+  .Aud,
+  .Name,
+  .Teacher {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
-@media (min-width:540px) and (max-width: 740px){
-    .Lesson {
-        font-size: 18px !important;
-    }
-    .Aud {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+@media (min-width: 540px) and (max-width: 740px) {
+  .Lesson {
+    font-size: 18px !important;
+  }
+  .Aud {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
-@media (min-width:740px) and (max-width: 1024px){
-    .Lesson {
-        font-size: 22px !important;
-    }
+@media (min-width: 740px) and (max-width: 1024px) {
+  .Lesson {
+    font-size: 22px !important;
+  }
 }
-@media (min-width:1024px){
-    .Lesson {
-        font-size: 28px !important;
-    }
+@media (min-width: 1024px) {
+  .Lesson {
+    font-size: 28px !important;
+  }
 }
-
-
-
-
-
 
 .Lesson {
-    border-radius: 4px;
-    box-shadow: 0 1px 0 0 #d3d9de;
-    margin-top: 8px;
-    font-size: 12px;
-    background-color: white;
-    display: grid;
-    grid-template-rows:  1fr 2fr 1fr 10px; /*  строки */
-    grid-template-columns: 1fr 2fr 3fr 1fr; /*  столбцы */
-    grid-template-areas:    "Rect Type Aud Time"  
-                            "Description Description Description Time"  
-                            "Description Description Description Time"
-                            "Pagination Pagination Pagination Pagination";
+  border-radius: 4px;
+  box-shadow: 0 1px 0 0 #d3d9de;
+  margin-top: 8px;
+  font-size: 12px;
+  background-color: white;
+  display: grid;
+  grid-template-rows: 1fr 2fr 1fr 10px; /*  строки */
+  grid-template-columns: 1fr 2fr 3fr 1fr; /*  столбцы */
+  grid-template-areas:
+    "Rect Type Aud Time"
+    "Description Description Description Time"
+    "Description Description Description Time"
+    "Pagination Pagination Pagination Pagination";
 }
 .Lesson:hover {
-    box-shadow: 0.25px 0.5px 1.5px 1.5px #2975cc;
+  box-shadow: 0.25px 0.5px 1.5px 1.5px #2975cc;
 }
-.Lesson:hover .Start, .Lesson:hover .End{
-    transform: scale(1.5);
-
+.Lesson:hover .Start,
+.Lesson:hover .End {
+  transform: scale(1.5);
 }
-
 
 .Rect {
-    grid-area: Rect;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    min-width: 5%; 
-    width: 50%;
-    height: 100%; 
-    min-height: 100%; 
+  grid-area: Rect;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  min-width: 5%;
+  width: 50%;
+  height: 100%;
+  min-height: 100%;
 }
 .Number {
-    font-size: 1em;
-    font-weight: 800;
+  font-size: 1em;
+  font-weight: 800;
 }
-
 
 .Aud {
-    grid-area: Aud;
-    justify-self: start;
-    display: flex;
-    align-items: center;
-    max-width: 100%;
-    font-size: 0.9em;
-    font-weight: 700;
+  grid-area: Aud;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  font-size: 0.9em;
+  font-weight: 700;
 }
-.Aud span{
-    margin-left: 5px;
+.Aud span {
+  margin-left: 5px;
 }
-
 
 .Type {
-    grid-area: Type;
-    font-size: 0.8em;
-    font-weight: 700;
+  grid-area: Type;
+  font-size: 0.8em;
+  font-weight: 700;
 }
 
-
-.Time{
-    grid-area: Time;
-    justify-self: center;
-    display: grid;
-    grid-template-rows:  auto 1fr auto;     /*  строки */
-    grid-template-columns: 1fr;             /*  столбцы */
-    grid-template-areas:    "Start"  
-                            "Line"  
-                            "End";
+.Time {
+  grid-area: Time;
+  justify-self: center;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /*  строки */
+  grid-template-columns: 1fr; /*  столбцы */
+  grid-template-areas:
+    "Start"
+    "Line"
+    "End";
 }
 
 .Start {
-    grid-area: Start;
-    justify-self: end;
-    font-size: 0.9em;
-    font-weight: 700;
-    transition: 0.5s ease-in;
+  grid-area: Start;
+  justify-self: end;
+  font-size: 0.9em;
+  font-weight: 700;
+  transition: 0.5s ease-in;
 }
 .Line {
-    grid-area: Line;
-    justify-self: center;
-    width: 1px; 
+  grid-area: Line;
+  justify-self: center;
+  width: 1px;
 }
-.End{
-    grid-area: End;
-    justify-self: end;
-    font-size: 0.9em;
-    font-weight: 700;
-    transition: 0.5s ease-in;
+.End {
+  grid-area: End;
+  justify-self: end;
+  font-size: 0.9em;
+  font-weight: 700;
+  transition: 0.5s ease-in;
 }
 
-
-.Description{
-    grid-area: Description;
-    justify-content: space-around;
-    display: flex;
-    flex-direction: column;
+.Description {
+  grid-area: Description;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
 }
-.Name{
-    display: flex;
-    align-items: center;
-    font-size: 0.9em;
-    font-weight: 700;
+.Name {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  font-weight: 700;
 }
-.Name span{
-    margin-left: 5px;
+.Name span {
+  margin-left: 5px;
 }
-.Teacher{
-    display: flex;
-    align-items: center;
-    font-size: 0.8em;
-    font-weight: 500;
+.Teacher {
+  display: flex;
+  align-items: center;
+  font-size: 0.8em;
+  font-weight: 500;
 }
 .Teacher span {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
-.Pagination{
-    grid-area: Pagination;
-    justify-self: center;
+.Pagination {
+  grid-area: Pagination;
+  justify-self: center;
 }
 .Pagination div {
-    width:0.4em;
-    height:0.4em;
-    margin: 0.1em;
-    border:1px solid #ccc;
-    display:inline-block;
-    border-radius:50%;
+  width: 0.4em;
+  height: 0.4em;
+  margin: 0.1em;
+  border: 1px solid #ccc;
+  display: inline-block;
+  border-radius: 50%;
 }
 .Active {
-    background-color: #2975cc;
+  background-color: #2975cc;
 }

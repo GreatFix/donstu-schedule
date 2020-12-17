@@ -1,29 +1,22 @@
-
-
-
-.Title{
-    position: relative; 
-    padding: 8px;
-    text-align: center; 
-    background-color: #FFFFFF; 
-
+.Title {
+  position: relative;
+  padding: 8px;
+  text-align: center;
+  background-color: #ffffff;
 }
 
-
-
 .DataTimeFetch {
-    position: absolute;
-    top:0px;
-    z-index: 100;
-    left:0;
-    font-size: xx-small;
-    line-height:1em;
+  position: absolute;
+  top: 0px;
+  z-index: 100;
+  left: 0;
+  font-size: xx-small;
+  line-height: 1em;
 }
 
 .SwiperWeek {
-    position: absolute;
-    bottom: var(--tabbar_height);
-    min-width: 100%;
-    min-height: 80px; /* высота fixed-layout */
+  position: absolute;
+  bottom: var(--tabbar_height);
+  min-width: 100%;
+  min-height: 80px; /* высота fixed-layout */
 }
-

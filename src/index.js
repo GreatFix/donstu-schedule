@@ -6,14 +6,11 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 
 // Init VK  Mini App
-const initApp = async() => {
+const initApp = async () => {
   await bridge.send("VKWebAppInit");
-
-
-}
+};
 
 initApp();
-
 
 ReactDOM.render(<App />, document.getElementById("root"));
 if (process.env.NODE_ENV === "development") {
