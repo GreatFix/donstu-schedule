@@ -1,30 +1,30 @@
-import React from "react";
-import { Headline, Caption, TabsItem } from "@vkontakte/vkui";
+import React from 'react'
+import { Headline, Caption, TabsItem } from '@vkontakte/vkui'
 
-import classes from "./DayWeekTabsItem.module.css";
+import classes from './DayWeekTabsItem.module.css'
 
-const DAYS_WEEK = ["none", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const DAYS_WEEK = ['none', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 const MONTHS = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апрель",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь",
-];
+  'Январь',
+  'Февраль',
+  'Март',
+  'Апрель',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Август',
+  'Сентябрь',
+  'Октябрь',
+  'Ноябрь',
+  'Декабрь',
+]
 
 const DayWeekTabsItem = ({ dayWeek, dispatchDate, curDate }) => {
-  const MONTH = MONTHS[new Date(dayWeek.date).getMonth()];
+  const MONTH = MONTHS[new Date(dayWeek.date).getMonth()]
 
   return (
     <TabsItem
-      onClick={() => dispatchDate({ type: "setDate", date: dayWeek.date })}
+      onClick={() => dispatchDate({ type: 'setDate', date: dayWeek.date })}
       selected={curDate === dayWeek.date}
       className={classes.TabsItem}
     >
@@ -38,7 +38,7 @@ const DayWeekTabsItem = ({ dayWeek, dispatchDate, curDate }) => {
         {MONTH}
       </Caption>
     </TabsItem>
-  );
-};
+  )
+}
 
-export default DayWeekTabsItem;
+export default DayWeekTabsItem

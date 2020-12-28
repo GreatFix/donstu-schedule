@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   Panel,
   PanelHeader,
@@ -7,23 +7,23 @@ import {
   TabbarItem,
   View,
   Div,
-} from "@vkontakte/vkui";
+} from '@vkontakte/vkui'
 
-import Icon28NewsfeedOutline from "@vkontakte/icons/dist/28/newsfeed_outline";
-import Icon28UserCircleOutline from "@vkontakte/icons/dist/28/user_circle_outline";
-import Icon20CalendarOutline from "@vkontakte/icons/dist/20/calendar_outline";
-import "@vkontakte/vkui/dist/vkui.css";
+import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline'
+import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline'
+import Icon20CalendarOutline from '@vkontakte/icons/dist/20/calendar_outline'
+import '@vkontakte/vkui/dist/vkui.css'
 
-import classes from "./App.css";
-import Schedule from "./views/schedule/Schedule";
-import Profile from "./views/Profile/Profile";
+import classes from './App.css'
+import Schedule from './views/schedule/Schedule'
+import Profile from './views/Profile/Profile'
 
 const App = () => {
-  let [activeStory, setActiveStory] = useState("schedule");
+  let [activeStory, setActiveStory] = useState('schedule')
 
   const onStoryChange = (event) => {
-    setActiveStory(event.currentTarget.dataset.story);
-  };
+    setActiveStory(event.currentTarget.dataset.story)
+  }
 
   // bridge.send("VKWebAppStorageSet", {"key":"GROUP_ID", "value": "34915"});
   return (
@@ -33,7 +33,7 @@ const App = () => {
         <Tabbar>
           <TabbarItem
             onClick={onStoryChange}
-            selected={activeStory === "feed"}
+            selected={activeStory === 'feed'}
             data-story="feed"
             text="Новости"
           >
@@ -41,7 +41,7 @@ const App = () => {
           </TabbarItem>
           <TabbarItem
             onClick={onStoryChange}
-            selected={activeStory === "schedule"}
+            selected={activeStory === 'schedule'}
             data-story="schedule"
             text="Расписание"
           >
@@ -49,7 +49,7 @@ const App = () => {
           </TabbarItem>
           <TabbarItem
             onClick={onStoryChange}
-            selected={activeStory === "profile"}
+            selected={activeStory === 'profile'}
             data-story="profile"
             text="Профиль"
           >
@@ -69,7 +69,7 @@ const App = () => {
 
       <Profile id="profile" />
     </Epic>
-  );
-};
+  )
+}
 
-export default App;
+export default App

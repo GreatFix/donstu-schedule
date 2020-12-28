@@ -1,3 +1,22 @@
 # Ignore artifacts:
-build
-coverage
+# Logs
+logs
+*.log
+npm-debug.log*
+*.lock
+eslint-disable-next-line
+
+# Dependency directories
+package-lock.json
+/node_modules
+bundle.zip
+
+# Optional npm cache directory
+.npm
+
+# Prod Bundle
+/build
+
+.vscode
+.idea
+.env

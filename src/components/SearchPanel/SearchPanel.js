@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import bridge from "@vkontakte/vk-bridge";
+import React, { useState } from 'react'
+import bridge from '@vkontakte/vk-bridge'
 import {
   PanelHeader,
   PanelHeaderBack,
   Search,
   List,
   SimpleCell,
-} from "@vkontakte/vkui";
-import Icon24Filter from "@vkontakte/icons/dist/24/filter";
+} from '@vkontakte/vkui'
+import Icon24Filter from '@vkontakte/icons/dist/24/filter'
 
 const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick }) => {
-  let [search, setSearch] = useState("");
+  let [search, setSearch] = useState('')
 
-  const onChange = (event) => setSearch(event.target.value);
+  const onChange = (event) => setSearch(event.target.value)
 
   const result = () => {
     return groups.filter((group) => {
@@ -20,33 +20,33 @@ const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick }) => {
         group.name.toLowerCase().indexOf(search.toLowerCase()) === 0 &&
         (faculty ? group.facul === faculty : true) &&
         (kurs > 0 ? group.kurs === kurs : true)
-      );
-    });
-  };
+      )
+    })
+  }
 
   const HandleClickGroup = (e) => {
-    let cell = e.target;
+    let cell = e.target
 
-    while (!cell.classList.contains("SimpleCell")) cell = cell.parentNode;
-    const group = groups[cell.id];
+    while (!cell.classList.contains('SimpleCell')) cell = cell.parentNode
+    const group = groups[cell.id]
 
-    const id = String(group.id);
-    const facul = String(group.facul);
-    const name = String(group.name);
+    const id = String(group.id)
+    const facul = String(group.facul)
+    const name = String(group.name)
 
-    bridge.send("VKWebAppStorageSet", { key: "GROUP_ID", value: id });
-    localStorage.setItem("GROUP_ID", id);
+    bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: id })
+    localStorage.setItem('GROUP_ID', id)
 
-    bridge.send("VKWebAppStorageSet", { key: "FACULTY", value: facul });
-    localStorage.setItem("FACULTY", facul);
+    bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
+    localStorage.setItem('FACULTY', facul)
 
-    bridge.send("VKWebAppStorageSet", { key: "GROUP_NAME", value: name });
-    localStorage.setItem("GROUP_NAME", name);
+    bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
+    localStorage.setItem('GROUP_NAME', name)
 
-    sessionStorage.setItem("SCHEDULE", "");
+    sessionStorage.setItem('SCHEDULE', '')
 
-    goBack();
-  };
+    goBack()
+  }
   return (
     <>
       <PanelHeader
@@ -76,7 +76,7 @@ const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick }) => {
           ))}
       </List>
     </>
-  );
-};
+  )
+}
 
-export default SearchPanel;
+export default SearchPanel
