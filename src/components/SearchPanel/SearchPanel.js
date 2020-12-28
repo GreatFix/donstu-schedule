@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import bridge from '@vkontakte/vk-bridge'
 import {
   PanelHeader,
   PanelHeaderBack,
@@ -9,7 +8,14 @@ import {
 } from '@vkontakte/vkui'
 import Icon24Filter from '@vkontakte/icons/dist/24/filter'
 
-const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick }) => {
+const SearchPanel = ({
+  groups,
+  faculty,
+  kurs,
+  goBack,
+  onFiltersClick,
+  HandleClickGroup,
+}) => {
   let [search, setSearch] = useState('')
 
   const onChange = (event) => setSearch(event.target.value)
@@ -24,29 +30,6 @@ const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick }) => {
     })
   }
 
-  const HandleClickGroup = (e) => {
-    let cell = e.target
-
-    while (!cell.classList.contains('SimpleCell')) cell = cell.parentNode
-    const group = groups[cell.id]
-
-    const id = String(group.id)
-    const facul = String(group.facul)
-    const name = String(group.name)
-
-    bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: id })
-    localStorage.setItem('GROUP_ID', id)
-
-    bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
-    localStorage.setItem('FACULTY', facul)
-
-    bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
-    localStorage.setItem('GROUP_NAME', name)
-
-    sessionStorage.setItem('SCHEDULE', '')
-
-    goBack()
-  }
   return (
     <>
       <PanelHeader

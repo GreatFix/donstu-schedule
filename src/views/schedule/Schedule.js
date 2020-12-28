@@ -222,7 +222,7 @@ const Schedule = (props) => {
   useEffect(() => {
     async function getInBridge() {
       const res = await bridge.send('VKWebAppStorageGet', {
-        keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY'],
+        keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME'],
       })
       res.keys.forEach((obj) => {
         localStorage.setItem(obj.key, obj.value)
@@ -337,7 +337,7 @@ const Schedule = (props) => {
               </FixedLayout>
             </div>
           ) : (
-            <FixedLayout vertical="bottom">
+            <FixedLayout className={classes.FixedLayout} vertical="bottom">
               <Transition in={anim} timeout={50} classNames="my-node">
                 {(state) => (
                   <DayWeekTabs

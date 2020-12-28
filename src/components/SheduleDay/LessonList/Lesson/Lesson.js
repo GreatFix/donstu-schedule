@@ -10,9 +10,9 @@ import { Transition } from 'react-transition-group'
 
 const COLORS = {
   1: '#32BE32',
-  2: '#CDC236',
+  2: '#B7AE30',
   3: '#DF5248',
-  4: '#70CE9B',
+  4: '#65BA8B',
   5: '#937ACC',
   6: '#00BE96',
   7: '#87C859',

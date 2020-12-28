@@ -47,21 +47,20 @@
 
 .Lesson {
   border-radius: 4px;
-  box-shadow: 0 1px 0 0 #d3d9de;
+  box-shadow: 0 0.5px 0 0 #d3d9de;
   margin-top: 8px;
   font-size: 12px;
-  background-color: white;
   display: grid;
   grid-template-rows: 1fr 2fr 1fr 10px; /*  строки */
   grid-template-columns: 1fr 2fr 3fr 1fr; /*  столбцы */
   grid-template-areas:
-    "Rect Type Aud Time"
-    "Description Description Description Time"
-    "Description Description Description Time"
-    "Pagination Pagination Pagination Pagination";
+    'Rect Type Aud Time'
+    'Description Description Description Time'
+    'Description Description Description Time'
+    'Pagination Pagination Pagination Pagination';
 }
 .Lesson:hover {
-  box-shadow: 0.25px 0.5px 1.5px 1.5px #2975cc;
+  box-shadow: 0.25px 0.5px 1px 1px #2975cc;
 }
 .Lesson:hover .Start,
 .Lesson:hover .End {
@@ -110,9 +109,9 @@
   grid-template-rows: auto 1fr auto; /*  строки */
   grid-template-columns: 1fr; /*  столбцы */
   grid-template-areas:
-    "Start"
-    "Line"
-    "End";
+    'Start'
+    'Line'
+    'End';
 }
 
 .Start {

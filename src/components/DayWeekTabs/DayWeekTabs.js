@@ -15,7 +15,9 @@ const DayWeekTabs = ({ data, dispatchDate, curDate, style, arrows }) => {
               dispatchDate({ type: 'prevWeek' })
             }}
           >
-            <Icon28ArrowLeftOutline />
+            <Icon28ArrowLeftOutline
+              style={{ backgroundColor: 'var(--button_primary_background)' }}
+            />
           </Button>
         </TabsItem>
       )}
@@ -45,7 +47,9 @@ const DayWeekTabs = ({ data, dispatchDate, curDate, style, arrows }) => {
             }}
           >
             {' '}
-            <Icon28ArrowRightOutline />
+            <Icon28ArrowRightOutline
+              style={{ backgroundColor: 'var(--button_primary_background)' }}
+            />
           </Button>
         </TabsItem>
       )}

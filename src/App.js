@@ -37,7 +37,9 @@ const App = () => {
             data-story="feed"
             text="Новости"
           >
-            <Icon28NewsfeedOutline />
+            <Icon28NewsfeedOutline
+              style={{ backgroundColor: 'var(--header_alternate_background)' }}
+            />
           </TabbarItem>
           <TabbarItem
             onClick={onStoryChange}
@@ -45,7 +47,11 @@ const App = () => {
             data-story="schedule"
             text="Расписание"
           >
-            <Icon20CalendarOutline width={28} height={28} />
+            <Icon20CalendarOutline
+              style={{ backgroundColor: 'var(--header_alternate_background)' }}
+              width={28}
+              height={28}
+            />
           </TabbarItem>
           <TabbarItem
             onClick={onStoryChange}
@@ -53,7 +59,9 @@ const App = () => {
             data-story="profile"
             text="Профиль"
           >
-            <Icon28UserCircleOutline />
+            <Icon28UserCircleOutline
+              style={{ backgroundColor: 'var(--header_alternate_background)' }}
+            />
           </TabbarItem>
         </Tabbar>
       }

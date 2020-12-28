@@ -20,3 +20,8 @@
   min-width: 100%;
   min-height: 80px; /* высота fixed-layout */
 }
+
+.FixedLayout {
+  border-top: '1px';
+  box-shadow: 0px -0.5px 0px 0px #d3d9de;
+}

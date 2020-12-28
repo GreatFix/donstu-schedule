@@ -21,6 +21,9 @@ import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
 import Icon24Done from '@vkontakte/icons/dist/24/done'
 import Icon24ChevronCompactRight from '@vkontakte/icons/dist/24/chevron_compact_right'
 import logo from '../../img/logo.png'
+import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
+
+import bridge from '@vkontakte/vk-bridge'
 
 let faculties = []
 
@@ -41,13 +44,7 @@ const Profile = () => {
       url: 'https://edu.donstu.ru/api/raspGrouplist?year=2020-2021',
       crossDomain: true,
     })
-    // const METHOD_NAME = 'groups.getById';
-    // const PARAMETERS = 'group_id=201108040&test_mode=1';
-    // const ACCESS_TOKEN = '6829aa39812d9591adca16533803334d634862c22deb7611ba15cd0d889bd4bb452fa3c9b8d2b28fbbce3';
-    // const V = '5.126'
-    // axios({url:`https://api.vk.com/method/${METHOD_NAME}?${PARAMETERS}&access_token=${ACCESS_TOKEN}&v=${V}`, crossDomain: true}).then(
-    //   res => console.log(res)
-    // )
+
     const keys = Object.keys(result.data.data)
     const data = result.data.data
     keys.forEach((key) => {
@@ -62,6 +59,45 @@ const Profile = () => {
   const handleClickSelectGroup = async () => {
     getGroups()
     setActivePanel('searchGroup')
+  }
+
+  const handleClickToggleTheme = async () => {
+    const body = document.querySelector('body')
+    let theme = body.getAttribute('scheme')
+
+    if (theme === 'space_gray') {
+      body.setAttribute('scheme', 'bright_light')
+      bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'bright_light' })
+      localStorage.setItem('THEME', 'bright_light')
+    } else {
+      body.setAttribute('scheme', 'space_gray')
+      bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'space_gray' })
+      localStorage.setItem('THEME', 'space_gray')
+    }
+  }
+
+  const HandleClickGroup = (e) => {
+    let cell = e.target
+
+    while (!cell.classList.contains('SimpleCell')) cell = cell.parentNode
+    const group = groups[cell.id]
+
+    const id = String(group.id)
+    const facul = String(group.facul)
+    const name = String(group.name)
+
+    bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: id })
+    localStorage.setItem('GROUP_ID', id)
+
+    bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
+    localStorage.setItem('FACULTY', facul)
+
+    bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
+    localStorage.setItem('GROUP_NAME', name)
+
+    sessionStorage.setItem('SCHEDULE', '')
+
+    goMain()
   }
 
   const onChangeFaculty = (event) => setFaculty(event.target.value)
@@ -172,6 +208,7 @@ const Profile = () => {
         >
           Группа
         </SimpleCell>
+        <ToggleTheme handleClickToggleTheme={handleClickToggleTheme} />
       </Panel>
       <Panel id="searchGroup">
         <SearchPanel
@@ -179,6 +216,7 @@ const Profile = () => {
           faculty={faculty}
           kurs={kurs}
           onFiltersClick={() => setActiveModal('filtersGroup')}
+          HandleClickGroup={HandleClickGroup}
           goBack={goMain}
         />
       </Panel>

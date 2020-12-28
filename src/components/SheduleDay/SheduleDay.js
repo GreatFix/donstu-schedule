@@ -2,7 +2,7 @@ import React from 'react'
 import { Title } from '@vkontakte/vkui'
 
 import classes from './SheduleDay.module.css'
-import LessonList from '../LessonList/LessonList'
+import LessonList from './LessonList/LessonList'
 
 const SheduleDay = ({ dayData }) => {
   if (dayData) {
