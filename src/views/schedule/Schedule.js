@@ -254,7 +254,8 @@ const Schedule = (props) => {
     }).then(
       (res) => {
         if (
-          res.data.data.info.group.groupID === stateDATA.groupId &&
+          // eslint-disable-next-line eqeqeq
+          res.data.data.info.group.groupID == stateDATA.groupId &&
           stateDATA.groupId
         ) {
           let tempData = dataTransformation(res.data.data)
