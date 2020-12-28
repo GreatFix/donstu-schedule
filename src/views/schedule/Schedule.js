@@ -6,6 +6,7 @@ import {
   PanelHeader,
   Panel,
   Snackbar,
+  usePlatform
 } from "@vkontakte/vkui";
 import { useSwipeable } from "react-swipeable";
 import axios from "axios";
@@ -212,7 +213,7 @@ const Schedule = (props) => {
   const [stateDATA, dispatchDATA] = useReducer(reducerDATA, initialDATA);
   const [url, setUrl] = useState(false);
   const [anim, setAnim] = useState(true);
-
+  const platform = usePlatform();
   useEffect(() => {
     setAnim(false);
     setTimeout(() => setAnim(true), 150);
@@ -293,8 +294,7 @@ const Schedule = (props) => {
       dispatchDate({ type: "nextWeek" });
     },
   });
-  console.log(anim);
-
+  console.log("render");
   const defaultStyle = {
     transition: `opacity 150ms linear`,
     opacity: 0,
@@ -318,6 +318,7 @@ const Schedule = (props) => {
         </PullToRefresh>
 
         {!stateFetch.errorFetch ? (
+          platform === ("android" || "ios") ? (
           <div className={classes.SwiperWeek} {...handlers}>
             <FixedLayout vertical="bottom">
               <Transition in={anim} timeout={50} classNames="my-node">
@@ -327,11 +328,27 @@ const Schedule = (props) => {
                     data={stateDATA.data}
                     dispatchDate={dispatchDate}
                     curDate={stateDate.date}
+                    arrows={false}
                   />
                 )}
               </Transition>
             </FixedLayout>
           </div>
+          ) :(
+            <FixedLayout vertical="bottom">
+              <Transition in={anim} timeout={50} classNames="my-node">
+                {(state) => (
+                  <DayWeekTabs
+                    style={{ ...defaultStyle, ...transitionStyles[state] }}
+                    data={stateDATA.data}
+                    dispatchDate={dispatchDate}
+                    curDate={stateDate.date}
+                    arrows={true}
+                  />
+                )}
+              </Transition>
+            </FixedLayout>
+          )
         ) : (
           <Snackbar
             layout="vertical"
