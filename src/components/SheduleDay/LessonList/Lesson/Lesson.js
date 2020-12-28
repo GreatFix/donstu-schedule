@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Div } from '@vkontakte/vkui'
-import classes from './Lesson.module.css'
+import Div from '@vkontakte/vkui/dist/components/Div/Div'
+
 import Icon16UserOutline from '@vkontakte/icons/dist/16/user_outline'
 import Icon28BookOutline from '@vkontakte/icons/dist/28/book_outline'
 import Icon16Place from '@vkontakte/icons/dist/16/place'
 import { useSwipeable } from 'react-swipeable'
-
 import { Transition } from 'react-transition-group'
+
+import classes from './Lesson.module.css'
 
 const COLORS = {
   1: '#32BE32',

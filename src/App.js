@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
-import {
-  Panel,
-  PanelHeader,
-  Epic,
-  Tabbar,
-  TabbarItem,
-  View,
-  Div,
-} from '@vkontakte/vkui'
+import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
+import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
+import Epic from '@vkontakte/vkui/dist/components/Epic/Epic'
+import Tabbar from '@vkontakte/vkui/dist/components/Tabbar/Tabbar'
+import TabbarItem from '@vkontakte/vkui/dist/components/TabbarItem/TabbarItem'
+import View from '@vkontakte/vkui/dist/components/View/View'
+import Div from '@vkontakte/vkui/dist/components/Div/Div'
 
 import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline'
 import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline'
@@ -25,7 +23,6 @@ const App = () => {
     setActiveStory(event.currentTarget.dataset.story)
   }
 
-  // bridge.send("VKWebAppStorageSet", {"key":"GROUP_ID", "value": "34915"});
   return (
     <Epic
       activeStory={activeStory}

@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import {
-  PanelHeader,
-  PanelHeaderBack,
-  Search,
-  List,
-  SimpleCell,
-} from '@vkontakte/vkui'
+import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
+import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack'
+import Search from '@vkontakte/vkui/dist/components/Search/Search'
+import List from '@vkontakte/vkui/dist/components/List/List'
+import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
 import Icon24Filter from '@vkontakte/icons/dist/24/filter'
 
 const SearchPanel = ({

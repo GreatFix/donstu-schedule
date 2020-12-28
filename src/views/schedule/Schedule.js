@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useCallback, useReducer } from 'react'
-import {
-  View,
-  PullToRefresh,
-  FixedLayout,
-  PanelHeader,
-  Panel,
-  Snackbar,
-  usePlatform,
-} from '@vkontakte/vkui'
+import View from '@vkontakte/vkui/dist/components/View/View'
+import PullToRefresh from '@vkontakte/vkui/dist/components/PullToRefresh/PullToRefresh'
+import FixedLayout from '@vkontakte/vkui/dist/components/FixedLayout/FixedLayout'
+import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
+import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
+import Snackbar from '@vkontakte/vkui/dist/components/Snackbar/Snackbar'
+import usePlatform from '@vkontakte/vkui/dist/hooks/usePlatform'
+
 import { useSwipeable } from 'react-swipeable'
 import axios from 'axios'
 import bridge from '@vkontakte/vk-bridge'
@@ -296,7 +295,6 @@ const Schedule = (props) => {
       dispatchDate({ type: 'nextWeek' })
     },
   })
-  console.log('render')
   const defaultStyle = {
     transition: `opacity 150ms linear`,
     opacity: 0,

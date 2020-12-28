@@ -1,5 +1,5 @@
 import React from 'react'
-import { List } from '@vkontakte/vkui'
+import List from '@vkontakte/vkui/dist/components/List/List'
 
 import classes from './LessonList.module.css'
 import Lesson from './Lesson/Lesson'

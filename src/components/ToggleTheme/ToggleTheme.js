@@ -1,6 +1,7 @@
 import React from 'react'
-import classes from './ToggleTheme.module.css'
 import Icon56MoonOutline from '@vkontakte/icons/dist/56/moon_outline'
+
+import classes from './ToggleTheme.module.css'
 
 const ToggleTheme = ({ handleClickToggleTheme }) => {
   return (

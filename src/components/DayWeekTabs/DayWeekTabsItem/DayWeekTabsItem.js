@@ -1,5 +1,7 @@
 import React from 'react'
-import { Headline, Caption, TabsItem } from '@vkontakte/vkui'
+import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
+import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption'
+import TabsItem from '@vkontakte/vkui/dist/components/TabsItem/TabsItem'
 
 import classes from './DayWeekTabsItem.module.css'
 

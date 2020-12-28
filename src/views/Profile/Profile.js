@@ -1,19 +1,18 @@
 import React, { useState } from 'react'
-import {
-  View,
-  Panel,
-  PanelHeader,
-  Avatar,
-  RichCell,
-  ModalRoot,
-  Link,
-  ModalPage,
-  ModalPageHeader,
-  PanelHeaderButton,
-  SimpleCell,
-  FormLayout,
-  Select,
-} from '@vkontakte/vkui'
+import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
+import View from '@vkontakte/vkui/dist/components/View/View'
+import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
+import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar'
+import RichCell from '@vkontakte/vkui/dist/components/RichCell/RichCell'
+import ModalRoot from '@vkontakte/vkui/dist/components/ModalRoot/ModalRoot'
+import Link from '@vkontakte/vkui/dist/components/Link/Link'
+import ModalPage from '@vkontakte/vkui/dist/components/ModalPage/ModalPage'
+import ModalPageHeader from '@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader'
+import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton'
+import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
+import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout'
+import Select from '@vkontakte/vkui/dist/components/Select/Select'
+
 import axios from 'axios'
 import { usePlatform } from '@vkontakte/vkui'
 import SearchPanel from '../../components/SearchPanel/SearchPanel'

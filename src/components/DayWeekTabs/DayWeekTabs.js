@@ -1,5 +1,8 @@
 import React from 'react'
-import { Tabs, Title, TabsItem, Button } from '@vkontakte/vkui'
+import Tabs from '@vkontakte/vkui/dist/components/Tabs/Tabs'
+import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title'
+import TabsItem from '@vkontakte/vkui/dist/components/TabsItem/TabsItem'
+import Button from '@vkontakte/vkui/dist/components/Button/Button'
 import Icon28ArrowLeftOutline from '@vkontakte/icons/dist/28/arrow_left_outline'
 import Icon28ArrowRightOutline from '@vkontakte/icons/dist/28/arrow_right_outline'
 

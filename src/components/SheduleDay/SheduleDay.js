@@ -1,5 +1,5 @@
 import React from 'react'
-import { Title } from '@vkontakte/vkui'
+import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title'
 
 import classes from './SheduleDay.module.css'
 import LessonList from './LessonList/LessonList'
