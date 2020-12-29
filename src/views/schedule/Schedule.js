@@ -5,7 +5,6 @@ import FixedLayout from '@vkontakte/vkui/dist/components/FixedLayout/FixedLayout
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
 import Snackbar from '@vkontakte/vkui/dist/components/Snackbar/Snackbar'
-import usePlatform from '@vkontakte/vkui/dist/hooks/usePlatform'
 
 import { useSwipeable } from 'react-swipeable'
 import axios from 'axios'
@@ -212,7 +211,7 @@ const Schedule = (props) => {
   const [stateDATA, dispatchDATA] = useReducer(reducerDATA, initialDATA)
   const [url, setUrl] = useState(false)
   const [anim, setAnim] = useState(true)
-  const platform = usePlatform()
+  const platform = sessionStorage.getItem('PLATFORM')
   useEffect(() => {
     setAnim(false)
     setTimeout(() => setAnim(true), 150)
@@ -318,7 +317,7 @@ const Schedule = (props) => {
         </PullToRefresh>
 
         {!stateFetch.errorFetch ? (
-          platform === ('android' || 'ios') ? (
+          platform !== 'desktop_web' ? (
             <div className={classes.SwiperWeek} {...handlers}>
               <FixedLayout vertical="bottom">
                 <Transition in={anim} timeout={50} classNames="my-node">

@@ -16,6 +16,10 @@ const appInit = async () => {
   const body = document.querySelector('body')
   body.setAttribute('scheme', res.keys[0].value) //Регистрация цветовой схемы
 
+  const url = new URL(window.location.href)
+  const platform = url.searchParams.get('vk_platform')
+  sessionStorage.setItem('PLATFORM', platform)
+
   ReactDOM.render(<App />, document.getElementById('root'))
   if (process.env.NODE_ENV === 'development') {
     import('./eruda').then(({ default: eruda }) => {}) //runtime download
