@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Tabs from '@vkontakte/vkui/dist/components/Tabs/Tabs'
 import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title'
 import TabsItem from '@vkontakte/vkui/dist/components/TabsItem/TabsItem'
@@ -8,32 +9,27 @@ import Icon28ArrowRightOutline from '@vkontakte/icons/dist/28/arrow_right_outlin
 
 import DayWeekTabsItem from './DayWeekTabsItem/DayWeekTabsItem'
 
-const DayWeekTabs = ({ data, dispatchDate, curDate, style, arrows }) => {
+import { nextWeek, prevWeek } from '../../store/actions/date'
+
+const DayWeekTabs = ({ style, arrows }) => {
+  const dispatch = useDispatch()
+  const NextWeek = useCallback(() => dispatch(nextWeek()), [dispatch])
+  const PrevWeek = useCallback(() => dispatch(prevWeek()), [dispatch])
+
+  const schedule = useSelector((state) => state.fetchScheduleGroup.schedule)
+
   return (
     <Tabs style={{ ...style }}>
       {arrows && (
         <TabsItem>
-          <Button
-            onClick={() => {
-              dispatchDate({ type: 'prevWeek' })
-            }}
-          >
-            <Icon28ArrowLeftOutline
-              style={{ backgroundColor: 'var(--button_primary_background)' }}
-            />
+          <Button onClick={PrevWeek}>
+            <Icon28ArrowLeftOutline style={{ backgroundColor: 'var(--button_primary_background)' }} />
           </Button>
         </TabsItem>
       )}
-      {data.received ? (
-        Object.keys(data.days).map((date, index) => {
-          return (
-            <DayWeekTabsItem
-              key={index}
-              dayWeek={data.days[date]}
-              dispatchDate={dispatchDate}
-              curDate={curDate}
-            />
-          )
+      {schedule && schedule.received ? (
+        Object.keys(schedule.days).map((date, index) => {
+          return <DayWeekTabsItem key={index} dayWeek={schedule.days[date]} />
         })
       ) : (
         <TabsItem>
@@ -44,15 +40,9 @@ const DayWeekTabs = ({ data, dispatchDate, curDate, style, arrows }) => {
       )}
       {arrows && (
         <TabsItem>
-          <Button
-            onClick={() => {
-              dispatchDate({ type: 'nextWeek' })
-            }}
-          >
+          <Button onClick={NextWeek}>
             {' '}
-            <Icon28ArrowRightOutline
-              style={{ backgroundColor: 'var(--button_primary_background)' }}
-            />
+            <Icon28ArrowRightOutline style={{ backgroundColor: 'var(--button_primary_background)' }} />
           </Button>
         </TabsItem>
       )}

@@ -3,26 +3,52 @@ import 'core-js/features/set'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import bridge from '@vkontakte/vk-bridge'
-import App from './App'
+import { Provider } from 'react-redux'
 
-// Init VK  Mini App
+import App from './App'
+import { store } from './store/store'
+import { setAll } from './store/actions/userData'
+import { setDate } from './store/actions/date'
+
+async function getInBridge() {
+  const res = await bridge.send('VKWebAppStorageGet', {
+    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME'],
+  })
+
+  const userData = {}
+  res.keys.forEach((obj) => {
+    userData[obj.key] = obj.value
+  })
+
+  const url = new URL(window.location.href)
+  const platform = url.searchParams.get('vk_platform')
+
+  userData.PLATFORM = platform
+
+  return userData
+}
 
 const appInit = async () => {
   bridge.send('VKWebAppInit')
 
-  const res = await bridge.send('VKWebAppStorageGet', {
-    keys: ['THEME'],
-  })
+  const { GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM } = await getInBridge() //получаем из хранилища ВК
+
+  store.dispatch(setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM))
+  store.dispatch(setDate(new Date())) //заносим в редакс
+
   const body = document.querySelector('body')
-  body.setAttribute('scheme', res.keys[0].value) //Регистрация цветовой схемы
+  body.setAttribute('scheme', THEME) //регистрируем цветовую схему
 
-  const url = new URL(window.location.href)
-  const platform = url.searchParams.get('vk_platform')
-  sessionStorage.setItem('PLATFORM', platform)
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById('root')
+  )
 
-  ReactDOM.render(<App />, document.getElementById('root'))
   if (process.env.NODE_ENV === 'development') {
     import('./eruda').then(({ default: eruda }) => {}) //runtime download
   }
 }
+
 appInit()
