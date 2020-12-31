@@ -3,3 +3,13 @@
   padding: 8px;
   text-align: center;
 }
+.AltTitle {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.Image {
+  width: 50vh;
+  height: 50vh;
+  padding-top: 5%;
+}

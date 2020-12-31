@@ -106,7 +106,7 @@ const Profile = () => {
       }
     >
       <Panel id="main">
-        <PanelHeader separator={false}> Профиль </PanelHeader>
+        <PanelHeader> Профиль </PanelHeader>
         <RichCell
           disabled
           //after={<Icon28UserAddOutline />}
