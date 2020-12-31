@@ -8,6 +8,7 @@ import RichCell from '@vkontakte/vkui/dist/components/RichCell/RichCell'
 import Link from '@vkontakte/vkui/dist/components/Link/Link'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
 import Icon24ChevronCompactRight from '@vkontakte/icons/dist/24/chevron_compact_right'
+import { usePlatform } from '@vkontakte/vkui/dist/hooks/usePlatform'
 
 import logo from '../../img/logo.png'
 import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
@@ -32,13 +33,13 @@ const Profile = () => {
 
   const groupName = useSelector((state) => state.userData.groupName)
   const faculty = useSelector((state) => state.userData.faculty)
-  const platform = useSelector((state) => state.userData.platform)
   const groups = useSelector((state) => state.fetchGroups.groups)
 
   const [activePanel, setActivePanel] = useState('main')
   const [activeModal, setActiveModal] = useState(null)
   const [facultyFilter, setFacultyFilter] = useState('')
   const [kursFilter, setKursFilter] = useState(0)
+  const platform = usePlatform()
 
   const onClickSelectGroup = async () => {
     onFetchGroups()
