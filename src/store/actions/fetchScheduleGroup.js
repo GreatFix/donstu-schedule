@@ -5,7 +5,7 @@ import {
   CLEAR_SCHEDULE_GROUP,
 } from './actionTypes'
 import axios from 'axios'
-import { toggleOff } from './date'
+import { toggleOff, setDate } from './date'
 
 function error() {
   return {
@@ -45,7 +45,24 @@ export function fetchScheduleGroup() {
         if (res.data.data.info.group.name || res.data.data.info.prepod.name) {
           let tempData = dataTransformation(res.data.data)
           dispatch(success(tempData))
-          if (toggleWeek) dispatch(toggleOff())
+          if (toggleWeek) {
+            dispatch(toggleOff())
+            if (toggleWeek === 'PREV') {
+              let days = tempData.days
+              let newDate = null
+              for (let i = 0; i < 7; i++) {
+                if (Object.keys(days[i].lessons).length) newDate = days[i].date
+              }
+              if (newDate) dispatch(setDate(new Date(newDate)))
+            } else if (toggleWeek === 'NEXT') {
+              let days = tempData.days
+              let newDate = null
+              for (let i = 6; i >= 0; i--) {
+                if (Object.keys(days[i].lessons).length) newDate = days[i].date
+              }
+              if (newDate) dispatch(setDate(new Date(newDate)))
+            }
+          }
         }
       },
       (err) => {
@@ -57,34 +74,26 @@ export function fetchScheduleGroup() {
 }
 
 const dataTransformation = (data) => {
-  const dateToDay = (date) => {
-    let temp = date.split('-')[2]
-    if (/^0/.test(temp)) return temp.split('')[1]
-    else return temp
-  }
-
   if (data) {
     let days = {}
+    let startDate = new Date(data.info.date)
+
+    for (let i = 0; i < 7; i++) {
+      days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
+    }
+
+    for (let i = 0; i < 7; i++) {
+      days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0]
+    }
+
     let lessons = Object.keys(data.rasp)
     let received = false
     lessons.length === 0 ? (received = false) : (received = true) //Проверка на наличие данных в расписании
     lessons.forEach((les) => {
-      let key = data.rasp[les].дата.split('T')[0]
-      if (!days[key]) {
-        days[key] = {
-          dayWeek: '',
-          day: '',
-          lessons: {},
-        }
-      }
-      if (!days[key].dayWeek) days[key].dayWeek = data.rasp[les].день_недели
+      let key = data.rasp[les].деньНедели - 1
 
-      if (!days[key].dayWeekNum) days[key].dayWeekNum = data.rasp[les].деньНедели
-
-      if (!days[key].day) {
-        days[key].date = key
-        days[key].day = dateToDay(key)
-      }
+      if (!days[key].dayWeekName) days[key].dayWeekName = data.rasp[les].день_недели
+      if (!days[key].day) days[key].day = new Date(data.rasp[les].дата).getDate()
 
       const start = data.rasp[les].начало.replace('-', ':')
       const end = data.rasp[les].конец.replace('-', ':')

@@ -19,11 +19,11 @@ import SheduleDay from '../../components/SheduleDay/SheduleDay'
 const Schedule = () => {
   const dispatch = useDispatch()
   const onFetchScheduleGroup = useCallback(() => dispatch(fetchScheduleGroup()), [dispatch])
-  const onNextWeek = useCallback((date) => dispatch(nextWeek(date)), [dispatch])
-  const onPrevWeek = useCallback((date) => dispatch(prevWeek(date)), [dispatch])
+  const onNextWeek = useCallback(() => dispatch(nextWeek()), [dispatch])
+  const onPrevWeek = useCallback(() => dispatch(prevWeek()), [dispatch])
 
   const platform = useSelector((state) => state.userData.platform)
-  const date = useSelector((state) => state.date.date)
+  const dayWeekNum = useSelector((state) => state.date.dayWeekNum)
   const schedule = useSelector((state) => state.fetchScheduleGroup.schedule)
   const fetching = useSelector((state) => state.fetchScheduleGroup.fetching)
   const error = useSelector((state) => state.fetchScheduleGroup.error)
@@ -43,7 +43,7 @@ const Schedule = () => {
       <Panel id="active">
         <PanelHeader> Расписание </PanelHeader>
         <PullToRefresh onRefresh={onFetchScheduleGroup} isFetching={fetching}>
-          {schedule && <SheduleDay dayData={schedule.days[date]} />}
+          {schedule && <SheduleDay day={schedule.days[dayWeekNum]} />}
         </PullToRefresh>
 
         {!error ? (

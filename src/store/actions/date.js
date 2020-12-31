@@ -1,15 +1,18 @@
 import { SET_DATE_TOGGLE_WEEK, SET_DATE, TOGGLE_OFF } from '../actions/actionTypes'
 import { fetchScheduleGroup } from './fetchScheduleGroup'
-export function setDateToggleWeek(date) {
+export function setDateToggleWeek(date, toggleWeek) {
   return {
     type: SET_DATE_TOGGLE_WEEK,
-    date: toFormatDate(date),
+    date: formatDate(date),
+    dayWeekNum: formatDayWeek(date),
+    toggleWeek,
   }
 }
 export function setDate(date) {
   return {
     type: SET_DATE,
-    date: toFormatDate(date),
+    date: formatDate(date),
+    dayWeekNum: formatDayWeek(date),
   }
 }
 export function toggleOff() {
@@ -47,7 +50,7 @@ export function nextWeek() {
       default:
         return console.error('Week not changed')
     }
-    dispatch(setDateToggleWeek(date))
+    dispatch(setDateToggleWeek(date, 'NEXT'))
     dispatch(fetchScheduleGroup())
   }
 }
@@ -81,12 +84,12 @@ export function prevWeek() {
       default:
         return console.error('Week not changed')
     }
-    dispatch(setDateToggleWeek(date))
+    dispatch(setDateToggleWeek(date, 'PREV'))
     dispatch(fetchScheduleGroup())
   }
 }
 
-function toFormatDate(date) {
+function formatDate(date) {
   if (typeof date === 'object') {
     let dd = date.getDate()
     if (dd < 10) dd = '0' + dd
@@ -100,4 +103,10 @@ function toFormatDate(date) {
   } else {
     return date
   }
+}
+
+function formatDayWeek(date) {
+  let dayWeekNum = date.getDay()
+  dayWeekNum > 0 ? (dayWeekNum -= 1) : (dayWeekNum = 6)
+  return dayWeekNum
 }

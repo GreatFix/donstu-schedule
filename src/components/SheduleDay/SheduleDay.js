@@ -5,14 +5,14 @@ import classes from './SheduleDay.module.css'
 import LessonList from './LessonList/LessonList'
 import image from '../../img/sleeping_people.jpg'
 
-const SheduleDay = ({ dayData }) => {
-  if (dayData) {
+const SheduleDay = ({ day }) => {
+  if (Object.keys(day.lessons).length) {
     return (
       <>
         <Title level="3" weight="semibold" className={classes.Title}>
-          {dayData.dayWeek}
+          {day.dayWeekName}
         </Title>
-        <LessonList lessons={dayData.lessons} />
+        <LessonList lessons={day.lessons} />
       </>
     )
   } else {

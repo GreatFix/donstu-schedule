@@ -8,7 +8,6 @@ import classes from './DayWeekTabsItem.module.css'
 
 import { setDate } from '../../../store/actions/date'
 
-const DAYS_WEEK = ['none', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 const MONTHS = [
   'Январь',
   'Февраль',
@@ -24,23 +23,33 @@ const MONTHS = [
   'Декабрь',
 ]
 
-const DayWeekTabsItem = ({ dayWeek }) => {
+const DayWeekTabsItem = ({ dayWeekShortName, day }) => {
   const dispatch = useDispatch()
   const onSetDate = (date) => dispatch(setDate(date))
   const date = useSelector((state) => state.date.date)
 
-  const MONTH = MONTHS[new Date(dayWeek.date).getMonth()]
-
-  return (
-    <TabsItem onClick={() => onSetDate(dayWeek.date)} selected={date === dayWeek.date} className={classes.TabsItem}>
+  return Object.keys(day.lessons).length ? (
+    <TabsItem onClick={() => onSetDate(new Date(day.date))} selected={date === day.date} className={classes.TabsItem}>
       <Headline weight="medium" style={{ marginBottom: 8 }}>
-        {DAYS_WEEK[dayWeek.dayWeekNum]}
+        {dayWeekShortName}
       </Headline>
       <Caption level="4" weight="bold" caps>
-        {dayWeek.day}
+        {new Date(day.date).getDate()}
       </Caption>
       <Caption level="4" weight="regular">
-        {MONTH}
+        {MONTHS[new Date(day.date).getMonth()]}
+      </Caption>
+    </TabsItem>
+  ) : (
+    <TabsItem selected={date === day.date} className={classes.DisabledTabsItem}>
+      <Headline weight="medium" style={{ marginBottom: 8 }}>
+        {dayWeekShortName}
+      </Headline>
+      <Caption level="4" weight="bold" caps>
+        {new Date(day.date).getDate()}
+      </Caption>
+      <Caption level="4" weight="regular">
+        {MONTHS[new Date(day.date).getMonth()]}
       </Caption>
     </TabsItem>
   )
