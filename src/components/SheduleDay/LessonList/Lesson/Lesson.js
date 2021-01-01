@@ -69,18 +69,14 @@ const Lesson = (props) => {
     exited: { opacity: 0.6 },
   }
 
+  let clsLesson = classes.Lesson
+  if (lesson.currentLesson) clsLesson += ' ' + classes.CurrentLesson
   return (
     <div {...handlers}>
       <Transition in={anim} timeout={50} classNames="node">
         {(state) => (
-          <Div
-            style={{ ...defaultStyle, ...transitionStyles[state] }}
-            className={classes.Lesson}
-          >
-            <div
-              className={classes.Rect}
-              style={{ backgroundColor: COLORS[lesson.number] }}
-            >
+          <Div style={{ ...defaultStyle, ...transitionStyles[state] }} className={clsLesson}>
+            <div className={classes.Rect} style={{ backgroundColor: COLORS[lesson.number] }}>
               <span className={classes.Number}>{lesson.number}</span>
             </div>
 
@@ -105,10 +101,7 @@ const Lesson = (props) => {
 
             <div className={classes.Time}>
               <span className={classes.Start}>{lesson.start}</span>
-              <div
-                className={classes.Line}
-                style={{ backgroundColor: COLORS[lesson.number] }}
-              ></div>
+              <div className={classes.Line} style={{ backgroundColor: COLORS[lesson.number] }}></div>
               <span className={classes.End}>{lesson.end}</span>
             </div>
             {length === 2 ? (

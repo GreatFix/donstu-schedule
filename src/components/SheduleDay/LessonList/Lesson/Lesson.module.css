@@ -59,13 +59,6 @@
     'Description Description Description Time'
     'Pagination Pagination Pagination Pagination';
 }
-.Lesson:hover {
-  box-shadow: 0.25px 0.5px 1px 1px #2975cc;
-}
-.Lesson:hover .Start,
-.Lesson:hover .End {
-  transform: scale(1.5);
-}
 
 .Rect {
   grid-area: Rect;
@@ -173,4 +166,12 @@
 }
 .Active {
   background-color: #2975cc;
+}
+
+.CurrentLesson {
+  box-shadow: 0.25px 0.5px 1px 1px #2975cc;
+}
+.CurrentLesson .Start,
+.CurrentLesson .End {
+  transform: scale(1.5);
 }

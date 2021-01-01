@@ -76,14 +76,14 @@ export function fetchScheduleGroup() {
 const dataTransformation = (data) => {
   if (data) {
     let days = {}
-    let startDate = new Date(data.info.date)
+    let startDate = new Date(data.info.date) //устанавливаем дату понедельника
 
     for (let i = 0; i < 7; i++) {
       days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
     }
 
     for (let i = 0; i < 7; i++) {
-      days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0]
+      days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
     }
 
     let lessons = Object.keys(data.rasp)
@@ -95,9 +95,15 @@ const dataTransformation = (data) => {
       if (!days[key].dayWeekName) days[key].dayWeekName = data.rasp[les].день_недели
       if (!days[key].day) days[key].day = new Date(data.rasp[les].дата).getDate()
 
+      const currentDate = new Date()
+      const currentTime = currentDate.getHours() + ':' + currentDate.getMinutes()
       const start = data.rasp[les].начало.replace('-', ':')
       const end = data.rasp[les].конец.replace('-', ':')
       if (!days[key].lessons[`${start}-${end}`]) days[key].lessons[`${start}-${end}`] = {}
+
+      let currentLesson = false //определение текущего занятия
+      if (checkCurrentLesson(currentTime, start, end) && checkCurrentDay(currentDate, days[key].date))
+        currentLesson = true
 
       let type = ''
       switch (data.rasp[les].дисциплина.split(' ')[0]) {
@@ -109,6 +115,9 @@ const dataTransformation = (data) => {
           break
         case 'пр.':
           type = 'Практика'
+          break
+        case 'фв':
+          type = 'ФВ'
           break
         default:
           type = ''
@@ -155,6 +164,7 @@ const dataTransformation = (data) => {
         teacher,
         type,
         number,
+        currentLesson,
       }
     })
 
@@ -170,4 +180,23 @@ const dataTransformation = (data) => {
 
     return temp
   }
+}
+
+function checkCurrentLesson(currentTime, start, end) {
+  const CT = currentTime.split(':')[0] * 3600 + currentTime.split(':')[1] * 60 //seconds
+  const S = start.split(':')[0] * 3600 + start.split(':')[1] * 60
+  const E = end.split(':')[0] * 3600 + end.split(':')[1] * 60
+
+  if (CT >= S && CT <= E) return true
+  else return false
+}
+
+function checkCurrentDay(currentDate, checkingDate) {
+  const currentDay = currentDate.getDate()
+  const currentMonth = currentDate.getMonth()
+  const checkingDay = new Date(checkingDate).getDate()
+  const checkingMonth = new Date(checkingDate).getMonth()
+
+  if (currentDay === checkingDay && currentMonth === checkingMonth) return true
+  else return false
 }
