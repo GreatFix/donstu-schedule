@@ -6,7 +6,7 @@ import List from '@vkontakte/vkui/dist/components/List/List'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
 import Icon24Filter from '@vkontakte/icons/dist/24/filter'
 
-const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGroup }) => {
+const SearchGroup = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGroup }) => {
   let [search, setSearch] = useState('')
 
   const onChange = (event) => setSearch(event.target.value)
@@ -45,4 +45,4 @@ const SearchPanel = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGro
   )
 }
 
-export default SearchPanel
+export default SearchGroup

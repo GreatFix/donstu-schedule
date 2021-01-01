@@ -9,7 +9,7 @@ import Snackbar from '@vkontakte/vkui/dist/components/Snackbar/Snackbar'
 import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red'
 import { useSwipeable } from 'react-swipeable'
 
-import { fetchScheduleGroup } from '../../store/actions/fetchScheduleGroup'
+import { fetchSchedule } from '../../store/actions/fetchSchedule'
 import { nextWeek, prevWeek } from '../../store/actions/date'
 
 import classes from './Schedule.module.css'
@@ -18,18 +18,18 @@ import SheduleDay from '../../components/SheduleDay/SheduleDay'
 
 const Schedule = () => {
   const dispatch = useDispatch()
-  const onFetchScheduleGroup = useCallback(() => dispatch(fetchScheduleGroup()), [dispatch])
+  const onFetchSchedule = useCallback(() => dispatch(fetchSchedule()), [dispatch])
   const onNextWeek = useCallback(() => dispatch(nextWeek()), [dispatch])
   const onPrevWeek = useCallback(() => dispatch(prevWeek()), [dispatch])
 
   const platform = useSelector((state) => state.userData.platform)
   const dayWeekNum = useSelector((state) => state.date.dayWeekNum)
-  const schedule = useSelector((state) => state.fetchScheduleGroup.schedule)
-  const fetching = useSelector((state) => state.fetchScheduleGroup.fetching)
-  const error = useSelector((state) => state.fetchScheduleGroup.error)
+  const schedule = useSelector((state) => state.fetchSchedule.schedule)
+  const fetching = useSelector((state) => state.fetchSchedule.fetching)
+  const error = useSelector((state) => state.fetchSchedule.error)
 
   useEffect(() => {
-    if (!schedule) onFetchScheduleGroup()
+    if (!schedule) onFetchSchedule()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -42,7 +42,7 @@ const Schedule = () => {
     <View id="shedule" activePanel="active">
       <Panel id="active">
         <PanelHeader> Расписание </PanelHeader>
-        <PullToRefresh onRefresh={onFetchScheduleGroup} isFetching={fetching}>
+        <PullToRefresh onRefresh={onFetchSchedule} isFetching={fetching}>
           {schedule && <SheduleDay day={schedule.days[dayWeekNum]} />}
         </PullToRefresh>
 
@@ -61,9 +61,9 @@ const Schedule = () => {
         ) : (
           <Snackbar
             layout="vertical"
-            onClose={onFetchScheduleGroup}
+            onClose={onFetchSchedule}
             action="Повторить загрузку"
-            onActionClick={onFetchScheduleGroup}
+            onActionClick={onFetchSchedule}
             before={<Icon28CancelCircleFillRed />}
             duration="60000"
           >

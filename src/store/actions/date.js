@@ -1,5 +1,5 @@
 import { SET_DATE_TOGGLE_WEEK, SET_DATE, TOGGLE_OFF } from '../actions/actionTypes'
-import { fetchScheduleGroup } from './fetchScheduleGroup'
+import { fetchSchedule } from './fetchSchedule'
 export function setDateToggleWeek(date, toggleWeek) {
   return {
     type: SET_DATE_TOGGLE_WEEK,
@@ -51,7 +51,7 @@ export function nextWeek() {
         return console.error('Week not changed')
     }
     dispatch(setDateToggleWeek(date, 'NEXT'))
-    dispatch(fetchScheduleGroup())
+    dispatch(fetchSchedule())
   }
 }
 
@@ -85,7 +85,7 @@ export function prevWeek() {
         return console.error('Week not changed')
     }
     dispatch(setDateToggleWeek(date, 'PREV'))
-    dispatch(fetchScheduleGroup())
+    dispatch(fetchSchedule())
   }
 }
 

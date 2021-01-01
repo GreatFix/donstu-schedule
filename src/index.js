@@ -12,7 +12,7 @@ import { setDate } from './store/actions/date'
 
 async function getInBridge() {
   const res = await bridge.send('VKWebAppStorageGet', {
-    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME', 'POST'],
+    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME', 'POST', 'TEACHER_ID', 'TEACHER_NAME'],
   })
 
   const userData = {}
@@ -38,9 +38,11 @@ const appInit = async () => {
     THEME = 'space_gray',
     PLATFORM = 'desktop_web',
     POST = 'Студент',
+    TEACHER_ID = null,
+    TEACHER_NAME = null,
   } = await getInBridge() //получаем из хранилища ВК
 
-  store.dispatch(setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST))
+  store.dispatch(setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST, TEACHER_ID, TEACHER_NAME))
   store.dispatch(setDate(new Date())) //заносим в редакс
 
   const body = document.querySelector('body')

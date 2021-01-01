@@ -1,9 +1,4 @@
-import {
-  ERROR_SCHEDULE_GROUP,
-  SUCCESS_SCHEDULE_GROUP,
-  FETCHING_SCHEDULE_GROUP,
-  CLEAR_SCHEDULE_GROUP,
-} from '../actions/actionTypes'
+import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from '../actions/actionTypes'
 
 const initialState = {
   schedule: null,
@@ -11,19 +6,19 @@ const initialState = {
   error: null,
 }
 
-export function fetchScheduleGroupReducer(state = initialState, action) {
+export function fetchScheduleReducer(state = initialState, action) {
   switch (action.type) {
-    case ERROR_SCHEDULE_GROUP:
+    case ERROR_SCHEDULE:
       return { ...state, fetching: false, error: action.error }
-    case SUCCESS_SCHEDULE_GROUP:
+    case SUCCESS_SCHEDULE:
       return {
         ...state,
         fetching: false,
         schedule: action.schedule,
       }
-    case FETCHING_SCHEDULE_GROUP:
+    case FETCHING_SCHEDULE:
       return { ...state, fetching: true }
-    case CLEAR_SCHEDULE_GROUP:
+    case CLEAR_SCHEDULE:
       return { ...state, schedule: null }
     default:
       return state

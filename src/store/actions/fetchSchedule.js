@@ -1,41 +1,45 @@
-import {
-  ERROR_SCHEDULE_GROUP,
-  SUCCESS_SCHEDULE_GROUP,
-  FETCHING_SCHEDULE_GROUP,
-  CLEAR_SCHEDULE_GROUP,
-} from './actionTypes'
+import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from './actionTypes'
 import axios from 'axios'
 import { toggleOff, setDate } from './date'
 
 function error() {
   return {
-    type: ERROR_SCHEDULE_GROUP,
+    type: ERROR_SCHEDULE,
   }
 }
 function success(schedule) {
   return {
-    type: SUCCESS_SCHEDULE_GROUP,
+    type: SUCCESS_SCHEDULE,
     schedule,
   }
 }
 function fetching() {
   return {
-    type: FETCHING_SCHEDULE_GROUP,
+    type: FETCHING_SCHEDULE,
   }
 }
-export function clearScheduleGroup() {
+export function clearSchedule() {
   return {
-    type: CLEAR_SCHEDULE_GROUP,
+    type: CLEAR_SCHEDULE,
   }
 }
-export function fetchScheduleGroup() {
+export function fetchSchedule() {
   return (dispatch, getStore) => {
     dispatch(fetching())
     const store = getStore()
-    const groupId = store.userData.groupId
-    const date = store.date.date
     const toggleWeek = store.date.toggleWeek
-    const url = `https://edu.donstu.ru/api/Rasp?idGroup=${groupId}&sdate=${date}`
+    const date = store.date.date
+    let url = ''
+    const post = store.userData.post
+    if (post === 'Студент') {
+      const groupId = store.userData.groupId
+      url = `https://edu.donstu.ru/api/Rasp?idGroup=${groupId}&sdate=${date}`
+    } else if (post === 'Преподаватель') {
+      const teacherId = store.userData.teacherId
+      url = `https://edu.donstu.ru/api/Rasp?idTeacher=${teacherId}&sdate=${date}`
+    } else {
+      dispatch(error('Error: Ошибка при определении должности.'))
+    }
     axios({
       url,
       crossDomain: true,

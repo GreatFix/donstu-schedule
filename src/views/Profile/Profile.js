@@ -7,38 +7,51 @@ import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar'
 import RichCell from '@vkontakte/vkui/dist/components/RichCell/RichCell'
 import Link from '@vkontakte/vkui/dist/components/Link/Link'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
-import Select from '@vkontakte/vkui/dist/components/Select/Select'
-
+import Switch from '@vkontakte/vkui/dist/components/Switch/Switch'
 import Icon24ChevronCompactRight from '@vkontakte/icons/dist/24/chevron_compact_right'
 import { usePlatform } from '@vkontakte/vkui/dist/hooks/usePlatform'
+import bridge from '@vkontakte/vk-bridge'
 
 import logo from '../../img/logo.png'
 import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
 import ModalFilter from '../../components/ModalFilter/ModalFilter'
-import SearchPanel from '../../components/SearchPanel/SearchPanel'
+import SearchGroup from '../../components/SearchGroup/SearchGroup'
+import SearchTeacher from '../../components/SearchTeacher/SearchTeacher'
+
 import classes from './Profile.module.css'
 
-import bridge from '@vkontakte/vk-bridge'
-
 import { fetchGroups } from '../../store/actions/fetchGroups'
-import { setGroupId, setGroupName, setFaculty, setPost } from '../../store/actions/userData'
-import { clearScheduleGroup } from '../../store/actions/fetchScheduleGroup'
+import { fetchTeachers } from '../../store/actions/fetchTeachers'
+import {
+  setGroupId,
+  setGroupName,
+  setFaculty,
+  setPost,
+  setTeacherId,
+  setTeacherName,
+} from '../../store/actions/userData'
+import { clearSchedule } from '../../store/actions/fetchSchedule'
 import { setDate } from '../../store/actions/date'
 
 const Profile = () => {
   const dispatch = useDispatch()
   const onFetchGroups = useCallback(() => dispatch(fetchGroups()), [dispatch])
+  const onFetchTeachers = useCallback(() => dispatch(fetchTeachers()), [dispatch])
   const onSetGroupId = useCallback((groupId) => dispatch(setGroupId(groupId)), [dispatch])
   const onSetGroupName = useCallback((groupName) => dispatch(setGroupName(groupName)), [dispatch])
+  const onSetTeacherId = useCallback((teacherId) => dispatch(setTeacherId(teacherId)), [dispatch])
+  const onSetTeacherName = useCallback((teacherName) => dispatch(setTeacherName(teacherName)), [dispatch])
   const onSetFaculty = useCallback((faculty) => dispatch(setFaculty(faculty)), [dispatch])
   const onSetPost = useCallback((post) => dispatch(setPost(post)), [dispatch])
-  const onClearScheduleGroup = useCallback(() => dispatch(clearScheduleGroup()), [dispatch])
+  const onClearSchedule = useCallback(() => dispatch(clearSchedule()), [dispatch])
   const onSetDate = useCallback((date) => dispatch(setDate(date)), [dispatch])
 
+  const post = useSelector((state) => state.userData.post)
   const groupName = useSelector((state) => state.userData.groupName)
   const faculty = useSelector((state) => state.userData.faculty)
-  const post = useSelector((state) => state.userData.post)
   const groups = useSelector((state) => state.fetchGroups.groups)
+  const teacherName = useSelector((state) => state.userData.teacherName)
+  const teachers = useSelector((state) => state.fetchTeachers.teachers)
 
   const [activePanel, setActivePanel] = useState('main')
   const [activeModal, setActiveModal] = useState(null)
@@ -46,9 +59,13 @@ const Profile = () => {
   const [kursFilter, setKursFilter] = useState(0)
   const platform = usePlatform()
 
-  const onClickSelectGroup = async () => {
+  const onClickSelectGroup = () => {
     onFetchGroups()
     setActivePanel('searchGroup')
+  }
+  const onClickSelectTeacher = () => {
+    onFetchTeachers()
+    setActivePanel('searchTeacher')
   }
 
   const onClickToggleTheme = async () => {
@@ -63,7 +80,6 @@ const Profile = () => {
       bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'space_gray' })
     }
   }
-
   const onClickGroup = (e) => {
     let cell = e.target
 
@@ -81,18 +97,43 @@ const Profile = () => {
     onSetGroupId(id)
     onSetFaculty(facul)
     onSetGroupName(name)
-    onClearScheduleGroup()
+    onClearSchedule()
     onSetDate(new Date())
 
     onGoMain()
   }
+  const onClickTeacher = (e) => {
+    let cell = e.target
 
-  const onChangeFaculty = (event) => setFacultyFilter(event.target.value)
-  const onChangeKurs = (event) => setKursFilter(Number(event.target.value))
+    while (!cell.classList.contains('SimpleCell')) cell = cell.parentNode
+    const teacher = teachers[cell.id]
 
-  const onChangePost = (event) => {
-    onSetPost(event.target.value)
-    bridge.send('VKWebAppStorageSet', { key: 'POST', value: event.target.value })
+    const id = String(teacher.id)
+    const name = String(teacher.name)
+
+    bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: id })
+    bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
+
+    onSetTeacherId(id)
+    onSetTeacherName(name)
+    onClearSchedule()
+    onSetDate(new Date())
+
+    onGoMain()
+  }
+  const onChangeFaculty = (e) => {
+    setFacultyFilter(e.target.value)
+  }
+  const onChangeKurs = (e) => {
+    setKursFilter(Number(e.target.value))
+  }
+
+  const onChangePost = (e) => {
+    let newPost = 'Студент'
+    if (e.target.value === 'Студент') newPost = 'Преподаватель'
+    onSetPost(newPost)
+    bridge.send('VKWebAppStorageSet', { key: 'POST', value: newPost })
+    onClearSchedule()
   }
   const onHideModal = () => setActiveModal(null)
   const onGoMain = () => {
@@ -127,29 +168,45 @@ const Profile = () => {
         >
           ДГТУ - Расписание
         </RichCell>
-        <SimpleCell>
-          <Select onChange={onChangePost} defaultValue={post} top="Должность" placeholder="Не выбран">
-            <option value={'Студент'}>Студент</option>
-            <option value={'Преподаватель'}>Преподаватель</option>
-          </Select>
+        <SimpleCell disabled after={<Switch onChange={onChangePost} checked={post === 'Преподаватель'} value={post} />}>
+          Преподаватель
         </SimpleCell>
-        <SimpleCell indicator={faculty}>Факультет</SimpleCell>
-        <SimpleCell
-          onClick={onClickSelectGroup}
-          expandable={true}
-          indicator={
-            <div className={classes.GroupCell}>
-              {groupName}
-              {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
-            </div>
-          }
-        >
-          Группа
-        </SimpleCell>
+        {post === 'Студент' ? (
+          <>
+            <SimpleCell indicator={faculty}>Факультет</SimpleCell>
+            <SimpleCell
+              onClick={onClickSelectGroup}
+              expandable={true}
+              indicator={
+                <div className={classes.GroupCell}>
+                  {groupName}
+                  {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+                </div>
+              }
+            >
+              Группа
+            </SimpleCell>
+          </>
+        ) : (
+          <>
+            <SimpleCell
+              onClick={onClickSelectTeacher}
+              expandable={true}
+              indicator={
+                <div className={classes.TeacherCell}>
+                  {teacherName}
+                  {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+                </div>
+              }
+            >
+              ФИО
+            </SimpleCell>
+          </>
+        )}
         <ToggleTheme onClickToggleTheme={onClickToggleTheme} />
       </Panel>
       <Panel id="searchGroup">
-        <SearchPanel
+        <SearchGroup
           groups={groups}
           faculty={facultyFilter}
           kurs={kursFilter}
@@ -157,6 +214,9 @@ const Profile = () => {
           onClickGroup={onClickGroup}
           goBack={onGoMain}
         />
+      </Panel>
+      <Panel id="searchTeacher">
+        <SearchTeacher teachers={teachers} onClickTeacher={onClickTeacher} goBack={onGoMain} />
       </Panel>
     </View>
   )

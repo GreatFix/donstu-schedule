@@ -17,7 +17,7 @@ import Schedule from './views/schedule/Schedule'
 import Profile from './views/Profile/Profile'
 
 const App = () => {
-  let [activeStory, setActiveStory] = useState('schedule')
+  let [activeStory, setActiveStory] = useState('profile')
 
   const onStoryChange = (event) => {
     setActiveStory(event.currentTarget.dataset.story)
@@ -28,15 +28,8 @@ const App = () => {
       activeStory={activeStory}
       tabbar={
         <Tabbar>
-          <TabbarItem
-            onClick={onStoryChange}
-            selected={activeStory === 'feed'}
-            data-story="feed"
-            text="Новости"
-          >
-            <Icon28NewsfeedOutline
-              style={{ backgroundColor: 'var(--header_alternate_background)' }}
-            />
+          <TabbarItem onClick={onStoryChange} selected={activeStory === 'feed'} data-story="feed" text="Новости">
+            <Icon28NewsfeedOutline style={{ backgroundColor: 'var(--header_alternate_background)' }} />
           </TabbarItem>
           <TabbarItem
             onClick={onStoryChange}
@@ -50,15 +43,8 @@ const App = () => {
               height={28}
             />
           </TabbarItem>
-          <TabbarItem
-            onClick={onStoryChange}
-            selected={activeStory === 'profile'}
-            data-story="profile"
-            text="Профиль"
-          >
-            <Icon28UserCircleOutline
-              style={{ backgroundColor: 'var(--header_alternate_background)' }}
-            />
+          <TabbarItem onClick={onStoryChange} selected={activeStory === 'profile'} data-story="profile" text="Профиль">
+            <Icon28UserCircleOutline style={{ backgroundColor: 'var(--header_alternate_background)' }} />
           </TabbarItem>
         </Tabbar>
       }

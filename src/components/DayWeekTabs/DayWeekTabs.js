@@ -17,7 +17,7 @@ const DayWeekTabs = ({ arrows }) => {
   const NextWeek = useCallback(() => dispatch(nextWeek()), [dispatch])
   const PrevWeek = useCallback(() => dispatch(prevWeek()), [dispatch])
 
-  const schedule = useSelector((state) => state.fetchScheduleGroup.schedule)
+  const schedule = useSelector((state) => state.fetchSchedule.schedule)
 
   return (
     <Tabs>

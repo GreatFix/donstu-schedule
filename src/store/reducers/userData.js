@@ -6,6 +6,8 @@ import {
   SET_THEME,
   SET_PLATFORM,
   SET_POST,
+  SET_TEACHER_ID,
+  SET_TEACHER_NAME,
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -15,6 +17,8 @@ const initialState = {
   theme: null,
   platform: null,
   post: null,
+  teacherId: null,
+  teacherName: null,
 }
 
 export function userDataReducer(state = initialState, action) {
@@ -28,6 +32,8 @@ export function userDataReducer(state = initialState, action) {
         theme: action.theme,
         platform: action.platform,
         post: action.post,
+        teacherId: action.teacherId,
+        teacherName: action.teacherName,
       }
     case SET_GROUP_ID:
       return { ...state, groupId: action.groupId }
@@ -41,7 +47,10 @@ export function userDataReducer(state = initialState, action) {
       return { ...state, platform: action.platform }
     case SET_POST:
       return { ...state, post: action.post }
-
+    case SET_TEACHER_ID:
+      return { ...state, teacherId: action.teacherId }
+    case SET_TEACHER_NAME:
+      return { ...state, teacherName: action.teacherName }
     default:
       return state
   }
