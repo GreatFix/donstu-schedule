@@ -117,7 +117,10 @@ const dataTransformation = (data) => {
           type = 'Практика'
           break
         case 'фв':
-          type = 'ФВ'
+          type = 'Физ. воспитание'
+          break
+        case 'экз':
+          type = 'Экзамен'
           break
         default:
           type = ''
