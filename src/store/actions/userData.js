@@ -1,6 +1,14 @@
-import { SET_ALL, SET_GROUP_ID, SET_GROUP_NAME, SET_FACULTY, SET_THEME, SET_PLATFORM } from '../actions/actionTypes'
+import {
+  SET_ALL,
+  SET_GROUP_ID,
+  SET_GROUP_NAME,
+  SET_FACULTY,
+  SET_THEME,
+  SET_PLATFORM,
+  SET_POST,
+} from '../actions/actionTypes'
 
-export function setAll(groupId, groupName, faculty, theme, platform) {
+export function setAll(groupId, groupName, faculty, theme, platform, post) {
   return {
     type: SET_ALL,
     groupId,
@@ -8,6 +16,7 @@ export function setAll(groupId, groupName, faculty, theme, platform) {
     faculty,
     theme,
     platform,
+    post,
   }
 }
 export function setGroupId(groupId) {
@@ -38,5 +47,11 @@ export function setPlatform(platform) {
   return {
     type: SET_PLATFORM,
     platform,
+  }
+}
+export function setPost(post) {
+  return {
+    type: SET_POST,
+    post,
   }
 }

@@ -12,12 +12,12 @@ import { setDate } from './store/actions/date'
 
 async function getInBridge() {
   const res = await bridge.send('VKWebAppStorageGet', {
-    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME'],
+    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME', 'POST'],
   })
 
   const userData = {}
   res.keys.forEach((obj) => {
-    userData[obj.key] = obj.value
+    if (obj.value) userData[obj.key] = obj.value
   })
 
   const url = new URL(window.location.href)
@@ -31,9 +31,16 @@ async function getInBridge() {
 const appInit = async () => {
   bridge.send('VKWebAppInit')
 
-  const { GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM } = await getInBridge() //получаем из хранилища ВК
+  const {
+    GROUP_ID = null,
+    GROUP_NAME = null,
+    FACULTY = null,
+    THEME = 'space_gray',
+    PLATFORM = 'desktop_web',
+    POST = 'Студент',
+  } = await getInBridge() //получаем из хранилища ВК
 
-  store.dispatch(setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM))
+  store.dispatch(setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST))
   store.dispatch(setDate(new Date())) //заносим в редакс
 
   const body = document.querySelector('body')

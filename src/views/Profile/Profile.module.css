@@ -1,0 +1,8 @@
+.Link {
+  font-size: 0.8em;
+}
+.GroupCell {
+  display: flex;
+  direction: row;
+  align-items: center;
+}

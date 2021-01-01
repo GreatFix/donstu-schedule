@@ -1,4 +1,12 @@
-import { SET_ALL, SET_GROUP_ID, SET_GROUP_NAME, SET_FACULTY, SET_THEME, SET_PLATFORM } from '../actions/actionTypes'
+import {
+  SET_ALL,
+  SET_GROUP_ID,
+  SET_GROUP_NAME,
+  SET_FACULTY,
+  SET_THEME,
+  SET_PLATFORM,
+  SET_POST,
+} from '../actions/actionTypes'
 
 const initialState = {
   groupId: null,
@@ -6,6 +14,7 @@ const initialState = {
   faculty: null,
   theme: null,
   platform: null,
+  post: null,
 }
 
 export function userDataReducer(state = initialState, action) {
@@ -18,6 +27,7 @@ export function userDataReducer(state = initialState, action) {
         faculty: action.faculty,
         theme: action.theme,
         platform: action.platform,
+        post: action.post,
       }
     case SET_GROUP_ID:
       return { ...state, groupId: action.groupId }
@@ -28,7 +38,10 @@ export function userDataReducer(state = initialState, action) {
     case SET_THEME:
       return { ...state, theme: action.theme }
     case SET_PLATFORM:
-      return { ...state, theme: action.platform }
+      return { ...state, platform: action.platform }
+    case SET_POST:
+      return { ...state, post: action.post }
+
     default:
       return state
   }
