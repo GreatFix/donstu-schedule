@@ -29,13 +29,7 @@ export function fetchTeachers() {
       timeout: 20000,
     }).then(
       (res) => {
-        const keys = Object.keys(res.data.data)
         const teachers = res.data.data
-        keys.forEach((key) => {
-          //Нужно для обработки клика в seacrhPanel
-          teachers[key].key = key
-        })
-
         dispatch(success(teachers))
       },
       (err) => {

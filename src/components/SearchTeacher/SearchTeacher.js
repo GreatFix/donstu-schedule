@@ -4,8 +4,9 @@ import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/Pan
 import Search from '@vkontakte/vkui/dist/components/Search/Search'
 import List from '@vkontakte/vkui/dist/components/List/List'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
+import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
 
-const SearchTeacher = ({ teachers, goBack, onClickTeacher }) => {
+const SearchTeacher = ({ teachers, goBack, onClickTeacher, fetching }) => {
   let [search, setSearch] = useState('')
 
   const onChange = (event) => setSearch(event.target.value)
@@ -22,19 +23,18 @@ const SearchTeacher = ({ teachers, goBack, onClickTeacher }) => {
         Поиск преподавателя
       </PanelHeader>
       <Search value={search} onChange={onChange} />
-      <List>
-        {search &&
-          result().map((teacher) => (
-            <SimpleCell
-              target={1}
-              onClick={onClickTeacher}
-              id={teacher.key} //номер элемента массива, заранее задан в fetchTeachers
-              key={teacher.id}
-            >
-              <span>{teacher.name}</span>
-            </SimpleCell>
-          ))}
-      </List>
+      {fetching ? (
+        <Spinner />
+      ) : (
+        <List>
+          {search &&
+            result().map((teacher) => (
+              <SimpleCell onClick={() => onClickTeacher(teacher.id, teacher.name)} key={teacher.id}>
+                <span>{teacher.name}</span>
+              </SimpleCell>
+            ))}
+        </List>
+      )}
     </>
   )
 }

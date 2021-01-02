@@ -4,9 +4,10 @@ import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/Pan
 import Search from '@vkontakte/vkui/dist/components/Search/Search'
 import List from '@vkontakte/vkui/dist/components/List/List'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
+import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
 import Icon24Filter from '@vkontakte/icons/dist/24/filter'
 
-const SearchGroup = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGroup }) => {
+const SearchGroup = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGroup, fetching }) => {
   let [search, setSearch] = useState('')
 
   const onChange = (event) => setSearch(event.target.value)
@@ -27,20 +28,22 @@ const SearchGroup = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGro
         Поиск группы
       </PanelHeader>
       <Search value={search} onChange={onChange} icon={<Icon24Filter />} onIconClick={onFiltersClick} />
-      <List>
-        {(search || kurs || faculty) &&
-          result().map((group) => (
-            <SimpleCell
-              target={1}
-              onClick={onClickGroup}
-              id={group.key} //ключ элемента массива
-              key={group.id}
-              indicator={group.facul}
-            >
-              <span>{group.name}</span>
-            </SimpleCell>
-          ))}
-      </List>
+      {fetching ? (
+        <Spinner />
+      ) : (
+        <List>
+          {(search || kurs || faculty) &&
+            result().map((group) => (
+              <SimpleCell
+                onClick={() => onClickGroup(group.id, group.name, group.facul)}
+                key={group.id}
+                indicator={group.facul}
+              >
+                <span>{group.name}</span>
+              </SimpleCell>
+            ))}
+        </List>
+      )}
     </>
   )
 }

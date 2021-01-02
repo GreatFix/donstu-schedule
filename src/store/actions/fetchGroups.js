@@ -30,13 +30,7 @@ export function fetchGroups() {
       timeout: 20000,
     }).then(
       (res) => {
-        const keys = Object.keys(res.data.data)
         const groups = res.data.data
-        keys.forEach((key) => {
-          //Нужно для обработки клика в seacrhPanel
-          groups[key].key = key
-        })
-
         const faculties = Array.from(new Set(groups.map(({ facul }) => facul)))
         dispatch(success(groups, faculties))
       },
