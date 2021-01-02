@@ -3,7 +3,7 @@ import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title'
 
 import classes from './SheduleDay.module.css'
 import LessonList from './LessonList/LessonList'
-import image from '../../img/sleeping_people.jpg'
+import image from '../../img/sleeping_people.png'
 
 const SheduleDay = ({ day }) => {
   if (Object.keys(day.lessons).length) {
