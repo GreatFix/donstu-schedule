@@ -77,22 +77,20 @@ export function fetchSchedule() {
   }
 }
 
-const dataTransformation = (data) => {
+function dataTransformation(data) {
   if (data) {
     let days = {}
-    let startDate = new Date(data.info.date) //устанавливаем дату понедельника
 
+    let startDate = new Date(data.info.date) //устанавливаем дату понедельника
     for (let i = 0; i < 7; i++) {
       days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
-    }
-
-    for (let i = 0; i < 7; i++) {
       days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
     }
 
     let lessons = Object.keys(data.rasp)
     let received = false
     lessons.length === 0 ? (received = false) : (received = true) //Проверка на наличие данных в расписании
+
     lessons.forEach((les) => {
       let key = data.rasp[les].деньНедели - 1
 
@@ -108,9 +106,11 @@ const dataTransformation = (data) => {
       let currentLesson = false //определение текущего занятия
       if (checkCurrentLesson(currentTime, start, end) && checkCurrentDay(currentDate, days[key].date))
         currentLesson = true
+      const [typeL, ...nameAndSubgroupL] = data.rasp[les].дисциплина.split(' ')
+      const [name] = nameAndSubgroupL.join(' ').split(',')
 
       let type = ''
-      switch (data.rasp[les].дисциплина.split(' ')[0]) {
+      switch (typeL) {
         case 'лек':
           type = 'Лекция'
           break
@@ -159,7 +159,6 @@ const dataTransformation = (data) => {
           number = 0
       }
 
-      const name = data.rasp[les].дисциплина.split(' ').slice(1).join(' ')
       const aud = data.rasp[les].аудитория
       const teacher = data.rasp[les].преподаватель
 
@@ -176,11 +175,11 @@ const dataTransformation = (data) => {
     })
 
     let temp = {
-      WeekID: data.info.selectedNumNed,
-      Day: data.info.curNumNed,
-      Semester: data.info.curSem,
-      Year: data.info.year,
-      GroupName: data.info.group.name,
+      //WeekID: data.info.selectedNumNed, отключены за ненадобностью
+      //Day: data.info.curNumNed,
+      //Semester: data.info.curSem,
+      //Year: data.info.year,
+      //GroupName: data.info.group.name,
       days: { ...days },
       received: received,
     }
