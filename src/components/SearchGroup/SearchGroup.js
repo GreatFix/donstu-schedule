@@ -6,6 +6,7 @@ import List from '@vkontakte/vkui/dist/components/List/List'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
 import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
 import Icon24Filter from '@vkontakte/icons/dist/24/filter'
+import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
 
 const SearchGroup = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGroup, fetching }) => {
   let [search, setSearch] = useState('')
@@ -25,7 +26,7 @@ const SearchGroup = ({ groups, faculty, kurs, goBack, onFiltersClick, onClickGro
   return (
     <>
       <PanelHeader left={<PanelHeaderBack onClick={goBack} />} separator={false}>
-        Поиск группы
+        <Headline level={4}>Поиск группы</Headline>
       </PanelHeader>
       <Search value={search} onChange={onChange} icon={<Icon24Filter />} onIconClick={onFiltersClick} />
       {fetching ? (

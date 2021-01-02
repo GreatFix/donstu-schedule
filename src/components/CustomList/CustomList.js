@@ -4,11 +4,14 @@ import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/Pan
 import List from '@vkontakte/vkui/dist/components/List/List'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
 import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
+import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
 
 const CustomList = ({ list, header, goBack, fetching, onClick = null, disabled = true, objectList = false }) => {
   return (
     <>
-      <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>{header}</PanelHeader>
+      <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
+        <Headline>{header}</Headline>
+      </PanelHeader>
       {fetching ? (
         <Spinner />
       ) : (

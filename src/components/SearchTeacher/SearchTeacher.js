@@ -5,6 +5,7 @@ import Search from '@vkontakte/vkui/dist/components/Search/Search'
 import List from '@vkontakte/vkui/dist/components/List/List'
 import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
 import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
+import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
 
 const SearchTeacher = ({ teachers, goBack, onClickTeacher, fetching }) => {
   let [search, setSearch] = useState('')
@@ -20,7 +21,7 @@ const SearchTeacher = ({ teachers, goBack, onClickTeacher, fetching }) => {
   return (
     <>
       <PanelHeader left={<PanelHeaderBack onClick={goBack} />} separator={false}>
-        Поиск преподавателя
+        <Headline level={4}>Поиск преподавателя</Headline>
       </PanelHeader>
       <Search value={search} onChange={onChange} />
       {fetching ? (
