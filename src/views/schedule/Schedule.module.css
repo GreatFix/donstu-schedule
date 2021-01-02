@@ -25,3 +25,14 @@
   border-top: '1px';
   box-shadow: 0px -0.5px 0px 0px #d3d9de;
 }
+
+.Error {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.Image {
+  width: 50vh;
+  height: 50vh;
+  padding-top: 5%;
+}

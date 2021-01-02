@@ -1,4 +1,10 @@
-import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from '../actions/actionTypes'
+import {
+  ERROR_SCHEDULE,
+  SUCCESS_SCHEDULE,
+  FETCHING_SCHEDULE,
+  CLEAR_SCHEDULE,
+  CLEAR_ERROR,
+} from '../actions/actionTypes'
 
 const initialState = {
   schedule: null,
@@ -20,6 +26,8 @@ export function fetchScheduleReducer(state = initialState, action) {
       return { ...state, fetching: true }
     case CLEAR_SCHEDULE:
       return { ...state, schedule: null }
+    case CLEAR_ERROR:
+      return { ...state, error: null }
     default:
       return state
   }

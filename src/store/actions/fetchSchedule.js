@@ -1,10 +1,11 @@
-import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from './actionTypes'
+import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE, CLEAR_ERROR } from './actionTypes'
 import axios from 'axios'
 import { toggleOff, setDate } from './date'
 
-function error() {
+function error(error) {
   return {
     type: ERROR_SCHEDULE,
+    error,
   }
 }
 function success(schedule) {
@@ -23,6 +24,11 @@ export function clearSchedule() {
     type: CLEAR_SCHEDULE,
   }
 }
+export function clearError() {
+  return {
+    type: CLEAR_ERROR,
+  }
+}
 export function fetchSchedule() {
   return (dispatch, getStore) => {
     dispatch(fetching())
@@ -33,12 +39,21 @@ export function fetchSchedule() {
     const post = store.userData.post
     if (post === 'Студент') {
       const groupId = store.userData.groupId
+      if (!groupId) {
+        dispatch(error('Error: Выберите группу'))
+        return
+      }
       url = `https://edu.donstu.ru/api/Rasp?idGroup=${groupId}&sdate=${date}`
     } else if (post === 'Преподаватель') {
       const teacherId = store.userData.teacherId
+      if (!teacherId) {
+        dispatch(error('Error: Выберите преподавателя'))
+        return
+      }
       url = `https://edu.donstu.ru/api/Rasp?idTeacher=${teacherId}&sdate=${date}`
     } else {
-      dispatch(error('Error: Ошибка при определении должности.'))
+      dispatch(error('Error: Ошибка при определении должности. Сообщите разработчику..'))
+      return
     }
     axios({
       url,

@@ -238,7 +238,7 @@ const Profile = () => {
               onClick={onClickSelectGroup}
               expandable={true}
               indicator={
-                <div className={classes.GroupCell}>
+                <div className={classes.Cell}>
                   {groupName}
                   {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
                 </div>
@@ -256,7 +256,7 @@ const Profile = () => {
               onClick={onClickSelectTeacher}
               expandable={true}
               indicator={
-                <div className={classes.TeacherCell}>
+                <div className={classes.Cell}>
                   {teacherName}
                   {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
                 </div>
