@@ -98,6 +98,7 @@
 .End {
   grid-area: End;
   justify-self: end;
+  align-self: flex-end;
   font-size: 0.9em;
   font-weight: 700;
   transition: 0.5s ease-in;
