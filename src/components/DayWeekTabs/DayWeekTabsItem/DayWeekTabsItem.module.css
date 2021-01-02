@@ -1,10 +1,6 @@
 .TabsItem {
   min-width: 0 !important; /*не помню как, но это помогает вместить все элементы  */
 }
-.TabsItem:hover {
-  transform: scale(1.3);
-  transition: 0.2s linear;
-}
 .DisabledTabsItem {
   min-width: 0 !important;
   transform: scale(0.7);

@@ -6,7 +6,7 @@ import Lesson from './Lesson/Lesson'
 
 const LessonList = ({ lessons }) => {
   return (
-    <List className={classes.List} style={{ overflow: 'visible' }}>
+    <List className={classes.List}>
       {Object.keys(lessons).map((item, index) => {
         return <Lesson key={index} lesson={lessons[item]} />
       })}
