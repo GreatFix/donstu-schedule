@@ -8,6 +8,7 @@ import {
   SET_POST,
   SET_TEACHER_ID,
   SET_TEACHER_NAME,
+  SET_BRIDGE_SUPPORT,
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   post: null,
   teacherId: null,
   teacherName: null,
+  bridgeSupport: false,
 }
 
 export function userDataReducer(state = initialState, action) {
@@ -51,6 +53,8 @@ export function userDataReducer(state = initialState, action) {
       return { ...state, teacherId: action.teacherId }
     case SET_TEACHER_NAME:
       return { ...state, teacherName: action.teacherName }
+    case SET_BRIDGE_SUPPORT:
+      return { ...state, bridgeSupport: action.bridgeSupport }
     default:
       return state
   }

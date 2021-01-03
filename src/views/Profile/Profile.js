@@ -55,6 +55,7 @@ const Profile = () => {
   const onClearSchedule = useCallback(() => dispatch(clearSchedule()), [dispatch])
   const onSetDate = useCallback((date) => dispatch(setDate(date)), [dispatch])
 
+  const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
   const post = useSelector((state) => state.userData.post)
   const groupName = useSelector((state) => state.userData.groupName)
   const faculty = useSelector((state) => state.userData.faculty)
@@ -129,9 +130,15 @@ const Profile = () => {
     }
   }
   const onClickGroupTeacher = (id, name) => {
-    bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: id })
-    bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
-    bridge.send('VKWebAppStorageSet', { key: 'POST', value: 'Преподаватель' })
+    if (bridgeSupport) {
+      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
+      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
+      bridge.send('VKWebAppStorageSet', { key: 'POST', value: 'Преподаватель' })
+    } else {
+      localStorage.setItem('TEACHER_ID', String(id))
+      localStorage.setItem('TEACHER_NAME', name)
+      localStorage.setItem('POST', 'Преподаватель')
+    }
 
     onSetPost('Преподаватель')
     onSetTeacherId(id)
@@ -146,16 +153,30 @@ const Profile = () => {
 
     if (theme === 'space_gray') {
       body.setAttribute('scheme', 'bright_light')
-      bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'bright_light' })
+      if (bridgeSupport) {
+        bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'bright_light' })
+      } else {
+        localStorage.setItem('THEME', 'bright_light')
+      }
     } else {
       body.setAttribute('scheme', 'space_gray')
-      bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'space_gray' })
+      if (bridgeSupport) {
+        bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'space_gray' })
+      } else {
+        localStorage.setItem('THEME', 'space_gray')
+      }
     }
   }
   const onClickGroup = (id, name, facul) => {
-    bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: id })
-    bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
-    bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
+    if (bridgeSupport) {
+      bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: String(id) })
+      bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
+      bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
+    } else {
+      localStorage.setItem('GROUP_ID', String(id))
+      localStorage.setItem('GROUP_NAME', name)
+      localStorage.setItem('FACULTY', facul)
+    }
 
     onSetGroupId(id)
     onSetFaculty(facul)
@@ -168,8 +189,13 @@ const Profile = () => {
     onGoMain()
   }
   const onClickTeacher = (id, name) => {
-    bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
-    bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
+    if (bridgeSupport) {
+      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
+      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
+    } else {
+      localStorage.setItem('TEACHER_ID', String(id))
+      localStorage.setItem('TEACHER_NAME', name)
+    }
 
     onSetTeacherId(String(id))
     onSetTeacherName(name)
@@ -188,7 +214,12 @@ const Profile = () => {
     let newPost = 'Студент'
     if (e.target.value === 'Студент') newPost = 'Преподаватель'
     onSetPost(newPost)
-    bridge.send('VKWebAppStorageSet', { key: 'POST', value: newPost })
+    if (bridgeSupport) {
+      bridge.send('VKWebAppStorageSet', { key: 'POST', value: newPost })
+    } else {
+      localStorage.setItem('POST', newPost)
+    }
+
     onClearSchedule()
   }
   const onHideModal = () => {

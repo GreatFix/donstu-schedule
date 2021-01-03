@@ -35,6 +35,7 @@ export function fetchSchedule() {
     const store = getStore()
     const toggleWeek = store.date.toggleWeek
     const date = store.date.date
+    const platform = store.userData.platform
     let url = ''
     const post = store.userData.post
     if (post === 'Студент') {
@@ -62,7 +63,7 @@ export function fetchSchedule() {
     }).then(
       (res) => {
         if (res.data.data.info.group.name || res.data.data.info.prepod.name) {
-          let tempData = dataTransformation(res.data.data)
+          let tempData = dataTransformation(res.data.data, platform)
           dispatch(success(tempData))
           if (toggleWeek) {
             dispatch(toggleOff())
@@ -92,14 +93,22 @@ export function fetchSchedule() {
   }
 }
 
-function dataTransformation(data) {
+function dataTransformation(data, platform) {
   if (data) {
     let days = {}
-
     let startDate = new Date(data.info.date) //устанавливаем дату понедельника
-    for (let i = 0; i < 7; i++) {
-      days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
-      days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
+    if (platform === 'mobile_iphone_messenger' || platform === 'mobile_iphone') {
+      days[0] = { dayWeekName: '', day: '', lessons: {}, date: '' } //для ios дата на 1 меньше
+      days[0].date = new Date(startDate.setDate(startDate.getDate())).toISOString().split('T')[0]
+      for (let i = 1; i < 7; i++) {
+        days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
+        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
+      }
+    } else {
+      for (let i = 0; i < 7; i++) {
+        days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
+        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
+      }
     }
 
     let lessons = Object.keys(data.rasp)

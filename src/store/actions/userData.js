@@ -8,6 +8,7 @@ import {
   SET_POST,
   SET_TEACHER_ID,
   SET_TEACHER_NAME,
+  SET_BRIDGE_SUPPORT,
 } from '../actions/actionTypes'
 
 export function setAll(groupId, groupName, faculty, theme, platform, post, teacherId, teacherName) {
@@ -69,5 +70,11 @@ export function setTeacherName(teacherName) {
   return {
     type: SET_TEACHER_NAME,
     teacherName,
+  }
+}
+export function setBridgeSupport(bridgeSupport) {
+  return {
+    type: SET_BRIDGE_SUPPORT,
+    bridgeSupport,
   }
 }
