@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
-import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack'
-import Search from '@vkontakte/vkui/dist/components/Search/Search'
-import List from '@vkontakte/vkui/dist/components/List/List'
-import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
-import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
-import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
+import {
+  PanelHeader,
+  PanelHeaderBack,
+  Search,
+  List,
+  SimpleCell,
+  Spinner,
+  Headline,
+} from '@vkontakte/vkui'
 
-const SearchTeacher = ({ teachers, goBack, onClickTeacher, fetching }) => {
+const SearchTeacher = ({ teachers, onClickBack, onChangeTeacher, fetching }) => {
   let [search, setSearch] = useState('')
 
   const onChange = (event) => setSearch(event.target.value)
@@ -20,7 +22,7 @@ const SearchTeacher = ({ teachers, goBack, onClickTeacher, fetching }) => {
 
   return (
     <>
-      <PanelHeader left={<PanelHeaderBack onClick={goBack} />} separator={false}>
+      <PanelHeader left={<PanelHeaderBack onClick={onClickBack} />} separator={false}>
         <Headline level={4}>Поиск преподавателя</Headline>
       </PanelHeader>
       <Search value={search} onChange={onChange} />
@@ -30,7 +32,10 @@ const SearchTeacher = ({ teachers, goBack, onClickTeacher, fetching }) => {
         <List>
           {search &&
             result().map((teacher) => (
-              <SimpleCell onClick={() => onClickTeacher(teacher.id, teacher.name)} key={teacher.id}>
+              <SimpleCell
+                onClick={() => onChangeTeacher(teacher.id, teacher.name)}
+                key={teacher.id}
+              >
                 <span>{teacher.name}</span>
               </SimpleCell>
             ))}

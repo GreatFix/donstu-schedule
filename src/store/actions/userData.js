@@ -1,13 +1,10 @@
 import {
   SET_ALL,
-  SET_GROUP_ID,
-  SET_GROUP_NAME,
-  SET_FACULTY,
+  SET_GROUP,
+  SET_TEACHER,
   SET_THEME,
   SET_PLATFORM,
   SET_POST,
-  SET_TEACHER_ID,
-  SET_TEACHER_NAME,
   SET_BRIDGE_SUPPORT,
 } from '../actions/actionTypes'
 
@@ -24,22 +21,19 @@ export function setAll(groupId, groupName, faculty, theme, platform, post, teach
     teacherName,
   }
 }
-export function setGroupId(groupId) {
+export function setGroup(groupId, groupName, faculty) {
   return {
-    type: SET_GROUP_ID,
+    type: SET_GROUP,
     groupId,
-  }
-}
-export function setGroupName(groupName) {
-  return {
-    type: SET_GROUP_NAME,
     groupName,
+    faculty,
   }
 }
-export function setFaculty(faculty) {
+export function setTeacher(teacherId, teacherName) {
   return {
-    type: SET_FACULTY,
-    faculty,
+    type: SET_TEACHER,
+    teacherId,
+    teacherName,
   }
 }
 export function setTheme(theme) {
@@ -58,18 +52,6 @@ export function setPost(post) {
   return {
     type: SET_POST,
     post,
-  }
-}
-export function setTeacherId(teacherId) {
-  return {
-    type: SET_TEACHER_ID,
-    teacherId,
-  }
-}
-export function setTeacherName(teacherName) {
-  return {
-    type: SET_TEACHER_NAME,
-    teacherName,
   }
 }
 export function setBridgeSupport(bridgeSupport) {

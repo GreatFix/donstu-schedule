@@ -1,14 +1,10 @@
 import React from 'react'
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
-import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack'
-import List from '@vkontakte/vkui/dist/components/List/List'
-import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
-import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
+import { PanelHeader, PanelHeaderBack, List, SimpleCell, Headline } from '@vkontakte/vkui'
 
-const TeacherGroups = ({ goBack, teacherGroups }) => {
+const TeacherGroups = ({ onClickBack, teacherGroups }) => {
   return (
     <>
-      <PanelHeader left={<PanelHeaderBack onClick={goBack} />} separator={false}>
+      <PanelHeader left={<PanelHeaderBack onClick={onClickBack} />} separator={false}>
         <Headline>Список предметов</Headline>
       </PanelHeader>
       <List>

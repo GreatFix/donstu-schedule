@@ -1,43 +1,36 @@
 import React, { useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
-import View from '@vkontakte/vkui/dist/components/View/View'
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
-import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar'
-import RichCell from '@vkontakte/vkui/dist/components/RichCell/RichCell'
-import Link from '@vkontakte/vkui/dist/components/Link/Link'
-import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
-import Switch from '@vkontakte/vkui/dist/components/Switch/Switch'
-import Snackbar from '@vkontakte/vkui/dist/components/Snackbar/Snackbar'
-import Icon24ChevronCompactRight from '@vkontakte/icons/dist/24/chevron_compact_right'
-import { usePlatform } from '@vkontakte/vkui/dist/hooks/usePlatform'
+import {
+  Panel,
+  View,
+  PanelHeader,
+  Avatar,
+  RichCell,
+  Link,
+  SimpleCell,
+  Switch,
+  Snackbar,
+  usePlatform,
+} from '@vkontakte/vkui'
+import { Icon24ChevronCompactRight } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
-
-import logo from '../../img/logo.png'
-import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
-import ModalFilter from '../../components/ModalFilter/ModalFilter'
-import SearchGroup from '../../components/SearchGroup/SearchGroup'
-import SearchTeacher from '../../components/SearchTeacher/SearchTeacher'
-
-import classes from './Profile.module.css'
 
 import { fetchGroups } from '../../store/actions/fetchGroups'
 import { fetchTeachers } from '../../store/actions/fetchTeachers'
 import { fetchDisciplines } from '../../store/actions/fetchDisciplines'
 import { fetchTeacherGroups } from '../../store/actions/fetchTeacherGroups'
 import { fetchGroupTeachers } from '../../store/actions/fetchGroupTeachers'
-
-import {
-  setGroupId,
-  setGroupName,
-  setFaculty,
-  setPost,
-  setTeacherId,
-  setTeacherName,
-} from '../../store/actions/userData'
+import { setGroup, setPost, setTeacher } from '../../store/actions/userData'
 import { clearSchedule } from '../../store/actions/fetchSchedule'
 import { setDate } from '../../store/actions/date'
+
+import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
+import ModalFilter from '../../components/ModalFilter/ModalFilter'
+import SearchGroup from '../../components/SearchGroup/SearchGroup'
+import SearchTeacher from '../../components/SearchTeacher/SearchTeacher'
 import CustomList from '../../components/CustomList/CustomList'
+import logo from '../../img/logo.png'
+import classes from './Profile.module.css'
 
 const Profile = () => {
   const dispatch = useDispatch()
@@ -46,21 +39,26 @@ const Profile = () => {
   const onFetchDisciplines = useCallback(() => dispatch(fetchDisciplines()), [dispatch])
   const onFetchTeacherGroups = useCallback(() => dispatch(fetchTeacherGroups()), [dispatch])
   const onFetchGroupTeachers = useCallback(() => dispatch(fetchGroupTeachers()), [dispatch])
-  const onSetGroupId = useCallback((groupId) => dispatch(setGroupId(groupId)), [dispatch])
-  const onSetGroupName = useCallback((groupName) => dispatch(setGroupName(groupName)), [dispatch])
-  const onSetTeacherId = useCallback((teacherId) => dispatch(setTeacherId(teacherId)), [dispatch])
-  const onSetTeacherName = useCallback((teacherName) => dispatch(setTeacherName(teacherName)), [dispatch])
-  const onSetFaculty = useCallback((faculty) => dispatch(setFaculty(faculty)), [dispatch])
+  const onSetGroup = useCallback(
+    (groupId, groupName, faculty) => dispatch(setGroup(groupId, groupName, faculty)),
+    [dispatch]
+  )
+  const onSetTeacher = useCallback(
+    (teacherId, teacherName) => dispatch(setTeacher(teacherId, teacherName)),
+    [dispatch]
+  )
   const onSetPost = useCallback((post) => dispatch(setPost(post)), [dispatch])
-  const onClearSchedule = useCallback(() => dispatch(clearSchedule()), [dispatch])
   const onSetDate = useCallback((date) => dispatch(setDate(date)), [dispatch])
+  const onClearSchedule = useCallback(() => dispatch(clearSchedule()), [dispatch])
 
   const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
   const post = useSelector((state) => state.userData.post)
+
   const groupName = useSelector((state) => state.userData.groupName)
   const faculty = useSelector((state) => state.userData.faculty)
   const groups = useSelector((state) => state.fetchGroups.groups)
-  const fetchinGroups = useSelector((state) => state.fetchGroups.fetching)
+  const fetchingGroups = useSelector((state) => state.fetchGroups.fetching)
+
   const teacherName = useSelector((state) => state.userData.teacherName)
   const teachers = useSelector((state) => state.fetchTeachers.teachers)
   const fetchingTeachers = useSelector((state) => state.fetchTeachers.fetching)
@@ -79,15 +77,15 @@ const Profile = () => {
   const [kursFilter, setKursFilter] = useState(0)
   const platform = usePlatform()
 
-  const onClickSelectGroup = () => {
+  const handleClickSearchGroup = () => {
     onFetchGroups()
     setActivePanel('searchGroup')
   }
-  const onClickSelectTeacher = () => {
+  const handleClickSearchTeacher = () => {
     onFetchTeachers()
     setActivePanel('searchTeacher')
   }
-  const onClickDisciplines = () => {
+  const handleClickDisciplines = () => {
     if (post === 'Преподаватель' && !teacherName) {
       setSnack(
         <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
@@ -105,7 +103,7 @@ const Profile = () => {
       setActivePanel('disciplines')
     }
   }
-  const onClickTeacherGroups = () => {
+  const handleClickGroups = () => {
     if (teacherName) {
       onFetchTeacherGroups()
       setActivePanel('teacherGroups')
@@ -117,7 +115,7 @@ const Profile = () => {
       )
     }
   }
-  const onClickGroupTeachers = () => {
+  const handleClickTeachers = () => {
     if (groupName) {
       onFetchGroupTeachers()
       setActivePanel('groupTeachers')
@@ -129,7 +127,7 @@ const Profile = () => {
       )
     }
   }
-  const onClickGroupTeacher = (id, name) => {
+  const onChangeTeacher = (id, name) => {
     if (bridgeSupport) {
       bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
       bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
@@ -141,13 +139,31 @@ const Profile = () => {
     }
 
     onSetPost('Преподаватель')
-    onSetTeacherId(id)
-    onSetTeacherName(name)
+    onSetTeacher(String(id), name)
     onClearSchedule()
     onSetDate(new Date())
-    onGoMain()
+    handleClickBack()
   }
-  const onClickToggleTheme = () => {
+  const onChangeGroup = (id, name, facul) => {
+    if (bridgeSupport) {
+      bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: String(id) })
+      bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
+      bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
+    } else {
+      localStorage.setItem('GROUP_ID', String(id))
+      localStorage.setItem('GROUP_NAME', name)
+      localStorage.setItem('FACULTY', facul)
+    }
+
+    onSetGroup(String(id), facul, name)
+    onClearSchedule()
+    onSetDate(new Date())
+    setKursFilter(null)
+    setFacultyFilter(null)
+
+    handleClickBack()
+  }
+  const onChangeTheme = () => {
     const body = document.querySelector('body')
     let theme = body.getAttribute('scheme')
 
@@ -167,43 +183,6 @@ const Profile = () => {
       }
     }
   }
-  const onClickGroup = (id, name, facul) => {
-    if (bridgeSupport) {
-      bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: String(id) })
-      bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
-      bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
-    } else {
-      localStorage.setItem('GROUP_ID', String(id))
-      localStorage.setItem('GROUP_NAME', name)
-      localStorage.setItem('FACULTY', facul)
-    }
-
-    onSetGroupId(id)
-    onSetFaculty(facul)
-    onSetGroupName(name)
-    onClearSchedule()
-    onSetDate(new Date())
-    setKursFilter(null)
-    setFacultyFilter(null)
-
-    onGoMain()
-  }
-  const onClickTeacher = (id, name) => {
-    if (bridgeSupport) {
-      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
-      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
-    } else {
-      localStorage.setItem('TEACHER_ID', String(id))
-      localStorage.setItem('TEACHER_NAME', name)
-    }
-
-    onSetTeacherId(String(id))
-    onSetTeacherName(name)
-    onClearSchedule()
-    onSetDate(new Date())
-
-    onGoMain()
-  }
   const onChangeFaculty = (e) => {
     setFacultyFilter(e.target.value)
   }
@@ -222,10 +201,10 @@ const Profile = () => {
 
     onClearSchedule()
   }
-  const onHideModal = () => {
+  const handleClickModalHide = () => {
     setActiveModal(null)
   }
-  const onGoMain = () => {
+  const handleClickBack = () => {
     setActivePanel('main')
   }
 
@@ -236,7 +215,7 @@ const Profile = () => {
       modal={
         <ModalFilter
           activeModal={activeModal}
-          onHideModal={onHideModal}
+          onClickHide={handleClickModalHide}
           onChangeFaculty={onChangeFaculty}
           onChangeKurs={onChangeKurs}
           facultyFilter={facultyFilter}
@@ -257,7 +236,10 @@ const Profile = () => {
         >
           ДГТУ - Расписание
         </RichCell>
-        <SimpleCell disabled after={<Switch onChange={onChangePost} checked={post === 'Преподаватель'} value={post} />}>
+        <SimpleCell
+          disabled
+          after={<Switch onChange={onChangePost} checked={post === 'Преподаватель'} value={post} />}
+        >
           Преподаватель
         </SimpleCell>
         {post === 'Студент' ? (
@@ -266,7 +248,7 @@ const Profile = () => {
               Факультет
             </SimpleCell>
             <SimpleCell
-              onClick={onClickSelectGroup}
+              onClick={handleClickSearchGroup}
               expandable={true}
               indicator={
                 <div className={classes.Cell}>
@@ -277,14 +259,14 @@ const Profile = () => {
             >
               Группа
             </SimpleCell>
-            <SimpleCell onClick={onClickGroupTeachers} expandable={true}>
+            <SimpleCell onClick={handleClickTeachers} expandable={true}>
               Ваши преподаватели
             </SimpleCell>
           </>
         ) : (
           <>
             <SimpleCell
-              onClick={onClickSelectTeacher}
+              onClick={handleClickSearchTeacher}
               expandable={true}
               indicator={
                 <div className={classes.Cell}>
@@ -295,15 +277,15 @@ const Profile = () => {
             >
               ФИО
             </SimpleCell>
-            <SimpleCell onClick={onClickTeacherGroups} expandable={true}>
+            <SimpleCell onClick={handleClickGroups} expandable={true}>
               Ваши группы
             </SimpleCell>
           </>
         )}
-        <SimpleCell onClick={onClickDisciplines} expandable={true}>
+        <SimpleCell onClick={handleClickDisciplines} expandable={true}>
           Ваши предметы
         </SimpleCell>
-        <ToggleTheme onClickToggleTheme={onClickToggleTheme} />
+        <ToggleTheme onChangeTheme={onChangeTheme} />
         {snack}
       </Panel>
       <Panel id="searchGroup">
@@ -311,17 +293,17 @@ const Profile = () => {
           groups={groups}
           faculty={facultyFilter}
           kurs={kursFilter}
-          onFiltersClick={() => setActiveModal('filtersGroup')}
-          onClickGroup={onClickGroup}
-          goBack={onGoMain}
-          fetching={fetchinGroups}
+          onClickFilters={() => setActiveModal('filtersGroup')}
+          onChangeGroup={onChangeGroup}
+          onClickBack={handleClickBack}
+          fetching={fetchingGroups}
         />
       </Panel>
       <Panel id="searchTeacher">
         <SearchTeacher
           teachers={teachers}
-          onClickTeacher={onClickTeacher}
-          goBack={onGoMain}
+          onChangeTeacher={onChangeTeacher}
+          onClickBack={handleClickBack}
           fetching={fetchingTeachers}
         />
       </Panel>
@@ -329,7 +311,7 @@ const Profile = () => {
         <CustomList
           list={disciplines}
           header={'Список предметов'}
-          goBack={onGoMain}
+          onClickBack={handleClickBack}
           disabled={true}
           fetching={fetchingDisciplines}
         />
@@ -338,7 +320,7 @@ const Profile = () => {
         <CustomList
           list={teacherGroups}
           header={'Список групп'}
-          goBack={onGoMain}
+          onClickBack={handleClickBack}
           disabled={true}
           fetching={fetchingTeacherGroups}
         />
@@ -346,9 +328,9 @@ const Profile = () => {
       <Panel id="groupTeachers">
         <CustomList
           list={groupTeachers}
-          onClick={onClickGroupTeacher}
+          onClick={onChangeTeacher}
           header={'Список преподавателей'}
-          goBack={onGoMain}
+          onClickBack={handleClickBack}
           objectList={true}
           fetching={fetchingGroupTeachers}
         />

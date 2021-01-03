@@ -1,8 +1,8 @@
 import React from 'react'
-import List from '@vkontakte/vkui/dist/components/List/List'
+import { List } from '@vkontakte/vkui'
 
-import classes from './LessonList.module.css'
 import Lesson from './Lesson/Lesson'
+import classes from './LessonList.module.css'
 
 const LessonList = ({ lessons }) => {
   return (

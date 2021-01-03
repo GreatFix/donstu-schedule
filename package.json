@@ -1,18 +1,18 @@
 {
-  "name": "donstu-rasp",
+  "name": "donstu-schedule",
   "version": "1.0.0",
-  "description": "",
+  "description": "Это VK mini app приложения для студентов и преподавателей ДГТУ, в нем можно посмотреть расписание, новости и т.д. ",
   "main": "index.js",
   "scripts": {
     "start": "cross-env PORT=10888 HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",
-    "deploy": "vk-miniapps-deploy",
-    "precommit": "lint-staged"
+    "deploy": "vk-miniapps-deploy"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["donstu","schedule","vkmini","react","redux","reactjs"],
+  "author":"Umalat M",
   "license": "MIT",
+  "homepage": "https://vk.com/app7690503",
   "devDependencies": {
     "cross-env": "^5.2.0",
     "eslint-config-prettier": "^7.1.0",
@@ -40,7 +40,6 @@
     "react-dom": "^16.9.0",
     "react-redux": "^7.2.2",
     "react-swipeable": "^6.0.1",
-    "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0"

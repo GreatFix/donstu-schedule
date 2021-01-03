@@ -1,15 +1,18 @@
 import React from 'react'
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
-import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack'
-import List from '@vkontakte/vkui/dist/components/List/List'
-import SimpleCell from '@vkontakte/vkui/dist/components/SimpleCell/SimpleCell'
-import Spinner from '@vkontakte/vkui/dist/components/Spinner/Spinner'
-import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
+import { PanelHeader, PanelHeaderBack, List, SimpleCell, Spinner, Headline } from '@vkontakte/vkui'
 
-const CustomList = ({ list, header, goBack, fetching, onClick = null, disabled = true, objectList = false }) => {
+const CustomList = ({
+  list,
+  header,
+  onClickBack,
+  fetching,
+  onClick = null,
+  disabled = true,
+  objectList = false,
+}) => {
   return (
     <>
-      <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
+      <PanelHeader left={<PanelHeaderBack onClick={onClickBack} />}>
         <Headline>{header}</Headline>
       </PanelHeader>
       {fetching ? (

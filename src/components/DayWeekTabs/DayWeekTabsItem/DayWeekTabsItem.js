@@ -1,12 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Headline from '@vkontakte/vkui/dist/components/Typography/Headline/Headline'
-import Caption from '@vkontakte/vkui/dist/components/Typography/Caption/Caption'
-import TabsItem from '@vkontakte/vkui/dist/components/TabsItem/TabsItem'
-
-import classes from './DayWeekTabsItem.module.css'
+import { Headline, Caption, TabsItem } from '@vkontakte/vkui'
 
 import { setDate } from '../../../store/actions/date'
+import classes from './DayWeekTabsItem.module.css'
 
 const MONTHS = [
   'Январь',
@@ -29,7 +26,11 @@ const DayWeekTabsItem = ({ dayWeekShortName, day }) => {
   const date = useSelector((state) => state.date.date)
 
   return Object.keys(day.lessons).length ? (
-    <TabsItem onClick={() => onSetDate(new Date(day.date))} selected={date === day.date} className={classes.TabsItem}>
+    <TabsItem
+      onClick={() => onSetDate(new Date(day.date))}
+      selected={date === day.date}
+      className={classes.TabsItem}
+    >
       <Headline weight="medium" style={{ marginBottom: 8 }}>
         {dayWeekShortName}
       </Headline>

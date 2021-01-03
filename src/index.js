@@ -10,38 +10,6 @@ import { store } from './store/store'
 import { setAll, setBridgeSupport } from './store/actions/userData'
 import { setDate } from './store/actions/date'
 
-async function getInBridge() {
-  const res = await bridge.send('VKWebAppStorageGet', {
-    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME', 'POST', 'TEACHER_ID', 'TEACHER_NAME'],
-  })
-  const userData = {}
-  res.keys.forEach((obj) => {
-    if (obj.value) userData[obj.key] = obj.value
-  })
-
-  const url = new URL(window.location.href)
-  const platform = url.searchParams.get('vk_platform')
-
-  userData.PLATFORM = platform
-
-  return userData
-}
-
-async function getInStorage() {
-  let userData = {}
-  let keys = Object.keys(localStorage)
-  for (let key of keys) {
-    userData[key] = localStorage.getItem(key)
-  }
-
-  const url = new URL(window.location.href)
-  const platform = url.searchParams.get('vk_platform')
-
-  userData.PLATFORM = platform
-
-  return userData
-}
-
 const appInit = async () => {
   await bridge.send('VKWebAppInit').then(
     (res) =>
@@ -87,3 +55,35 @@ const appInit = async () => {
 }
 
 appInit()
+
+async function getInBridge() {
+  const res = await bridge.send('VKWebAppStorageGet', {
+    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME', 'POST', 'TEACHER_ID', 'TEACHER_NAME'],
+  })
+  const userData = {}
+  res.keys.forEach((obj) => {
+    if (obj.value) userData[obj.key] = obj.value
+  })
+
+  const url = new URL(window.location.href)
+  const platform = url.searchParams.get('vk_platform')
+
+  userData.PLATFORM = platform
+
+  return userData
+}
+
+async function getInStorage() {
+  let userData = {}
+  let keys = Object.keys(localStorage)
+  for (let key of keys) {
+    userData[key] = localStorage.getItem(key)
+  }
+
+  const url = new URL(window.location.href)
+  const platform = url.searchParams.get('vk_platform')
+
+  userData.PLATFORM = platform
+
+  return userData
+}

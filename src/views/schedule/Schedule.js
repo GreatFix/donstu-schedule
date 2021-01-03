@@ -1,21 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import View from '@vkontakte/vkui/dist/components/View/View'
-import PullToRefresh from '@vkontakte/vkui/dist/components/PullToRefresh/PullToRefresh'
-import FixedLayout from '@vkontakte/vkui/dist/components/FixedLayout/FixedLayout'
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
-import Snackbar from '@vkontakte/vkui/dist/components/Snackbar/Snackbar'
-import Icon28CancelCircleFillRed from '@vkontakte/icons/dist/28/cancel_circle_fill_red'
+import { View, PullToRefresh, FixedLayout, PanelHeader, Panel, Snackbar } from '@vkontakte/vkui'
+import { Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import { useSwipeable } from 'react-swipeable'
 
 import { fetchSchedule, clearError } from '../../store/actions/fetchSchedule'
 import { nextWeek, prevWeek, setDate } from '../../store/actions/date'
-
-import classes from './Schedule.module.css'
 import DayWeekTabs from '../../components/DayWeekTabs/DayWeekTabs'
 import SheduleDay from '../../components/SheduleDay/SheduleDay'
 import image from '../../img/404.png'
+import classes from './Schedule.module.css'
 
 const Schedule = () => {
   const dispatch = useDispatch()
@@ -70,8 +64,8 @@ const Schedule = () => {
           }}
           isFetching={fetching}
         >
-          {schedule ? (
-            <SheduleDay day={schedule.days[dayWeekNum]} />
+          {!error ? (
+            schedule && <SheduleDay day={schedule.days[dayWeekNum]} />
           ) : (
             <div className={classes.Error}>
               <img src={image} className={classes.Image} alt={'Ошибка запроса'} />

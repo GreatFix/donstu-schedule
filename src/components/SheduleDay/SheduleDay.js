@@ -1,9 +1,9 @@
 import React from 'react'
-import Title from '@vkontakte/vkui/dist/components/Typography/Title/Title'
+import { Title } from '@vkontakte/vkui'
 
-import classes from './SheduleDay.module.css'
 import LessonList from './LessonList/LessonList'
 import image from '../../img/sleeping_people.png'
+import classes from './SheduleDay.module.css'
 
 const SheduleDay = ({ day }) => {
   if (Object.keys(day.lessons).length) {

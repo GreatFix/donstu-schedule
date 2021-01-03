@@ -1,34 +1,42 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import ModalRoot from '@vkontakte/vkui/dist/components/ModalRoot/ModalRoot'
-import ModalPage from '@vkontakte/vkui/dist/components/ModalPage/ModalPage'
-import ModalPageHeader from '@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader'
-import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton'
-import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout'
-import Select from '@vkontakte/vkui/dist/components/Select/Select'
-import Icon24Cancel from '@vkontakte/icons/dist/24/cancel'
-import Icon24Done from '@vkontakte/icons/dist/24/done'
-import { usePlatform } from '@vkontakte/vkui/dist/hooks/usePlatform'
+import {
+  ModalRoot,
+  ModalPage,
+  ModalPageHeader,
+  PanelHeaderButton,
+  FormLayout,
+  Select,
+  usePlatform,
+} from '@vkontakte/vkui'
+import { Icon24Cancel, Icon24Done } from '@vkontakte/icons'
 
-const ModalFilter = ({ activeModal, onHideModal, onChangeFaculty, onChangeKurs, facultyFilter, kursFilter }) => {
+const ModalFilter = ({
+  activeModal,
+  onClickHide,
+  onChangeFaculty,
+  onChangeKurs,
+  facultyFilter,
+  kursFilter,
+}) => {
   const faculties = useSelector((state) => state.fetchGroups.faculties)
   const platform = usePlatform()
   return (
     <ModalRoot activeModal={activeModal}>
       <ModalPage
         id="filtersGroup"
-        onClose={onHideModal}
+        onClose={onClickHide}
         header={
           <ModalPageHeader
             left={
               platform === 'android' && (
-                <PanelHeaderButton onClick={onHideModal}>
+                <PanelHeaderButton onClick={onClickHide}>
                   <Icon24Cancel />
                 </PanelHeaderButton>
               )
             }
             right={
-              <PanelHeaderButton onClick={onHideModal}>
+              <PanelHeaderButton onClick={onClickHide}>
                 {platform === 'ios' ? 'Готово' : <Icon24Done />}
               </PanelHeaderButton>
             }
@@ -38,7 +46,12 @@ const ModalFilter = ({ activeModal, onHideModal, onChangeFaculty, onChangeKurs, 
         }
       >
         <FormLayout>
-          <Select onChange={onChangeFaculty} defaultValue={facultyFilter} top="Факультет" placeholder="Не выбрана">
+          <Select
+            onChange={onChangeFaculty}
+            defaultValue={facultyFilter}
+            top="Факультет"
+            placeholder="Не выбрана"
+          >
             {faculties &&
               faculties.map((faculty, index) => (
                 <option key={index} value={faculty}>
@@ -46,7 +59,12 @@ const ModalFilter = ({ activeModal, onHideModal, onChangeFaculty, onChangeKurs, 
                 </option>
               ))}
           </Select>
-          <Select onChange={onChangeKurs} defaultValue={kursFilter} top="Курс" placeholder="Не выбран">
+          <Select
+            onChange={onChangeKurs}
+            defaultValue={kursFilter}
+            top="Курс"
+            placeholder="Не выбран"
+          >
             <option value={1}>1</option>
             <option value={2}>2</option>
             <option value={3}>3</option>
