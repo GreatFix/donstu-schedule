@@ -14,7 +14,11 @@ const appInit = async () => {
   await bridge.send('VKWebAppInit').then(
     (res) =>
       store.dispatch(
-        setBridgeSupport(res.result && bridge.supports('VKWebAppStorageGet') && bridge.supports('VKWebAppStorageSet'))
+        setBridgeSupport(
+          res.result &&
+            bridge.supports('VKWebAppStorageGet') &&
+            bridge.supports('VKWebAppStorageSet')
+        )
       ) //Проверка на поддержку событий bridge
   )
 
@@ -36,7 +40,9 @@ const appInit = async () => {
     TEACHER_NAME = null,
   } = temp
 
-  store.dispatch(setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST, TEACHER_ID, TEACHER_NAME))
+  store.dispatch(
+    setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST, TEACHER_ID, TEACHER_NAME)
+  )
   store.dispatch(setDate(new Date())) //заносим в редакс
 
   const body = document.querySelector('body')
