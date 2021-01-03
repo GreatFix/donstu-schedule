@@ -12,14 +12,7 @@ import { setDate } from './store/actions/date'
 
 const appInit = async () => {
   await bridge.send('VKWebAppInit').then(
-    (res) =>
-      store.dispatch(
-        setBridgeSupport(
-          res.result &&
-            bridge.supports('VKWebAppStorageGet') &&
-            bridge.supports('VKWebAppStorageSet')
-        )
-      ) //Проверка на поддержку событий bridge
+    (res) => store.dispatch(setBridgeSupport(res.result)) //Проверка на поддержку событий bridge
   )
 
   let temp
