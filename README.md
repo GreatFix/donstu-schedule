@@ -7,3 +7,6 @@
 ## Установка
 
 `npm i donstu-schedule` или `yarn add donstu-schedule`
+## Ссылка на приложение
+
+https://vk.com/services?w=app7690503
