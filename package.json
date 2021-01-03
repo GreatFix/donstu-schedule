@@ -12,7 +12,6 @@
   "keywords": ["donstu","schedule","vkmini","react","redux","reactjs"],
   "author":"Umalat M",
   "license": "MIT",
-  "homepage": "https://vk.com/app7690503",
   "devDependencies": {
     "cross-env": "^5.2.0",
     "eslint-config-prettier": "^7.1.0",
