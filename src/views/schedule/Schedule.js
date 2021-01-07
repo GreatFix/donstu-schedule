@@ -37,7 +37,7 @@ const Schedule = () => {
         before={<Icon28CancelCircleFillRed />}
         duration="60000"
       >
-        {error}
+        {String(error)}
       </Snackbar>
     )
     onClearError()
