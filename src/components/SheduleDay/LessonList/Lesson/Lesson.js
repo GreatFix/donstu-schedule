@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Div } from '@vkontakte/vkui'
 import { Icon16UserOutline, Icon28BookOutline, Icon16Place } from '@vkontakte/icons'
 import { useSwipeable } from 'react-swipeable'
@@ -36,14 +36,17 @@ const Lesson = (props) => {
     lesson = props.lesson[keys[0]]
   }
 
-  const handlers = useSwipeable({
-    onSwipedRight: () => {
-      if (length === 2) setCurLesson('left')
-    },
-    onSwipedLeft: () => {
-      if (length === 2) setCurLesson('right')
-    },
-  })
+  const handlers = useCallback(
+    useSwipeable({
+      onSwipedRight: () => {
+        if (length === 2) setCurLesson('left')
+      },
+      onSwipedLeft: () => {
+        if (length === 2) setCurLesson('right')
+      },
+    }),
+    []
+  )
 
   let clsLesson = classes.Lesson
   if (lesson.currentLesson) clsLesson += ' ' + classes.CurrentLesson
@@ -89,4 +92,4 @@ const Lesson = (props) => {
     </div>
   )
 }
-export default Lesson
+export default React.memo(Lesson)

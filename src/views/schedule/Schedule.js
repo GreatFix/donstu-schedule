@@ -76,7 +76,7 @@ const Schedule = () => {
     },
     [bridgeSupport, helpers, onAddHelpers]
   )
-  console.log(helpers)
+
   return (
     <View id="shedule" activePanel="active">
       <Panel id="active">

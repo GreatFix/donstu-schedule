@@ -60,4 +60,4 @@ const DayWeekTabs = ({ arrows, helpers, handleClickTooltip }) => {
   )
 }
 
-export default DayWeekTabs
+export default React.memo(DayWeekTabs)

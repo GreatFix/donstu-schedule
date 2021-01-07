@@ -60,4 +60,4 @@ const DayWeekTabsItem = ({ dayWeekShortName, day }) => {
   )
 }
 
-export default DayWeekTabsItem
+export default React.memo(DayWeekTabsItem)

@@ -50,4 +50,4 @@ const CustomList = ({
   )
 }
 
-export default CustomList
+export default React.memo(CustomList)

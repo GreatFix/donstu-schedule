@@ -9,4 +9,4 @@ const ToggleTheme = ({ onChangeTheme }) => {
   )
 }
 
-export default ToggleTheme
+export default React.memo(ToggleTheme)

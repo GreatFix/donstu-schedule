@@ -98,15 +98,25 @@ const Profile = (props) => {
     )
   }
 
-  const handleClickSearchGroup = () => {
+  const handleClickModalHide = useCallback(() => {
+    setActiveModal(null)
+  }, [])
+
+  const handleClickBack = useCallback(() => {
+    setActivePanel('main')
+  }, [])
+
+  const handleClickSearchGroup = useCallback(() => {
     onFetchGroups()
     setActivePanel('searchGroup')
-  }
-  const handleClickSearchTeacher = () => {
+  }, [onFetchGroups])
+
+  const handleClickSearchTeacher = useCallback(() => {
     onFetchTeachers()
     setActivePanel('searchTeacher')
-  }
-  const handleClickDisciplines = () => {
+  }, [onFetchTeachers])
+
+  const handleClickDisciplines = useCallback(() => {
     if (post === 'Преподаватель' && !teacherName) {
       setSnack(
         <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
@@ -123,8 +133,9 @@ const Profile = (props) => {
       onFetchDisciplines()
       setActivePanel('disciplines')
     }
-  }
-  const handleClickGroups = () => {
+  }, [groupName, onFetchDisciplines, post, teacherName])
+
+  const handleClickGroups = useCallback(() => {
     if (teacherName) {
       onFetchTeacherGroups()
       setActivePanel('teacherGroups')
@@ -135,8 +146,9 @@ const Profile = (props) => {
         </Snackbar>
       )
     }
-  }
-  const handleClickTeachers = () => {
+  }, [onFetchTeacherGroups, teacherName])
+
+  const handleClickTeachers = useCallback(() => {
     if (groupName) {
       onFetchGroupTeachers()
       setActivePanel('groupTeachers')
@@ -147,44 +159,53 @@ const Profile = (props) => {
         </Snackbar>
       )
     }
-  }
-  const onChangeTeacher = (id, name) => {
-    if (bridgeSupport) {
-      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
-      bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
-      bridge.send('VKWebAppStorageSet', { key: 'POST', value: 'Преподаватель' })
-    } else {
-      localStorage.setItem('TEACHER_ID', String(id))
-      localStorage.setItem('TEACHER_NAME', name)
-      localStorage.setItem('POST', 'Преподаватель')
-    }
+  }, [groupName, onFetchGroupTeachers])
 
-    onSetPost('Преподаватель')
-    onSetTeacher(String(id), name)
-    onClearSchedule()
-    onSetDate(new Date())
-    handleClickBack()
-  }
-  const onChangeGroup = (id, name, facul) => {
-    if (bridgeSupport) {
-      bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: String(id) })
-      bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
-      bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
-    } else {
-      localStorage.setItem('GROUP_ID', String(id))
-      localStorage.setItem('GROUP_NAME', name)
-      localStorage.setItem('FACULTY', facul)
-    }
+  const onChangeTeacher = useCallback(
+    (id, name) => {
+      if (bridgeSupport) {
+        bridge.send('VKWebAppStorageSet', { key: 'TEACHER_ID', value: String(id) })
+        bridge.send('VKWebAppStorageSet', { key: 'TEACHER_NAME', value: name })
+        bridge.send('VKWebAppStorageSet', { key: 'POST', value: 'Преподаватель' })
+      } else {
+        localStorage.setItem('TEACHER_ID', String(id))
+        localStorage.setItem('TEACHER_NAME', name)
+        localStorage.setItem('POST', 'Преподаватель')
+      }
 
-    onSetGroup(String(id), facul, name)
-    onClearSchedule()
-    onSetDate(new Date())
-    setKursFilter(null)
-    setFacultyFilter(null)
+      onSetPost('Преподаватель')
+      onSetTeacher(String(id), name)
+      onClearSchedule()
+      onSetDate(new Date())
+      handleClickBack()
+    },
+    [bridgeSupport, handleClickBack, onClearSchedule, onSetDate, onSetPost, onSetTeacher]
+  )
 
-    handleClickBack()
-  }
-  const onChangeTheme = () => {
+  const onChangeGroup = useCallback(
+    (id, name, facul) => {
+      if (bridgeSupport) {
+        bridge.send('VKWebAppStorageSet', { key: 'GROUP_ID', value: String(id) })
+        bridge.send('VKWebAppStorageSet', { key: 'GROUP_NAME', value: name })
+        bridge.send('VKWebAppStorageSet', { key: 'FACULTY', value: facul })
+      } else {
+        localStorage.setItem('GROUP_ID', String(id))
+        localStorage.setItem('GROUP_NAME', name)
+        localStorage.setItem('FACULTY', facul)
+      }
+
+      onSetGroup(String(id), facul, name)
+      onClearSchedule()
+      onSetDate(new Date())
+      setKursFilter(null)
+      setFacultyFilter(null)
+
+      handleClickBack()
+    },
+    [bridgeSupport, handleClickBack, onClearSchedule, onSetDate, onSetGroup]
+  )
+
+  const onChangeTheme = useCallback(() => {
     const body = document.querySelector('body')
     let theme = body.getAttribute('scheme')
 
@@ -203,31 +224,31 @@ const Profile = (props) => {
         localStorage.setItem('THEME', 'space_gray')
       }
     }
-  }
-  const onChangeFaculty = (e) => {
-    setFacultyFilter(e.target.value)
-  }
-  const onChangeKurs = (e) => {
-    setKursFilter(Number(e.target.value))
-  }
-  const onChangePost = (e) => {
-    let newPost = 'Студент'
-    if (e.target.value === 'Студент') newPost = 'Преподаватель'
-    onSetPost(newPost)
-    if (bridgeSupport) {
-      bridge.send('VKWebAppStorageSet', { key: 'POST', value: newPost })
-    } else {
-      localStorage.setItem('POST', newPost)
-    }
+  }, [bridgeSupport])
 
-    onClearSchedule()
-  }
-  const handleClickModalHide = () => {
-    setActiveModal(null)
-  }
-  const handleClickBack = () => {
-    setActivePanel('main')
-  }
+  const onChangeFaculty = useCallback((e) => {
+    setFacultyFilter(e.target.value)
+  }, [])
+
+  const onChangeKurs = useCallback((e) => {
+    setKursFilter(Number(e.target.value))
+  }, [])
+
+  const onChangePost = useCallback(
+    (e) => {
+      let newPost = 'Студент'
+      if (e.target.value === 'Студент') newPost = 'Преподаватель'
+      onSetPost(newPost)
+      if (bridgeSupport) {
+        bridge.send('VKWebAppStorageSet', { key: 'POST', value: newPost })
+      } else {
+        localStorage.setItem('POST', newPost)
+      }
+
+      onClearSchedule()
+    },
+    [bridgeSupport, onClearSchedule, onSetPost]
+  )
 
   if (props.redirectToSearch && activePanel === 'main') {
     if (props.redirectToSearch === 'group' && !groupName) handleClickSearchGroup()

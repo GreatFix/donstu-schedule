@@ -14,4 +14,4 @@ const LessonList = ({ lessons }) => {
   )
 }
 
-export default LessonList
+export default React.memo(LessonList)

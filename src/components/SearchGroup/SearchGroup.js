@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
   PanelHeader,
   PanelHeaderBack,
@@ -21,7 +21,7 @@ const SearchGroup = ({
 }) => {
   let [search, setSearch] = useState('')
 
-  const onChange = (event) => setSearch(event.target.value)
+  const onChange = useCallback((event) => setSearch(event.target.value), [])
 
   const result = () => {
     return groups.filter((group) => {

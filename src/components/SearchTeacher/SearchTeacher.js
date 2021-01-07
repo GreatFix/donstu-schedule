@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
   PanelHeader,
   PanelHeaderBack,
@@ -14,7 +14,7 @@ import { Icon28FaceRecognitionOutline, Icon32SearchOutline } from '@vkontakte/ic
 const SearchTeacher = ({ teachers, onClickBack, onChangeTeacher, fetching }) => {
   let [search, setSearch] = useState('')
 
-  const onChange = (event) => setSearch(event.target.value)
+  const onChange = useCallback((event) => setSearch(event.target.value), [])
 
   const result = () => {
     return teachers.filter((teacher) => {
@@ -58,4 +58,4 @@ const SearchTeacher = ({ teachers, onClickBack, onChangeTeacher, fetching }) => 
   )
 }
 
-export default SearchTeacher
+export default React.memo(SearchTeacher)
