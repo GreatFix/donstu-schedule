@@ -8,7 +8,7 @@ import DayWeekTabsItem from './DayWeekTabsItem/DayWeekTabsItem'
 
 const DAYS_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
-const DayWeekTabs = ({ arrows, helpers, handleClickTooltip }) => {
+const DayWeekTabs = ({ arrows, helpers = '', handleClickTooltip = null }) => {
   const dispatch = useDispatch()
   const NextWeek = useCallback(() => dispatch(nextWeek()), [dispatch])
   const PrevWeek = useCallback(() => dispatch(prevWeek()), [dispatch])
