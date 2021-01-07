@@ -9,8 +9,15 @@
     "predeploy": "npm run build",
     "deploy": "vk-miniapps-deploy"
   },
-  "keywords": ["donstu","schedule","vkmini","react","redux","reactjs"],
-  "author":"Umalat M",
+  "keywords": [
+    "donstu",
+    "schedule",
+    "vkmini",
+    "react",
+    "redux",
+    "reactjs"
+  ],
+  "author": "Umalat M",
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^5.2.0",
@@ -21,11 +28,11 @@
     "react-scripts": "^3.4.1"
   },
   "dependencies": {
-    "@vkontakte/icons": "^1.18.2",
+    "@vkontakte/icons": "1.69.0",
     "@vkontakte/vk-bridge": "^2.3.0",
     "@vkontakte/vk-miniapps-deploy": "0.0.17",
     "@vkontakte/vkui": "^3.13.2",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "chalk": "^2.4.2",
     "core-js": "^3.6.4",
