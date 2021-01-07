@@ -1,6 +1,6 @@
 {
   "name": "donstu-schedule",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Это VK mini app приложения для студентов и преподавателей ДГТУ, в нем можно посмотреть расписание, новости и т.д. ",
   "main": "index.js",
   "scripts": {
