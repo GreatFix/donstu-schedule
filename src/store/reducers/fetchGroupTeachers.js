@@ -1,4 +1,8 @@
-import { ERROR_GROUP_TEACHERS, SUCCESS_GROUP_TEACHERS, FETCHING_GROUP_TEACHERS } from '../actions/actionTypes'
+import {
+  ERROR_GROUP_TEACHERS,
+  SUCCESS_GROUP_TEACHERS,
+  FETCHING_GROUP_TEACHERS,
+} from '../actions/actionTypes'
 
 const initialState = {
   teachers: null,

@@ -2,7 +2,7 @@ import React from 'react'
 import { Title } from '@vkontakte/vkui'
 
 import LessonList from './LessonList/LessonList'
-import image from '../../img/sleeping_people.png'
+import image from '../../img/empty.png'
 import classes from './SheduleDay.module.css'
 
 const SheduleDay = ({ day }) => {

@@ -1,9 +1,10 @@
 import { ERROR_DISCIPLINES, SUCCESS_DISCIPLINES, FETCHING_DISCIPLINES } from './actionTypes'
 import axios from 'axios'
 
-function error() {
+function error(error) {
   return {
     type: ERROR_DISCIPLINES,
+    error,
   }
 }
 function success(disciplines) {
@@ -37,7 +38,7 @@ export function fetchDisciplines() {
     axios({
       url,
       crossDomain: true,
-      timeout: 20000,
+      timeout: 15000,
     }).then(
       (res) => {
         if (res.data.data.info.group.name) {

@@ -6,6 +6,7 @@ import {
   SET_PLATFORM,
   SET_POST,
   SET_BRIDGE_SUPPORT,
+  ADD_HELPERS,
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
   teacherId: null,
   teacherName: null,
   bridgeSupport: false,
+  helpers: '',
 }
 
 export function userDataReducer(state = initialState, action) {
@@ -33,9 +35,15 @@ export function userDataReducer(state = initialState, action) {
         post: action.post,
         teacherId: action.teacherId,
         teacherName: action.teacherName,
+        helpers: action.helpers,
       }
     case SET_GROUP:
-      return { ...state, groupId: action.groupId, groupName: action.groupName, faculty: action.faculty }
+      return {
+        ...state,
+        groupId: action.groupId,
+        groupName: action.groupName,
+        faculty: action.faculty,
+      }
     case SET_TEACHER:
       return { ...state, teacherId: action.teacherId, teacherName: action.teacherName }
     case SET_THEME:
@@ -44,9 +52,10 @@ export function userDataReducer(state = initialState, action) {
       return { ...state, platform: action.platform }
     case SET_POST:
       return { ...state, post: action.post }
-
     case SET_BRIDGE_SUPPORT:
       return { ...state, bridgeSupport: action.bridgeSupport }
+    case ADD_HELPERS:
+      return { ...state, helpers: state.helpers + action.tag }
     default:
       return state
   }

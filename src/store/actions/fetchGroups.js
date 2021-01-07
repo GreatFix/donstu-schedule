@@ -1,9 +1,10 @@
 import { ERROR_GROUPS, SUCCESS_GROUPS, FETCHING_GROUPS } from './actionTypes'
 import axios from 'axios'
 
-function error() {
+function error(error) {
   return {
     type: ERROR_GROUPS,
+    error,
   }
 }
 function success(groups, faculties) {
@@ -27,7 +28,7 @@ export function fetchGroups() {
     axios({
       url,
       crossDomain: true,
-      timeout: 20000,
+      timeout: 15000,
     }).then(
       (res) => {
         const groups = res.data.data

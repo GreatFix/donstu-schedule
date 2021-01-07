@@ -31,10 +31,11 @@ const appInit = async () => {
     POST = 'Студент',
     TEACHER_ID = null,
     TEACHER_NAME = null,
+    HELPERS = '',
   } = temp
 
   store.dispatch(
-    setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST, TEACHER_ID, TEACHER_NAME)
+    setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST, TEACHER_ID, TEACHER_NAME, HELPERS)
   )
   store.dispatch(setDate(new Date())) //заносим в редакс
 
@@ -57,7 +58,16 @@ appInit()
 
 async function getInBridge() {
   const res = await bridge.send('VKWebAppStorageGet', {
-    keys: ['GROUP_ID', 'GROUP_NAME', 'FACULTY', 'THEME', 'POST', 'TEACHER_ID', 'TEACHER_NAME'],
+    keys: [
+      'GROUP_ID',
+      'GROUP_NAME',
+      'FACULTY',
+      'THEME',
+      'POST',
+      'TEACHER_ID',
+      'TEACHER_NAME',
+      'HELPERS',
+    ],
   })
   const userData = {}
   res.keys.forEach((obj) => {

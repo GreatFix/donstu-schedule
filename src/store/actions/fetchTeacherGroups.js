@@ -1,9 +1,14 @@
-import { ERROR_TEACHER_GROUPS, SUCCESS_TEACHER_GROUPS, FETCHING_TEACHER_GROUPS } from '../actions/actionTypes'
+import {
+  ERROR_TEACHER_GROUPS,
+  SUCCESS_TEACHER_GROUPS,
+  FETCHING_TEACHER_GROUPS,
+} from '../actions/actionTypes'
 import axios from 'axios'
 
-function error() {
+function error(error) {
   return {
     type: ERROR_TEACHER_GROUPS,
+    error,
   }
 }
 function success(groups) {
@@ -28,7 +33,7 @@ export function fetchTeacherGroups() {
     axios({
       url,
       crossDomain: true,
-      timeout: 20000,
+      timeout: 15000,
     }).then(
       (res) => {
         if (res.data.data.info.prepod.name) {

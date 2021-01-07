@@ -42,7 +42,11 @@ const DayWeekTabsItem = ({ dayWeekShortName, day }) => {
       </Caption>
     </TabsItem>
   ) : (
-    <TabsItem selected={date === day.date} className={classes.DisabledTabsItem}>
+    <TabsItem
+      onClick={() => onSetDate(new Date(day.date))}
+      selected={date === day.date}
+      className={classes.DisabledTabsItem}
+    >
       <Headline weight="medium" style={{ marginBottom: 8 }}>
         {dayWeekShortName}
       </Headline>

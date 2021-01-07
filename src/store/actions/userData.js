@@ -6,9 +6,20 @@ import {
   SET_PLATFORM,
   SET_POST,
   SET_BRIDGE_SUPPORT,
+  ADD_HELPERS,
 } from '../actions/actionTypes'
 
-export function setAll(groupId, groupName, faculty, theme, platform, post, teacherId, teacherName) {
+export function setAll(
+  groupId,
+  groupName,
+  faculty,
+  theme,
+  platform,
+  post,
+  teacherId,
+  teacherName,
+  helpers
+) {
   return {
     type: SET_ALL,
     groupId,
@@ -19,6 +30,7 @@ export function setAll(groupId, groupName, faculty, theme, platform, post, teach
     post,
     teacherId,
     teacherName,
+    helpers,
   }
 }
 export function setGroup(groupId, groupName, faculty) {
@@ -58,5 +70,11 @@ export function setBridgeSupport(bridgeSupport) {
   return {
     type: SET_BRIDGE_SUPPORT,
     bridgeSupport,
+  }
+}
+export function addHelpers(tag) {
+  return {
+    type: ADD_HELPERS,
+    tag,
   }
 }

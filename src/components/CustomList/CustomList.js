@@ -1,6 +1,14 @@
 import React from 'react'
-import { PanelHeader, PanelHeaderBack, List, SimpleCell, Spinner, Headline } from '@vkontakte/vkui'
-
+import {
+  PanelHeader,
+  PanelHeaderBack,
+  List,
+  SimpleCell,
+  Spinner,
+  Headline,
+  Placeholder,
+} from '@vkontakte/vkui'
+import Icon28FaceRecognitionOutline from '@vkontakte/icons/dist/28/face_recognition_outline'
 const CustomList = ({
   list,
   header,
@@ -19,7 +27,7 @@ const CustomList = ({
         <Spinner />
       ) : (
         <List>
-          {list ? (
+          {list && list.length ? (
             list.map((item, index) => (
               <SimpleCell
                 disabled={disabled}
@@ -32,9 +40,9 @@ const CustomList = ({
               </SimpleCell>
             ))
           ) : (
-            <SimpleCell>
-              <span>Не найдено</span>
-            </SimpleCell>
+            <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
+              Не найдено
+            </Placeholder>
           )}
         </List>
       )}

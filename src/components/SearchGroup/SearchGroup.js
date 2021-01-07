@@ -7,9 +7,9 @@ import {
   SimpleCell,
   Spinner,
   Headline,
+  Placeholder,
 } from '@vkontakte/vkui'
-import { Icon24Filter } from '@vkontakte/icons'
-
+import { Icon24Filter, Icon28FaceRecognitionOutline, Icon32SearchOutline } from '@vkontakte/icons'
 const SearchGroup = ({
   groups,
   faculty,
@@ -48,16 +48,27 @@ const SearchGroup = ({
         <Spinner />
       ) : (
         <List>
-          {(search || kurs || faculty) &&
-            result().map((group) => (
-              <SimpleCell
-                onClick={() => onChangeGroup(group.id, group.name, group.facul)}
-                key={group.id}
-                indicator={group.facul}
-              >
-                <span>{group.name}</span>
-              </SimpleCell>
-            ))}
+          {search || kurs || faculty ? (
+            result().length ? (
+              result().map((group) => (
+                <SimpleCell
+                  onClick={() => onChangeGroup(group.id, group.name, group.facul)}
+                  key={group.id}
+                  indicator={group.facul}
+                >
+                  <span>{group.name}</span>
+                </SimpleCell>
+              ))
+            ) : (
+              <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
+                Не найдено
+              </Placeholder>
+            )
+          ) : (
+            <Placeholder icon={<Icon32SearchOutline width={56} height={56} />}>
+              Введите значение для поиска
+            </Placeholder>
+          )}
         </List>
       )}
     </>

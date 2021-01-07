@@ -1,4 +1,4 @@
-import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE, CLEAR_ERROR } from './actionTypes'
+import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from './actionTypes'
 import axios from 'axios'
 import { toggleOff, setDate } from './date'
 
@@ -24,11 +24,6 @@ export function clearSchedule() {
     type: CLEAR_SCHEDULE,
   }
 }
-export function clearError() {
-  return {
-    type: CLEAR_ERROR,
-  }
-}
 export function fetchSchedule() {
   return (dispatch, getStore) => {
     dispatch(fetching())
@@ -41,14 +36,14 @@ export function fetchSchedule() {
     if (post === 'Студент') {
       const groupId = store.userData.groupId
       if (!groupId) {
-        dispatch(error('Error: Выберите группу'))
+        dispatch(error('Error: Группа не выбрана'))
         return
       }
       url = `https://edu.donstu.ru/api/Rasp?idGroup=${groupId}&sdate=${date}`
     } else if (post === 'Преподаватель') {
       const teacherId = store.userData.teacherId
       if (!teacherId) {
-        dispatch(error('Error: Выберите преподавателя'))
+        dispatch(error('Error: Преподаватель не выбран'))
         return
       }
       url = `https://edu.donstu.ru/api/Rasp?idTeacher=${teacherId}&sdate=${date}`
@@ -59,7 +54,7 @@ export function fetchSchedule() {
     axios({
       url,
       crossDomain: true,
-      timeout: 20000,
+      timeout: 15000,
     }).then(
       (res) => {
         if (res.data.data.info.group.name || res.data.data.info.prepod.name) {
@@ -102,12 +97,16 @@ function dataTransformation(data, platform) {
       days[0].date = new Date(startDate.setDate(startDate.getDate())).toISOString().split('T')[0]
       for (let i = 1; i < 7; i++) {
         days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
-        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
+        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1))
+          .toISOString()
+          .split('T')[0] //Задаем дату для каждого дня недели
       }
     } else {
       for (let i = 0; i < 7; i++) {
         days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
-        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0] //Задаем дату для каждого дня недели
+        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1))
+          .toISOString()
+          .split('T')[0] //Задаем дату для каждого дня недели
       }
     }
 
@@ -128,7 +127,10 @@ function dataTransformation(data, platform) {
       if (!days[key].lessons[`${start}-${end}`]) days[key].lessons[`${start}-${end}`] = {}
 
       let currentLesson = false //определение текущего занятия
-      if (checkCurrentLesson(currentTime, start, end) && checkCurrentDay(currentDate, days[key].date))
+      if (
+        checkCurrentLesson(currentTime, start, end) &&
+        checkCurrentDay(currentDate, days[key].date)
+      )
         currentLesson = true
       const [typeL, ...nameAndSubgroupL] = data.rasp[les].дисциплина.split(' ')
       const [name] = nameAndSubgroupL.join(' ').split(',')

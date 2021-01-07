@@ -3,7 +3,6 @@ import {
   SUCCESS_SCHEDULE,
   FETCHING_SCHEDULE,
   CLEAR_SCHEDULE,
-  CLEAR_ERROR,
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -25,9 +24,7 @@ export function fetchScheduleReducer(state = initialState, action) {
     case FETCHING_SCHEDULE:
       return { ...state, fetching: true }
     case CLEAR_SCHEDULE:
-      return { ...state, schedule: null }
-    case CLEAR_ERROR:
-      return { ...state, error: null }
+      return { ...state, schedule: null, error: null }
     default:
       return state
   }

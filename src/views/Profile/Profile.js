@@ -12,7 +12,7 @@ import {
   Snackbar,
   usePlatform,
 } from '@vkontakte/vkui'
-import { Icon24ChevronCompactRight } from '@vkontakte/icons'
+import { Icon24ChevronCompactRight, Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
 
 import { fetchGroups } from '../../store/actions/fetchGroups'
@@ -32,7 +32,7 @@ import CustomList from '../../components/CustomList/CustomList'
 import logo from '../../img/logo.png'
 import classes from './Profile.module.css'
 
-const Profile = () => {
+const Profile = (props) => {
   const dispatch = useDispatch()
   const onFetchGroups = useCallback(() => dispatch(fetchGroups()), [dispatch])
   const onFetchTeachers = useCallback(() => dispatch(fetchTeachers()), [dispatch])
@@ -76,6 +76,27 @@ const Profile = () => {
   const [facultyFilter, setFacultyFilter] = useState('')
   const [kursFilter, setKursFilter] = useState(0)
   const platform = usePlatform()
+
+  const error = useSelector(
+    (state) =>
+      state.fetchGroups.error ||
+      state.fetchTeachers.error ||
+      state.fetchGroupTeachers.error ||
+      state.fetchDisciplines.error ||
+      state.fetchTeacherGroups.error
+  )
+  if (error && !snack) {
+    setSnack(
+      <Snackbar
+        layout="vertical"
+        onClose={() => setSnack(null)}
+        before={<Icon28CancelCircleFillRed />}
+        duration="60000"
+      >
+        {String(error)}
+      </Snackbar>
+    )
+  }
 
   const handleClickSearchGroup = () => {
     onFetchGroups()
@@ -208,6 +229,11 @@ const Profile = () => {
     setActivePanel('main')
   }
 
+  if (props.redirectToSearch && activePanel === 'main') {
+    if (props.redirectToSearch === 'group' && !groupName) handleClickSearchGroup()
+    else if (props.redirectToSearch === 'teacher' && !teacherName) handleClickSearchTeacher()
+  }
+
   return (
     <View
       id="profile"
@@ -298,6 +324,7 @@ const Profile = () => {
           onClickBack={handleClickBack}
           fetching={fetchingGroups}
         />
+        {snack}
       </Panel>
       <Panel id="searchTeacher">
         <SearchTeacher
@@ -306,6 +333,7 @@ const Profile = () => {
           onClickBack={handleClickBack}
           fetching={fetchingTeachers}
         />
+        {snack}
       </Panel>
       <Panel id="disciplines">
         <CustomList
@@ -315,6 +343,7 @@ const Profile = () => {
           disabled={true}
           fetching={fetchingDisciplines}
         />
+        {snack}
       </Panel>
       <Panel id="teacherGroups">
         <CustomList
@@ -324,6 +353,7 @@ const Profile = () => {
           disabled={true}
           fetching={fetchingTeacherGroups}
         />
+        {snack}
       </Panel>
       <Panel id="groupTeachers">
         <CustomList
@@ -334,6 +364,7 @@ const Profile = () => {
           objectList={true}
           fetching={fetchingGroupTeachers}
         />
+        {snack}
       </Panel>
     </View>
   )

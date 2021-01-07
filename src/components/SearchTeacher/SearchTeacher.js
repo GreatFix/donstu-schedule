@@ -7,7 +7,9 @@ import {
   SimpleCell,
   Spinner,
   Headline,
+  Placeholder,
 } from '@vkontakte/vkui'
+import { Icon28FaceRecognitionOutline, Icon32SearchOutline } from '@vkontakte/icons'
 
 const SearchTeacher = ({ teachers, onClickBack, onChangeTeacher, fetching }) => {
   let [search, setSearch] = useState('')
@@ -30,15 +32,26 @@ const SearchTeacher = ({ teachers, onClickBack, onChangeTeacher, fetching }) => 
         <Spinner />
       ) : (
         <List>
-          {search &&
-            result().map((teacher) => (
-              <SimpleCell
-                onClick={() => onChangeTeacher(teacher.id, teacher.name)}
-                key={teacher.id}
-              >
-                <span>{teacher.name}</span>
-              </SimpleCell>
-            ))}
+          {search ? (
+            result().length ? (
+              result().map((teacher) => (
+                <SimpleCell
+                  onClick={() => onChangeTeacher(teacher.id, teacher.name)}
+                  key={teacher.id}
+                >
+                  <span>{teacher.name}</span>
+                </SimpleCell>
+              ))
+            ) : (
+              <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
+                Не найдено
+              </Placeholder>
+            )
+          ) : (
+            <Placeholder icon={<Icon32SearchOutline width={56} height={56} />}>
+              Введите значение для поиска
+            </Placeholder>
+          )}
         </List>
       )}
     </>

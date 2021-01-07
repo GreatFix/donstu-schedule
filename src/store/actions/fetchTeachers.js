@@ -1,9 +1,10 @@
 import { ERROR_TEACHERS, SUCCESS_TEACHERS, FETCHING_TEACHERS } from '../actions/actionTypes'
 import axios from 'axios'
 
-function error() {
+function error(error) {
   return {
     type: ERROR_TEACHERS,
+    error,
   }
 }
 function success(teachers) {
@@ -26,7 +27,7 @@ export function fetchTeachers() {
     axios({
       url,
       crossDomain: true,
-      timeout: 20000,
+      timeout: 15000,
     }).then(
       (res) => {
         const teachers = res.data.data
