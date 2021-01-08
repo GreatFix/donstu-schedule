@@ -11,8 +11,8 @@ import { setAll, setBridgeSupport } from './store/actions/userData'
 import { setDate } from './store/actions/date'
 
 const appInit = async () => {
-  const init = await bridge.send('VKWebAppInit') //Закомментируйте строчку, если приложение запускается вне ВК
-  //const init = {result:false} //А эту раскомментируйте
+  //const init = await bridge.send('VKWebAppInit') //Закомментируйте строчку, если приложение запускается вне ВК
+  const init = { result: false } //А эту раскомментируйте
 
   store.dispatch(setBridgeSupport(init.result)) //Проверка на поддержку событий bridge
   let temp
