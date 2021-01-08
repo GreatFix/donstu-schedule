@@ -20,6 +20,10 @@
 >   - thunk
 > - VKUI
 
+## Скринкаст
+
+![screencast](./src/img/screencast.gif)
+
 ## Ссылки
 
 #### Приложение на [VK](https://vk.com/services?w=app7690503)
