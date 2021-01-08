@@ -11,7 +11,7 @@ import { setAll, setBridgeSupport } from './store/actions/userData'
 import { setDate } from './store/actions/date'
 
 const appInit = async () => {
-  const init = await bridge.send('VKWebAppInit') //Закомментируйте строчку, если приложение запускается вне ВК
+  const init = await bridge.send('VKWebAppInit') //№1 Закомментируйте строчку, если приложение запускается вне ВК
   //const init = {result:false} //А эту раскомментируйте
 
   store.dispatch(setBridgeSupport(init.result)) //Проверка на поддержку событий bridge
@@ -90,7 +90,33 @@ async function getInStorage() {
   }
 
   const url = new URL(window.location.href)
-  const platform = url.searchParams.get('vk_platform')
+  let platform = url.searchParams.get('vk_platform')
+  //№2 Раскоментировать, если запускается вне VK
+  // if (!platform) {
+  //   var userDeviceArray = [
+  //     { device: 'mobile_iphone', platform: /iPhone/ },
+  //     { device: 'mobile_iphone', platform: /iPad/ },
+  //     { device: 'mobile_android', platform: /Android/ },
+  //     { device: 'mobile_android', platform: /Symbian/ },
+  //     { device: 'mobile_android', platform: /Windows Phone/ },
+  //     { device: 'mobile_android', platform: /Tablet OS/ },
+  //     { device: 'desktop_web', platform: /Linux/ },
+  //     { device: 'desktop_web', platform: /Windows NT/ },
+  //     { device: 'desktop_web', platform: /Macintosh/ },
+  //   ]
+
+  //   var platformTemp = navigator.userAgent
+
+  //   function getPlatform() {
+  //     for (var i in userDeviceArray) {
+  //       if (userDeviceArray[i].platform.test(platformTemp)) {
+  //         return userDeviceArray[i].device
+  //       }
+  //     }
+  //     return 'Неизвестная платформа!' + platformTemp
+  //   }
+  //   platform = getPlatform()
+  // }
 
   userData.PLATFORM = platform
 
