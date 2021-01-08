@@ -1,12 +1,18 @@
+<h1 align="center"> donstu-schedule</h1>
 <h1 align="center">
   <a href="https://vk.com/app7690503"><img src="./src/img/logo.png" width="200" alt="DONSTU logo"></a>
 </h1>
 <p align="center">
 Это VK mini app приложения с расписанием для студентов и преподавателей ДГТУ. 
 </p>
+
+## Клонирование
+
+`git clone git:github.com/GreatFix/donstu-schedule.git`
+
 ## Установка
 
-`git clone donstu-schedule`
+Выполните команду `npm install`(или `yarn`)
 
 > Обратите внимание на строки 14 и 94 в index.js
 
