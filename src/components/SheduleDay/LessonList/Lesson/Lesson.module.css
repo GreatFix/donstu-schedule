@@ -39,7 +39,7 @@
   margin-top: 8px;
   font-size: 12px;
   display: grid;
-  grid-template-rows: 1fr 1fr 2fr 1fr 10px; /*  строки */
+  grid-template-rows: 1fr 1fr 2fr 1fr auto; /*  строки */
   grid-template-columns: 1fr 0.25fr 5fr; /*  столбцы */
   grid-template-areas:
     'Time Line Type '
