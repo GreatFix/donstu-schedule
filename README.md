@@ -8,6 +8,8 @@
 
 `git clone donstu-schedule`
 
+> Обратите внимание на index.js строку 14 и 94
+
 ## Стэк
 
 - React
