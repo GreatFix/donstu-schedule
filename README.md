@@ -6,8 +6,22 @@
 </p>
 ## Установка
 
-`npm i donstu-schedule` или `yarn add donstu-schedule`
+`git clone donstu-schedule`
 
-## Ссылка на приложение
+## Стэк
 
-https://vk.com/services?w=app7690503
+- React
+  - useState
+  - useEffect
+  - useCallBack
+- Redux (useDispatch, useSelector)
+  - thunk
+- VKUI
+
+## Ссылки
+
+#### Приложение на [VK](https://vk.com/services?w=app7690503)
+
+> Требуется авторизация в социальной сети VK
+
+#### Приложение на [Github Page](https://greatfix.github.io/donstu-schedule)
