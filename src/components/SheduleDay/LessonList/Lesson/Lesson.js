@@ -1,6 +1,12 @@
 import React, { useState, useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import { Div } from '@vkontakte/vkui'
-import { Icon16UserOutline, Icon28BookOutline, Icon16Place } from '@vkontakte/icons'
+import {
+  Icon16UserOutline,
+  Icon20Users3Outline,
+  Icon28BookOutline,
+  Icon16Place,
+} from '@vkontakte/icons'
 import { useSwipeable } from 'react-swipeable'
 
 import classes from './Lesson.module.css'
@@ -15,6 +21,7 @@ const COLORS = {
 }
 
 const Lesson = (props) => {
+  const post = useSelector((state) => state.userData.post)
   let [curLesson, setCurLesson] = useState('left')
 
   let keys = Object.keys(props.lesson)
@@ -76,10 +83,17 @@ const Lesson = (props) => {
             <span>{lesson.name}</span>
           </div>
 
-          <div className={classes.Teacher}>
-            <Icon16UserOutline />
-            <span>{lesson.teacher}</span>
-          </div>
+          {post === 'Студент' ? (
+            <div className={classes.Teacher}>
+              <Icon16UserOutline />
+              <span>{lesson.teacher}</span>
+            </div>
+          ) : (
+            <div className={classes.Group}>
+              <Icon20Users3Outline width={16} height={16} />
+              <span>{lesson.group}</span>
+            </div>
+          )}
         </div>
 
         {length === 2 ? (

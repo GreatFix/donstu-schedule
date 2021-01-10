@@ -187,6 +187,7 @@ function dataTransformation(data, platform) {
 
       const aud = data.rasp[les].аудитория
       const teacher = data.rasp[les].преподаватель
+      const group = data.rasp[les].группа
 
       days[key].lessons[`${start}-${end}`][data.rasp[les].код] = {
         start,
@@ -194,6 +195,7 @@ function dataTransformation(data, platform) {
         name,
         aud,
         teacher,
+        group,
         type,
         number,
         currentLesson,
