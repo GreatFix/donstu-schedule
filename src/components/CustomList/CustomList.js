@@ -35,6 +35,7 @@ const CustomList = ({
                   objectList && onClick(item.id, item.name)
                 }}
                 key={index}
+                multiline={true}
               >
                 <span>{objectList ? item.name : item}</span>
               </SimpleCell>

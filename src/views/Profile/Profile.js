@@ -10,6 +10,9 @@ import {
   SimpleCell,
   Switch,
   Snackbar,
+  PanelHeaderBack,
+  Headline,
+  Spinner,
   usePlatform,
 } from '@vkontakte/vkui'
 import { Icon24ChevronCompactRight, Icon28CancelCircleFillRed } from '@vkontakte/icons'
@@ -106,6 +109,10 @@ const Profile = (props) => {
     setActivePanel('main')
   }, [])
 
+  const handleClickSettings = useCallback(() => {
+    setActivePanel('settings')
+  }, [])
+
   const handleClickSearchGroup = useCallback(() => {
     onFetchGroups()
     setActivePanel('searchGroup')
@@ -160,6 +167,86 @@ const Profile = (props) => {
       )
     }
   }, [groupName, onFetchGroupTeachers])
+
+  const handleClickAddToDisplay = useCallback(async () => {
+    const check = await bridge.send('VKWebAppAddToHomeScreenInfo')
+    if (check.is_feature_supported) {
+      if (check.is_added_to_home_screen) {
+        setSnack(
+          <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+            Уже добавлено
+          </Snackbar>
+        )
+        return
+      }
+      const adding = await bridge.send('VKWebAppAddToHomeScreen')
+      setSnack(<Spinner />)
+      if (adding.result) {
+        const timeout = setTimeout(async () => {
+          const check = await bridge.send('VKWebAppAddToHomeScreenInfo')
+          if (check.is_added_to_home_screen) {
+            setSnack(
+              <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+                Успешно добавлено
+              </Snackbar>
+            )
+            return
+          } else {
+            setSnack(
+              <Snackbar layout="vertical" duration="5000" onClose={() => setSnack(null)}>
+                Не добавлено. Видимо нужно сначала дать разрешение VK добавлять ярлыки рабочего
+                стола.
+              </Snackbar>
+            )
+          }
+        }, 11000)
+
+        const interval = setInterval(async () => {
+          const check = await bridge.send('VKWebAppAddToHomeScreenInfo')
+          if (check.is_added_to_home_screen) {
+            setSnack(
+              <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+                Успешно добавлено
+              </Snackbar>
+            )
+            clearTimeout(timeout)
+            clearInterval(interval)
+            return
+          }
+        }, 1000)
+      } else {
+        setSnack(
+          <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+            {adding.error_type + '-' + adding.error_data}
+          </Snackbar>
+        )
+      }
+    } else {
+      setSnack(
+        <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+          На вашем устройстве не поддерживается
+        </Snackbar>
+      )
+    }
+  }, [])
+
+  const handleClickAddToFavorite = useCallback(async () => {
+    const adding = await bridge.send('VKWebAppAddToFavorites')
+
+    if (adding.result) {
+      setSnack(
+        <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+          Успешно добавлено
+        </Snackbar>
+      )
+    } else {
+      setSnack(
+        <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+          {adding.error_type + '-' + adding.error_data}
+        </Snackbar>
+      )
+    }
+  }, [])
 
   const onChangeTeacher = useCallback(
     (id, name) => {
@@ -283,6 +370,11 @@ const Profile = (props) => {
         >
           ДГТУ - Расписание
         </RichCell>
+        {bridgeSupport && (
+          <SimpleCell onClick={handleClickSettings} expandable={true}>
+            Настройки
+          </SimpleCell>
+        )}
         <SimpleCell
           disabled
           after={<Switch onChange={onChangePost} checked={post === 'Преподаватель'} value={post} />}
@@ -316,11 +408,12 @@ const Profile = (props) => {
               onClick={handleClickSearchTeacher}
               expandable={true}
               indicator={
-                <div className={classes.Cell}>
+                <div className={classes.Cell} style={{ fontSize: '0.8em' }}>
                   {teacherName}
                   {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
                 </div>
               }
+              multiline={true}
             >
               ФИО
             </SimpleCell>
@@ -385,6 +478,18 @@ const Profile = (props) => {
           objectList={true}
           fetching={fetchingGroupTeachers}
         />
+        {snack}
+      </Panel>
+      <Panel id="settings">
+        <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />}>
+          <Headline>Настройки</Headline>
+        </PanelHeader>
+        <SimpleCell onClick={handleClickAddToFavorite} expandable={true}>
+          Добавить в избранное
+        </SimpleCell>
+        <SimpleCell onClick={handleClickAddToDisplay} expandable={true} multiline={true}>
+          Добавить ярлык на главный экран
+        </SimpleCell>
         {snack}
       </Panel>
     </View>
