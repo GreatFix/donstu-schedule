@@ -152,6 +152,9 @@ function dataTransformation(data, platform) {
         case 'экз':
           type = 'Экзамен'
           break
+        case 'зач':
+          type = 'Зачёт'
+          break
         default:
           type = ''
       }
