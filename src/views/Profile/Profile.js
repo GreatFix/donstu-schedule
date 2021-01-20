@@ -281,7 +281,7 @@ const Profile = (props) => {
         localStorage.setItem('FACULTY', facul)
       }
 
-      onSetGroup(String(id), facul, name)
+      onSetGroup(String(id), name, facul)
       onClearSchedule()
       onSetDate(new Date())
       setKursFilter(null)
