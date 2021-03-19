@@ -57,6 +57,7 @@ const Profile = (props) => {
   const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
   const post = useSelector((state) => state.userData.post)
 
+  const groupId = useSelector((state) => state.userData.groupId)
   const groupName = useSelector((state) => state.userData.groupName)
   const faculty = useSelector((state) => state.userData.faculty)
   const groups = useSelector((state) => state.fetchGroups.groups)
@@ -401,6 +402,9 @@ const Profile = (props) => {
             <SimpleCell onClick={handleClickTeachers} expandable={true}>
               Ваши преподаватели
             </SimpleCell>
+            <SimpleCell expandable={true}>
+              <Link href={`https://edu.donstu.ru/Ved/?group=${groupId}`}>Перейти к ведомостям</Link>
+            </SimpleCell>
           </>
         ) : (
           <>
@@ -425,6 +429,7 @@ const Profile = (props) => {
         <SimpleCell onClick={handleClickDisciplines} expandable={true}>
           Ваши предметы
         </SimpleCell>
+
         <ToggleTheme onChangeTheme={onChangeTheme} />
         {snack}
       </Panel>

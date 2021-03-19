@@ -12,7 +12,7 @@ import { setDate } from './store/actions/date'
 
 const appInit = async () => {
   const init = await bridge.send('VKWebAppInit') //№1 Закомментируйте строчку, если приложение запускается вне ВК
-  //const init = {result:false} //А эту раскомментируйте
+  //const init = { result: false } //А эту раскомментируйте
 
   store.dispatch(setBridgeSupport(init.result)) //Проверка на поддержку событий bridge
   let temp
@@ -88,8 +88,9 @@ async function getInStorage() {
   const url = new URL(window.location.href)
   let platform = url.searchParams.get('vk_platform')
   //№2 Раскоментировать, если запускается вне VK
+  // let userDeviceArray
   // if (!platform) {
-  //   var userDeviceArray = [
+  //   userDeviceArray = [
   //     { device: 'mobile_iphone', platform: /iPhone/ },
   //     { device: 'mobile_iphone', platform: /iPad/ },
   //     { device: 'mobile_android', platform: /Android/ },
@@ -113,6 +114,7 @@ async function getInStorage() {
   //   }
   //   platform = getPlatform()
   // }
+  //
 
   userData.PLATFORM = platform
 
