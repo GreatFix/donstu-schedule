@@ -402,9 +402,13 @@ const Profile = (props) => {
             <SimpleCell onClick={handleClickTeachers} expandable={true}>
               Ваши преподаватели
             </SimpleCell>
-            <SimpleCell expandable={true}>
-              <Link href={`https://edu.donstu.ru/Ved/?group=${groupId}`}>Перейти к ведомостям</Link>
-            </SimpleCell>
+            {groupId && (
+              <SimpleCell expandable={true}>
+                <Link href={`https://edu.donstu.ru/Ved/?group=${groupId}`}>
+                  Перейти к ведомостям
+                </Link>
+              </SimpleCell>
+            )}
           </>
         ) : (
           <>
