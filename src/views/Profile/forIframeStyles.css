@@ -1,0 +1,6 @@
+.PanelWithIframe .Panel__in {
+  height: 100% !important;
+}
+.Iframe {
+  height: calc(100% - 56px);
+}

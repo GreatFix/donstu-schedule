@@ -34,6 +34,7 @@ import SearchTeacher from '../../components/SearchTeacher/SearchTeacher'
 import CustomList from '../../components/CustomList/CustomList'
 import logo from '../../img/logo.png'
 import classes from './Profile.module.css'
+import './forIframeStyles.css'
 
 const Profile = (props) => {
   const dispatch = useDispatch()
@@ -168,6 +169,26 @@ const Profile = (props) => {
       )
     }
   }, [groupName, onFetchGroupTeachers])
+
+  const handleClickTeacherPage = useCallback(() => {
+    window.location.href = `https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`
+  }, [teacherName])
+
+  const handleClickVedomosti = useCallback(() => {
+    if (groupId) {
+      setActivePanel('vedomosti')
+    } else {
+      setSnack(
+        <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
+          Выберите для начала группу
+        </Snackbar>
+      )
+    }
+  }, [groupId])
+
+  const handleClickPersonalAccount = useCallback(() => {
+    setActivePanel('personal')
+  }, [])
 
   const handleClickAddToDisplay = useCallback(async () => {
     const check = await bridge.send('VKWebAppAddToHomeScreenInfo')
@@ -371,6 +392,13 @@ const Profile = (props) => {
         >
           ДГТУ - Расписание
         </RichCell>
+        <SimpleCell
+          onClick={handleClickPersonalAccount}
+          expandable={true}
+          indicator={<div>Сайт ДГТУ</div>}
+        >
+          Личный кабинет
+        </SimpleCell>
         {bridgeSupport && (
           <SimpleCell onClick={handleClickSettings} expandable={true}>
             Настройки
@@ -402,11 +430,16 @@ const Profile = (props) => {
             <SimpleCell onClick={handleClickTeachers} expandable={true}>
               Ваши преподаватели
             </SimpleCell>
+            <SimpleCell onClick={handleClickDisciplines} expandable={true}>
+              Ваши предметы
+            </SimpleCell>
             {groupId && (
-              <SimpleCell expandable={true}>
-                <Link href={`https://edu.donstu.ru/Ved/?group=${groupId}`}>
-                  Перейти к ведомостям
-                </Link>
+              <SimpleCell
+                onClick={handleClickVedomosti}
+                expandable={true}
+                indicator={<div>Сайт ДГТУ</div>}
+              >
+                Открыть ведомости
               </SimpleCell>
             )}
           </>
@@ -428,13 +461,21 @@ const Profile = (props) => {
             <SimpleCell onClick={handleClickGroups} expandable={true}>
               Ваши группы
             </SimpleCell>
+            <SimpleCell onClick={handleClickDisciplines} expandable={true}>
+              Ваши предметы
+            </SimpleCell>
+            {teacherName && (
+              <SimpleCell
+                onClick={handleClickTeacherPage}
+                expandable={true}
+                indicator={<div>Яндекс</div>}
+              >
+                Страница преподавателя
+              </SimpleCell>
+            )}
           </>
         )}
-        <SimpleCell onClick={handleClickDisciplines} expandable={true}>
-          Ваши предметы
-        </SimpleCell>
 
-        <ToggleTheme onChangeTheme={onChangeTheme} />
         {snack}
       </Panel>
       <Panel id="searchGroup">
@@ -489,6 +530,36 @@ const Profile = (props) => {
         />
         {snack}
       </Panel>
+      <Panel id="vedomosti" className={'PanelWithIframe'}>
+        <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />} separator={false}>
+          <Headline>Ведомости</Headline>
+        </PanelHeader>
+        <div className={'Iframe'}>
+          <iframe
+            title="ved"
+            src={`https://edu.donstu.ru/Ved/?group=${groupId}`}
+            width="100%"
+            height="100%"
+            frameBorder={0}
+          ></iframe>
+        </div>
+        {snack}
+      </Panel>
+      <Panel id="personal" className={'PanelWithIframe'}>
+        <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />} separator={false}>
+          <Headline>Личный кабинет</Headline>
+        </PanelHeader>
+        <div className={'Iframe'}>
+          <iframe
+            title="ved"
+            src={`https://edu.donstu.ru/WebApp/#`}
+            width="100%"
+            height="100%"
+            frameBorder={0}
+          ></iframe>
+        </div>
+        {snack}
+      </Panel>
       <Panel id="settings">
         <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />}>
           <Headline>Настройки</Headline>
@@ -499,6 +570,7 @@ const Profile = (props) => {
         <SimpleCell onClick={handleClickAddToDisplay} expandable={true} multiline={true}>
           Добавить ярлык на главный экран
         </SimpleCell>
+        <ToggleTheme onChangeTheme={onChangeTheme} />
         {snack}
       </Panel>
     </View>
