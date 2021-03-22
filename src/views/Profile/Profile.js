@@ -171,7 +171,10 @@ const Profile = (props) => {
   }, [groupName, onFetchGroupTeachers])
 
   const handleClickTeacherPage = useCallback(() => {
-    window.location.href = `https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`
+    window.open(
+      `https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`,
+      '_blank'
+    )
   }, [teacherName])
 
   const handleClickVedomosti = useCallback(() => {
