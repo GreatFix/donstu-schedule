@@ -36,7 +36,7 @@
 
 > Требуется авторизация в социальной сети VK
 
-#### Приложение на [Github Page](https://greatfix.github.io/donstu-schedule)
+#### Приложение на [Github Page](https://greatfix.github.io/donstu-schedule) (Устаревшая версия)
 
 ## P.S.
 
