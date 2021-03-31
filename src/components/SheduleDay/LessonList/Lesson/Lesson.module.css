@@ -36,7 +36,6 @@
 .Lesson {
   border-radius: 4px;
   box-shadow: 0 0.5px 0 0 #d3d9de;
-  margin-top: 8px;
   font-size: 12px;
   display: grid;
   grid-template-rows: 1fr 1fr 2fr 1fr auto; /*  строки */

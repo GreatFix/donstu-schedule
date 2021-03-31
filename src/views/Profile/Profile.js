@@ -57,6 +57,7 @@ const Profile = (props) => {
 
   const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
   const post = useSelector((state) => state.userData.post)
+  const platform = useSelector((state) => state.userData.platform)
 
   const groupId = useSelector((state) => state.userData.groupId)
   const groupName = useSelector((state) => state.userData.groupName)
@@ -80,7 +81,7 @@ const Profile = (props) => {
   const [snack, setSnack] = useState(null)
   const [facultyFilter, setFacultyFilter] = useState('')
   const [kursFilter, setKursFilter] = useState(0)
-  const platform = usePlatform()
+  const OS = usePlatform()
 
   const error = useSelector(
     (state) =>
@@ -424,7 +425,7 @@ const Profile = (props) => {
               indicator={
                 <div className={classes.Cell}>
                   {groupName}
-                  {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+                  {OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
                 </div>
               }
             >
@@ -454,7 +455,7 @@ const Profile = (props) => {
               indicator={
                 <div className={classes.Cell} style={{ fontSize: '0.8em' }}>
                   {teacherName}
-                  {platform !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+                  {OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
                 </div>
               }
               multiline={true}
@@ -467,15 +468,23 @@ const Profile = (props) => {
             <SimpleCell onClick={handleClickDisciplines} expandable={true}>
               Ваши предметы
             </SimpleCell>
-            {teacherName && (
-              <SimpleCell
-                onClick={handleClickTeacherPage}
-                expandable={true}
-                indicator={<div>Яндекс</div>}
-              >
-                Страница преподавателя
-              </SimpleCell>
-            )}
+            {teacherName &&
+              (!(OS === 'ios' && platform !== 'desktop_web' && platform !== 'mobile_web') ? (
+                <SimpleCell
+                  onClick={handleClickTeacherPage}
+                  expandable={true}
+                  indicator={<div>Яндекс</div>}
+                >
+                  Страница преподавателя
+                </SimpleCell>
+              ) : (
+                <Link
+                  className={'SimpleCell--ios SimpleCell'}
+                  href={`https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`}
+                >
+                  Страница преподавателя
+                </Link>
+              ))}
           </>
         )}
 

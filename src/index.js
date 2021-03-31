@@ -10,11 +10,20 @@ import { store } from './store/store'
 import { setAll, setBridgeSupport } from './store/actions/userData'
 import { setDate } from './store/actions/date'
 
-const appInit = async () => {
-  const init = await bridge.send('VKWebAppInit') //№1 Закомментируйте строчку, если приложение запускается вне ВК
-  //const init = { result: false } //А эту раскомментируйте
+let init
 
-  store.dispatch(setBridgeSupport(init.result)) //Проверка на поддержку событий bridge
+bridge
+  .send('VKWebAppInit')
+  .then((res) => {
+    init = res
+  })
+  .catch((err) => {
+    throw new Error(err)
+  })
+
+setTimeout(async () => {
+  let support = init?.result ? init?.result : false
+  store.dispatch(setBridgeSupport(support)) //Проверка на поддержку событий bridge
   let temp
 
   if (store.getState().userData.bridgeSupport) {
@@ -48,9 +57,7 @@ const appInit = async () => {
     </Provider>,
     document.getElementById('root')
   )
-}
-
-appInit()
+}, 250)
 
 async function getInBridge() {
   const res = await bridge.send('VKWebAppStorageGet', {
@@ -86,7 +93,7 @@ async function getInStorage() {
   }
 
   const url = new URL(window.location.href)
-  let platform = url.searchParams.get('vk_platform')
+  let platform = url.searchParams.get('vk_platform') //От 31.02.2021 "Сомневаюсь в нижнем коде"
   //№2 Раскоментировать, если запускается вне VK
   // let userDeviceArray
   // if (!platform) {
