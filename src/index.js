@@ -8,7 +8,7 @@ import { Provider } from 'react-redux'
 import App from './App'
 import { store } from './store/store'
 import { setAll, setBridgeSupport } from './store/actions/userData'
-import { setDate } from './store/actions/date'
+import { setCurrentDate } from './store/actions/date'
 
 let init
 
@@ -46,7 +46,7 @@ setTimeout(async () => {
   store.dispatch(
     setAll(GROUP_ID, GROUP_NAME, FACULTY, THEME, PLATFORM, POST, TEACHER_ID, TEACHER_NAME, HELPERS)
   )
-  store.dispatch(setDate(new Date())) //заносим в редакс
+  store.dispatch(setCurrentDate()) //заносим в редакс
 
   const body = document.querySelector('body')
   body.setAttribute('scheme', THEME) //регистрируем цветовую схему

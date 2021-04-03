@@ -25,7 +25,7 @@ import { fetchTeacherGroups } from '../../store/actions/fetchTeacherGroups'
 import { fetchGroupTeachers } from '../../store/actions/fetchGroupTeachers'
 import { setGroup, setPost, setTeacher } from '../../store/actions/userData'
 import { clearSchedule } from '../../store/actions/fetchSchedule'
-import { setDate } from '../../store/actions/date'
+import { setCurrentDate } from '../../store/actions/date'
 
 import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
 import ModalFilter from '../../components/ModalFilter/ModalFilter'
@@ -52,7 +52,7 @@ const Profile = (props) => {
     [dispatch]
   )
   const onSetPost = useCallback((post) => dispatch(setPost(post)), [dispatch])
-  const onSetDate = useCallback((date) => dispatch(setDate(date)), [dispatch])
+  const onSetCurrentDate = useCallback(() => dispatch(setCurrentDate()), [dispatch])
   const onClearSchedule = useCallback(() => dispatch(clearSchedule()), [dispatch])
 
   const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
@@ -289,10 +289,10 @@ const Profile = (props) => {
       onSetPost('Преподаватель')
       onSetTeacher(String(id), name)
       onClearSchedule()
-      onSetDate(new Date())
+      onSetCurrentDate()
       handleClickBack()
     },
-    [bridgeSupport, handleClickBack, onClearSchedule, onSetDate, onSetPost, onSetTeacher]
+    [bridgeSupport, handleClickBack, onClearSchedule, onSetCurrentDate, onSetPost, onSetTeacher]
   )
 
   const onChangeGroup = useCallback(
@@ -309,13 +309,13 @@ const Profile = (props) => {
 
       onSetGroup(String(id), name, facul)
       onClearSchedule()
-      onSetDate(new Date())
+      onSetCurrentDate()
       setKursFilter(null)
       setFacultyFilter(null)
 
       handleClickBack()
     },
-    [bridgeSupport, handleClickBack, onClearSchedule, onSetDate, onSetGroup]
+    [bridgeSupport, handleClickBack, onClearSchedule, onSetCurrentDate, onSetGroup]
   )
 
   const onChangeTheme = useCallback(() => {

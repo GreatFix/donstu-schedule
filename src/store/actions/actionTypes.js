@@ -25,6 +25,7 @@ export const FETCHING_DISCIPLINES = 'FETCHING_DISCIPLINES'
 
 export const SET_DATE_TOGGLE_WEEK = 'SET_DATE_TOGGLE_WEEK'
 export const SET_DATE = 'SET_DATE'
+export const SET_CURRENT_DATE = 'SET_CURRENT_DATE'
 export const TOGGLE_OFF = 'TOGGLE_OFF'
 
 export const SET_ALL = 'SET_ALL'

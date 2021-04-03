@@ -1,6 +1,7 @@
 import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from './actionTypes'
 import axios from 'axios'
 import { toggleOff, setDate } from './date'
+import { DateTime } from 'luxon'
 
 function error(error) {
   return {
@@ -30,7 +31,6 @@ export function fetchSchedule() {
     const store = getStore()
     const toggleWeek = store.date.toggleWeek
     const date = store.date.date
-    const platform = store.userData.platform
     let url = ''
     const post = store.userData.post
     if (post === 'Студент') {
@@ -54,11 +54,11 @@ export function fetchSchedule() {
     axios({
       url,
       crossDomain: true,
-      timeout: 15000,
+      timeout: 20000,
     }).then(
       (res) => {
         if (res.data.data.info.group.name || res.data.data.info.prepod.name) {
-          let tempData = dataTransformation(res.data.data, platform)
+          let tempData = dataTransformation(res.data.data)
           dispatch(success(tempData))
           if (toggleWeek) {
             dispatch(toggleOff())
@@ -68,14 +68,14 @@ export function fetchSchedule() {
               for (let i = 0; i < 7; i++) {
                 if (Object.keys(days[i].lessons).length) newDate = days[i].date
               }
-              if (newDate) dispatch(setDate(new Date(newDate)))
+              if (newDate) dispatch(setDate(newDate))
             } else if (toggleWeek === 'NEXT') {
               let days = tempData.days
               let newDate = null
               for (let i = 6; i >= 0; i--) {
                 if (Object.keys(days[i].lessons).length) newDate = days[i].date
               }
-              if (newDate) dispatch(setDate(new Date(newDate)))
+              if (newDate) dispatch(setDate(newDate))
             }
           }
         }
@@ -88,26 +88,14 @@ export function fetchSchedule() {
   }
 }
 
-function dataTransformation(data, platform) {
+function dataTransformation(data) {
   if (data) {
     let days = {}
-    let startDate = new Date(data.info.date) //устанавливаем дату понедельника
-    if (platform === 'mobile_iphone_messenger' || platform === 'mobile_iphone') {
-      days[0] = { dayWeekName: '', day: '', lessons: {}, date: '' } //для ios дата на 1 меньше
-      days[0].date = new Date(startDate.setDate(startDate.getDate())).toISOString().split('T')[0]
-      for (let i = 1; i < 7; i++) {
-        days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
-        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1))
-          .toISOString()
-          .split('T')[0] //Задаем дату для каждого дня недели
-      }
-    } else {
-      for (let i = 0; i < 7; i++) {
-        days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
-        days[i].date = new Date(startDate.setDate(startDate.getDate() + 1))
-          .toISOString()
-          .split('T')[0] //Задаем дату для каждого дня недели
-      }
+    let startDate = DateTime.fromISO(data.info.date) //устанавливаем дату понедельника
+
+    for (let i = 0; i < 7; i++) {
+      days[i] = { dayWeekName: '', day: '', lessons: {}, date: '' }
+      days[i].date = startDate.plus({ days: i }).toISODate() //Задаем дату для каждого дня недели
     }
 
     let lessons = Object.keys(data.rasp)
@@ -118,10 +106,10 @@ function dataTransformation(data, platform) {
       let key = data.rasp[les].деньНедели - 1
 
       if (!days[key].dayWeekName) days[key].dayWeekName = data.rasp[les].день_недели
-      if (!days[key].day) days[key].day = new Date(data.rasp[les].дата).getDate()
+      if (!days[key].day) days[key].day = DateTime.fromISO(data.rasp[les].дата).day
+      const currentDate = DateTime.local()
 
-      const currentDate = new Date()
-      const currentTime = currentDate.getHours() + ':' + currentDate.getMinutes()
+      const currentTime = currentDate.hour + ':' + currentDate.minute
       const start = data.rasp[les].начало.replace('-', ':')
       const end = data.rasp[les].конец.replace('-', ':')
       if (!days[key].lessons[`${start}-${end}`]) days[key].lessons[`${start}-${end}`] = {}
@@ -229,11 +217,6 @@ function checkCurrentLesson(currentTime, start, end) {
 }
 
 function checkCurrentDay(currentDate, checkingDate) {
-  const currentDay = currentDate.getDate()
-  const currentMonth = currentDate.getMonth()
-  const checkingDay = new Date(checkingDate).getDate()
-  const checkingMonth = new Date(checkingDate).getMonth()
-
-  if (currentDay === checkingDay && currentMonth === checkingMonth) return true
+  if (currentDate.day === checkingDate.day && currentDate.month === checkingDate.month) return true
   else return false
 }

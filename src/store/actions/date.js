@@ -1,9 +1,16 @@
-import { SET_DATE_TOGGLE_WEEK, SET_DATE, TOGGLE_OFF } from '../actions/actionTypes'
+import {
+  SET_DATE_TOGGLE_WEEK,
+  SET_DATE,
+  TOGGLE_OFF,
+  SET_CURRENT_DATE,
+} from '../actions/actionTypes'
 import { fetchSchedule } from './fetchSchedule'
+import { DateTime } from 'luxon'
+
 export function setDateToggleWeek(date, toggleWeek) {
   return {
     type: SET_DATE_TOGGLE_WEEK,
-    date: formatDate(date),
+    date: date,
     dayWeekNum: formatDayWeek(date),
     toggleWeek,
   }
@@ -11,8 +18,15 @@ export function setDateToggleWeek(date, toggleWeek) {
 export function setDate(date) {
   return {
     type: SET_DATE,
-    date: formatDate(date),
+    date: date,
     dayWeekNum: formatDayWeek(date),
+  }
+}
+export function setCurrentDate() {
+  return {
+    type: SET_CURRENT_DATE,
+    date: DateTime.local().toISODate(),
+    dayWeekNum: formatDayWeek(DateTime.local()),
   }
 }
 export function toggleOff() {
@@ -23,90 +37,74 @@ export function toggleOff() {
 
 export function nextWeek() {
   return (dispatch, getStore) => {
-    let date = new Date(getStore().date.date)
+    let date = DateTime.fromSQL(getStore().date.date)
 
-    switch (date.getDay()) {
+    switch (date.weekday) {
       case 0:
-        date.setDate(date.getDate() + 1)
+        date = date.plus({ days: 1 })
         break
       case 1:
-        date.setDate(date.getDate() + 7)
+        date = date.plus({ days: 7 })
         break
       case 2:
-        date.setDate(date.getDate() + 6)
+        date = date.plus({ days: 6 })
         break
       case 3:
-        date.setDate(date.getDate() + 5)
+        date = date.plus({ days: 5 })
         break
       case 4:
-        date.setDate(date.getDate() + 4)
+        date = date.plus({ days: 4 })
         break
       case 5:
-        date.setDate(date.getDate() + 3)
+        date = date.plus({ days: 3 })
         break
       case 6:
-        date.setDate(date.getDate() + 2)
+        date = date.plus({ days: 2 })
         break
       default:
         return console.error('Week not changed')
     }
-    dispatch(setDateToggleWeek(date, 'NEXT'))
+    dispatch(setDateToggleWeek(date.toISODate(), 'NEXT'))
     dispatch(fetchSchedule())
   }
 }
 
 export function prevWeek() {
   return (dispatch, getStore) => {
-    let date = new Date(getStore().date.date)
-
-    switch (date.getDay()) {
+    let date = DateTime.fromSQL(getStore().date.date)
+    console.log(date.weekday)
+    switch (date.weekday) {
       case 0:
-        date.setDate(date.getDate() - 8)
+        date = date.minus({ days: 8 })
         break
       case 1:
-        date.setDate(date.getDate() - 2)
+        date = date.minus({ days: 2 })
         break
       case 2:
-        date.setDate(date.getDate() - 3)
+        date = date.minus({ days: 3 })
         break
       case 3:
-        date.setDate(date.getDate() - 4)
+        date = date.minus({ days: 4 })
         break
       case 4:
-        date.setDate(date.getDate() - 5)
+        date = date.minus({ days: 5 })
         break
       case 5:
-        date.setDate(date.getDate() - 6)
+        date = date.minus({ days: 6 })
         break
       case 6:
-        date.setDate(date.getDate() - 7)
+        date = date.minus({ days: 7 })
         break
       default:
         return console.error('Week not changed')
     }
-    dispatch(setDateToggleWeek(date, 'PREV'))
+    dispatch(setDateToggleWeek(date.toISODate(), 'PREV'))
     dispatch(fetchSchedule())
   }
 }
 
-function formatDate(date) {
-  if (typeof date === 'object') {
-    let dd = date.getDate()
-    if (dd < 10) dd = '0' + dd
-
-    let mm = date.getMonth() + 1
-    if (mm < 10) mm = '0' + mm
-
-    let yyyy = date.getFullYear()
-
-    return `${yyyy}-${mm}-${dd}`
-  } else {
-    return date
-  }
-}
-
 function formatDayWeek(date) {
-  let dayWeekNum = date.getDay()
+  let dayWeekNum = DateTime.fromSQL(date).weekday
   dayWeekNum > 0 ? (dayWeekNum -= 1) : (dayWeekNum = 6)
   return dayWeekNum
 }

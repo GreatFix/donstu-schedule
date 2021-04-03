@@ -17,7 +17,7 @@ import { useSwipeable } from 'react-swipeable'
 
 import { addHelpers } from '../../store/actions/userData'
 import { fetchSchedule } from '../../store/actions/fetchSchedule'
-import { nextWeek, prevWeek, setDate } from '../../store/actions/date'
+import { nextWeek, prevWeek, setCurrentDate } from '../../store/actions/date'
 import DayWeekTabs from '../../components/DayWeekTabs/DayWeekTabs'
 import SheduleDay from '../../components/SheduleDay/SheduleDay'
 import classes from './Schedule.module.css'
@@ -27,7 +27,7 @@ const Schedule = () => {
   const onFetchSchedule = useCallback(() => dispatch(fetchSchedule()), [dispatch])
   const onNextWeek = useCallback(() => dispatch(nextWeek()), [dispatch])
   const onPrevWeek = useCallback(() => dispatch(prevWeek()), [dispatch])
-  const onSetDate = useCallback((date) => dispatch(setDate(date)), [dispatch])
+  const onSetCurrentDate = useCallback(() => dispatch(setCurrentDate), [dispatch])
   const onAddHelpers = useCallback((helpers) => dispatch(addHelpers(helpers)), [dispatch])
 
   const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
@@ -83,7 +83,7 @@ const Schedule = () => {
         <PanelHeader> Расписание </PanelHeader>
         <PullToRefresh
           onRefresh={() => {
-            onSetDate(new Date())
+            onSetCurrentDate()
             onFetchSchedule()
           }}
           isFetching={fetching}

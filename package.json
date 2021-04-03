@@ -38,6 +38,7 @@
     "core-js": "^3.6.4",
     "dotenv": "^8.2.0",
     "eslint-config-react-app": "^6.0.0",
+    "luxon": "^1.26.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.2.2",
