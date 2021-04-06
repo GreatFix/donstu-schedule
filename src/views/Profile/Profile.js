@@ -8,26 +8,37 @@ import {
   RichCell,
   Link,
   SimpleCell,
-  Switch,
   Snackbar,
   PanelHeaderBack,
   Headline,
   Spinner,
   usePlatform,
+  Div,
 } from '@vkontakte/vkui'
 import { Icon24ChevronCompactRight, Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
+
+import {
+  Icon20EducationOutline,
+  Icon20Users3Outline,
+  Icon24BillheadOutline,
+  Icon28BookOutline,
+  Icon24UsersOutline,
+  Icon24UserOutline,
+  Icon56UserBookOutline,
+  Icon28SettingsOutline,
+  Icon36UserCircleOutline,
+} from '@vkontakte/icons'
 
 import { fetchGroups } from '../../store/actions/fetchGroups'
 import { fetchTeachers } from '../../store/actions/fetchTeachers'
 import { fetchDisciplines } from '../../store/actions/fetchDisciplines'
 import { fetchTeacherGroups } from '../../store/actions/fetchTeacherGroups'
 import { fetchGroupTeachers } from '../../store/actions/fetchGroupTeachers'
-import { setGroup, setPost, setTeacher } from '../../store/actions/userData'
+import { setGroup, setPost, setTeacher, setTheme } from '../../store/actions/userData'
 import { clearSchedule } from '../../store/actions/fetchSchedule'
 import { setCurrentDate } from '../../store/actions/date'
 
-import ToggleTheme from '../../components/ToggleTheme/ToggleTheme'
 import ModalFilter from '../../components/ModalFilter/ModalFilter'
 import SearchGroup from '../../components/SearchGroup/SearchGroup'
 import SearchTeacher from '../../components/SearchTeacher/SearchTeacher'
@@ -35,6 +46,7 @@ import CustomList from '../../components/CustomList/CustomList'
 import logo from '../../img/logo.png'
 import classes from './Profile.module.css'
 import './forIframeStyles.css'
+import SliderSwitch from '../../components/SliderSwitch/SliderSwitch'
 
 const Profile = (props) => {
   const dispatch = useDispatch()
@@ -52,12 +64,13 @@ const Profile = (props) => {
     [dispatch]
   )
   const onSetPost = useCallback((post) => dispatch(setPost(post)), [dispatch])
+  const onSetTheme = useCallback((theme) => dispatch(setTheme(theme)), [dispatch])
   const onSetCurrentDate = useCallback(() => dispatch(setCurrentDate()), [dispatch])
   const onClearSchedule = useCallback(() => dispatch(clearSchedule()), [dispatch])
 
   const bridgeSupport = useSelector((state) => state.userData.bridgeSupport)
   const post = useSelector((state) => state.userData.post)
-  const platform = useSelector((state) => state.userData.platform)
+  const theme = useSelector((state) => state.userData.theme)
 
   const groupId = useSelector((state) => state.userData.groupId)
   const groupName = useSelector((state) => state.userData.groupName)
@@ -97,7 +110,7 @@ const Profile = (props) => {
         layout="vertical"
         onClose={() => setSnack(null)}
         before={<Icon28CancelCircleFillRed />}
-        duration="60000"
+        duration="20000"
       >
         {String(error)}
       </Snackbar>
@@ -170,13 +183,6 @@ const Profile = (props) => {
       )
     }
   }, [groupName, onFetchGroupTeachers])
-
-  const handleClickTeacherPage = useCallback(() => {
-    window.open(
-      `https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`,
-      '_blank'
-    )
-  }, [teacherName])
 
   const handleClickVedomosti = useCallback(() => {
     if (groupId) {
@@ -318,26 +324,19 @@ const Profile = (props) => {
     [bridgeSupport, handleClickBack, onClearSchedule, onSetCurrentDate, onSetGroup]
   )
 
-  const onChangeTheme = useCallback(() => {
-    const body = document.querySelector('body')
-    let theme = body.getAttribute('scheme')
-
-    if (theme === 'space_gray') {
-      body.setAttribute('scheme', 'bright_light')
+  const onSwitchTheme = useCallback(
+    (value) => {
+      const body = document.querySelector('body')
+      onSetTheme(value)
+      body.setAttribute('scheme', value)
       if (bridgeSupport) {
-        bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'bright_light' })
+        bridge.send('VKWebAppStorageSet', { key: 'THEME', value: value })
       } else {
-        localStorage.setItem('THEME', 'bright_light')
+        localStorage.setItem('THEME', value)
       }
-    } else {
-      body.setAttribute('scheme', 'space_gray')
-      if (bridgeSupport) {
-        bridge.send('VKWebAppStorageSet', { key: 'THEME', value: 'space_gray' })
-      } else {
-        localStorage.setItem('THEME', 'space_gray')
-      }
-    }
-  }, [bridgeSupport])
+    },
+    [bridgeSupport, onSetTheme]
+  )
 
   const onChangeFaculty = useCallback((e) => {
     setFacultyFilter(e.target.value)
@@ -347,15 +346,14 @@ const Profile = (props) => {
     setKursFilter(Number(e.target.value))
   }, [])
 
-  const onChangePost = useCallback(
-    (e) => {
-      let newPost = 'Студент'
-      if (e.target.value === 'Студент') newPost = 'Преподаватель'
-      onSetPost(newPost)
+  const onSwitchPost = useCallback(
+    (value) => {
+      onSetPost(value)
+
       if (bridgeSupport) {
-        bridge.send('VKWebAppStorageSet', { key: 'POST', value: newPost })
+        bridge.send('VKWebAppStorageSet', { key: 'POST', value: value })
       } else {
-        localStorage.setItem('POST', newPost)
+        localStorage.setItem('POST', value)
       }
 
       onClearSchedule()
@@ -385,65 +383,70 @@ const Profile = (props) => {
     >
       <Panel id="main">
         <PanelHeader> Профиль </PanelHeader>
-        <RichCell
-          disabled
-          before={<Avatar size={48} src={logo} />}
-          caption={
-            <Link className={classes.Link} href="https://vk.com/donstushedule">
-              Подпишитесь, чтобы поддержать автора
-            </Link>
-          }
-        >
-          ДГТУ - Расписание
-        </RichCell>
         <SimpleCell
           onClick={handleClickPersonalAccount}
+          before={<Icon36UserCircleOutline width={24} height={24} />}
           expandable={true}
-          indicator={<div>Сайт ДГТУ</div>}
         >
           Личный кабинет
         </SimpleCell>
-        {bridgeSupport && (
-          <SimpleCell onClick={handleClickSettings} expandable={true}>
-            Настройки
-          </SimpleCell>
-        )}
+
         <SimpleCell
-          disabled
-          after={<Switch onChange={onChangePost} checked={post === 'Преподаватель'} value={post} />}
+          onClick={handleClickSettings}
+          before={<Icon28SettingsOutline width={24} height={24} />}
+          expandable={true}
         >
-          Преподаватель
+          Настройки
         </SimpleCell>
+        <Div>
+          <SliderSwitch
+            title_1={'Студент'}
+            title_2={'Преподаватель'}
+            value={post}
+            onSwitch={onSwitchPost}
+          />
+        </Div>
+
         {post === 'Студент' ? (
           <>
-            <SimpleCell indicator={faculty} disabled>
+            <SimpleCell
+              before={<Icon20EducationOutline width={24} height={24} />}
+              description={faculty}
+              disabled
+            >
               Факультет
             </SimpleCell>
             <SimpleCell
               onClick={handleClickSearchGroup}
+              before={<Icon20Users3Outline width={24} height={24} />}
               expandable={true}
-              indicator={
-                <div className={classes.Cell}>
-                  {groupName}
-                  {OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
-                </div>
-              }
+              indicator={!groupName && 'Выбрать'}
+              after={OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+              description={groupName}
             >
               Группа
             </SimpleCell>
-            <SimpleCell onClick={handleClickTeachers} expandable={true}>
-              Ваши преподаватели
+            <SimpleCell
+              onClick={handleClickTeachers}
+              before={<Icon24UsersOutline width={24} height={24} />}
+              expandable={true}
+            >
+              Преподаватели
             </SimpleCell>
-            <SimpleCell onClick={handleClickDisciplines} expandable={true}>
-              Ваши предметы
+            <SimpleCell
+              onClick={handleClickDisciplines}
+              before={<Icon28BookOutline width={24} height={24} />}
+              expandable={true}
+            >
+              Предметы
             </SimpleCell>
             {groupId && (
               <SimpleCell
                 onClick={handleClickVedomosti}
+                before={<Icon24BillheadOutline width={24} height={24} />}
                 expandable={true}
-                indicator={<div>Сайт ДГТУ</div>}
               >
-                Открыть ведомости
+                Ведомости
               </SimpleCell>
             )}
           </>
@@ -451,40 +454,43 @@ const Profile = (props) => {
           <>
             <SimpleCell
               onClick={handleClickSearchTeacher}
+              before={<Icon24UserOutline width={24} height={24} />}
               expandable={true}
-              indicator={
-                <div className={classes.Cell} style={{ fontSize: '0.8em' }}>
-                  {teacherName}
-                  {OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
-                </div>
-              }
+              indicator={!teacherName && 'Выбрать'}
+              after={OS === 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
               multiline={true}
+              description={teacherName}
             >
               ФИО
             </SimpleCell>
-            <SimpleCell onClick={handleClickGroups} expandable={true}>
-              Ваши группы
+            <SimpleCell
+              onClick={handleClickGroups}
+              before={<Icon20Users3Outline width={24} height={24} />}
+              expandable={true}
+            >
+              Группы
             </SimpleCell>
-            <SimpleCell onClick={handleClickDisciplines} expandable={true}>
-              Ваши предметы
+            <SimpleCell
+              onClick={handleClickDisciplines}
+              before={<Icon28BookOutline width={24} height={24} />}
+              expandable={true}
+            >
+              Предметы
             </SimpleCell>
-            {teacherName &&
-              (!(OS === 'ios' && platform !== 'desktop_web' && platform !== 'mobile_web') ? (
-                <SimpleCell
-                  onClick={handleClickTeacherPage}
-                  expandable={true}
-                  indicator={<div>Яндекс</div>}
-                >
-                  Страница преподавателя
-                </SimpleCell>
-              ) : (
+            {teacherName && (
+              <SimpleCell
+                before={<Icon56UserBookOutline width={24} height={24} />}
+                expandable={true}
+                multiline={true}
+              >
                 <Link
-                  className={'SimpleCell--ios SimpleCell'}
+                  target={'_blank'}
                   href={`https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`}
                 >
                   Страница преподавателя
                 </Link>
-              ))}
+              </SimpleCell>
+            )}
           </>
         )}
 
@@ -576,13 +582,37 @@ const Profile = (props) => {
         <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />}>
           <Headline>Настройки</Headline>
         </PanelHeader>
-        <SimpleCell onClick={handleClickAddToFavorite} expandable={true}>
-          Добавить в избранное
-        </SimpleCell>
-        <SimpleCell onClick={handleClickAddToDisplay} expandable={true} multiline={true}>
-          Добавить ярлык на главный экран
-        </SimpleCell>
-        <ToggleTheme onChangeTheme={onChangeTheme} />
+        <RichCell
+          disabled
+          before={<Avatar size={48} src={logo} />}
+          caption={
+            <Link className={classes.Link} href="https://vk.com/donstushedule">
+              Подпишитесь, чтобы поддержать автора
+            </Link>
+          }
+        >
+          ДГТУ - Расписание
+        </RichCell>
+        {bridgeSupport && (
+          <>
+            <SimpleCell onClick={handleClickAddToFavorite} expandable={true}>
+              Добавить в избранное
+            </SimpleCell>
+            <SimpleCell onClick={handleClickAddToDisplay} expandable={true} multiline={true}>
+              Добавить ярлык на главный экран
+            </SimpleCell>
+          </>
+        )}
+        <Div>
+          <SliderSwitch
+            title_1={'Темная тема'}
+            value_1={'space_gray'}
+            title_2={'Светлая тема'}
+            value_2={'bright_ligth'}
+            value={theme}
+            onSwitch={onSwitchTheme}
+          />
+        </Div>
         {snack}
       </Panel>
     </View>
