@@ -26,7 +26,7 @@ export function setCurrentDate() {
   return {
     type: SET_CURRENT_DATE,
     date: DateTime.local().toISODate(),
-    dayWeekNum: formatDayWeek(DateTime.local()),
+    dayWeekNum: formatDayWeek(DateTime.local().toISODate()),
   }
 }
 export function toggleOff() {
