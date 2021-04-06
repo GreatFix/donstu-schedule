@@ -1,0 +1,63 @@
+.SliderSwitch {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 2px;
+  margin: 0px 4px 0px 4px;
+  background-color: var(--field_background);
+  cursor: pointer;
+}
+.SliderSwitch .SliderSwitch--MidleBorder {
+  width: 1px;
+  height: 28px;
+  opacity: 0.5;
+  background-color: #b8c1cc;
+  background-color: var(--toolbar_attach_background_from);
+}
+
+.SliderSwitch .SliderSwitch--Item-1,
+.SliderSwitch .SliderSwitch--Item-2 {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  box-sizing: border-box;
+  color: var(--text_subhead);
+  cursor: pointer;
+  width: 50%;
+  transition: all 250ms linear;
+}
+
+.SliderSwitch .SliderSwitch--Item-1:hover,
+.SliderSwitch .SliderSwitch--Item-2:hover {
+  color: var(--text_tertiary);
+}
+
+.SliderSwitch .SliderSwitch--Item-1:focus,
+.SliderSwitch .SliderSwitch--Item-2:focus {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.SliderSwitch--Input-1:checked ~ .SliderSwitch--Item-1,
+.SliderSwitch--Input-2:checked ~ .SliderSwitch--Item-2 {
+  background-color: var(--background_content);
+  color: var(--text_primary);
+  border-radius: 6px;
+}
+
+.SliderSwitch--Input-1:checked ~ .SliderSwitch--MidleBorder,
+.SliderSwitch--Input-2:checked ~ .SliderSwitch--MidleBorder {
+  background-color: var(--field_background);
+}
+
+.SliderSwitch .SliderSwitch--Item-1 span,
+.SliderSwitch .SliderSwitch--Item-2 span {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
+}
