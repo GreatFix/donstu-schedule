@@ -457,7 +457,7 @@ const Profile = (props) => {
               before={<Icon24UserOutline width={24} height={24} />}
               expandable={true}
               indicator={!teacherName && 'Выбрать'}
-              after={OS === 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+              after={OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
               multiline={true}
               description={teacherName}
             >
