@@ -120,8 +120,16 @@ function dataTransformation(data) {
         checkCurrentDay(currentDate, days[key].date)
       )
         currentLesson = true
-      const [typeL, ...nameAndSubgroupL] = data.rasp[les].дисциплина.split(' ')
-      const [name] = nameAndSubgroupL.join(' ').split(',')
+      let typeL, subgroup, name, nameAndSubgroupL
+      ;[typeL, ...nameAndSubgroupL] = data.rasp[les].дисциплина.split(' ')
+      nameAndSubgroupL = nameAndSubgroupL.join(' ')
+      if (nameAndSubgroupL.includes('п/г')) {
+        const index = nameAndSubgroupL.indexOf('п/г')
+        subgroup = nameAndSubgroupL.substring(index - 1)
+        name = nameAndSubgroupL.substring(0, index - 2)
+      } else {
+        name = nameAndSubgroupL
+      }
 
       let type = ''
       switch (typeL) {
@@ -190,9 +198,9 @@ function dataTransformation(data) {
         type,
         number,
         currentLesson,
+        subgroup,
       }
     })
-
     let temp = {
       //WeekID: data.info.selectedNumNed, отключены за ненадобностью
       //Day: data.info.curNumNed,

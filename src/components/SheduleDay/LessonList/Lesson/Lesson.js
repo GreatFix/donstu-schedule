@@ -87,12 +87,18 @@ const Lesson = (props) => {
           {post === 'Студент' ? (
             <div className={classes.Teacher}>
               <Icon16UserOutline />
-              <span>{lesson.teacher}</span>
+              <span>
+                {lesson.teacher}
+                {lesson.subgroup}
+              </span>
             </div>
           ) : (
             <div className={classes.Group}>
               <Icon20Users3Outline width={16} height={16} />
-              <span>{lesson.group}</span>
+              <span>
+                {lesson.group}
+                {lesson.subgroup}
+              </span>
             </div>
           )}
         </div>
