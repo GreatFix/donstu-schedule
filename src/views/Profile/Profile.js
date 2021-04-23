@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Panel,
@@ -14,6 +14,7 @@ import {
   Spinner,
   usePlatform,
   Div,
+  ConfigProvider,
 } from '@vkontakte/vkui'
 import { Icon24ChevronCompactRight, Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
@@ -47,6 +48,17 @@ import logo from '../../img/logo.png'
 import classes from './Profile.module.css'
 import './forIframeStyles.css'
 import SliderSwitch from '../../components/SliderSwitch/SliderSwitch'
+
+const PANEL_MAIN = 'MAIN'
+const PANEL_SEARCH_GROUP = 'SEARCH_GROUP'
+const PANEL_SEARCH_TEACHER = 'SEARCH_TEACHER'
+const PANEL_SETTINGS = 'SETTINGS'
+const PANEL_DISCIPLINES = 'DISCIPLINES'
+const PANEL_TEACHER_GROUPS = 'TEACHER_GROUPS'
+const PANEL_GROUP_TEACHERS = 'GROUP_TEACHERS'
+const PANEL_VEDOMOSTI = 'VEDOMOSTI'
+const PANEL_PERSONAL = 'PERSONAL'
+const MODAL_FILTERS_GROUP = 'FILTERS_GROUP'
 
 const Profile = (props) => {
   const dispatch = useDispatch()
@@ -89,9 +101,10 @@ const Profile = (props) => {
   const teacherGroups = useSelector((state) => state.fetchTeacherGroups.groups)
   const fetchingTeacherGroups = useSelector((state) => state.fetchTeacherGroups.fetching)
 
-  const [activePanel, setActivePanel] = useState('main')
+  const [activePanel, setActivePanel] = useState(PANEL_MAIN)
   const [activeModal, setActiveModal] = useState(null)
   const [snack, setSnack] = useState(null)
+  const [history, setHistory] = useState([PANEL_MAIN])
   const [facultyFilter, setFacultyFilter] = useState('')
   const [kursFilter, setKursFilter] = useState(0)
   const OS = usePlatform()
@@ -117,27 +130,56 @@ const Profile = (props) => {
     )
   }
 
-  const handleClickModalHide = useCallback(() => {
-    setActiveModal(null)
+  const forward = useCallback(
+    (next) => {
+      window.history.pushState(next, 'next', `#${next}`)
+      setActivePanel(next)
+      setHistory([...history, next])
+      if (next === PANEL_MAIN) {
+        bridge.send('VKWebAppEnableSwipeBack')
+      } else {
+        bridge.send('VKWebAppDisableSwipeBack')
+      }
+    },
+    [history]
+  )
+  useEffect(() => {
+    bridge.send('VKWebAppEnableSwipeBack')
   }, [])
 
   const handleClickBack = useCallback(() => {
-    setActivePanel('main')
-  }, [])
+    if (activeModal) {
+      setActiveModal(null)
+      let temp = history
+      temp.pop()
+      setHistory(temp)
+    } else if (activePanel !== PANEL_MAIN) {
+      let temp = history
+      temp.pop()
+      setHistory(temp)
+      setActivePanel(history[history.length - 1])
+    } else bridge.send('VKWebAppClose', { status: 'success' })
+  }, [activeModal, activePanel, history])
+
+  const handleClickFilters = useCallback(() => {
+    setActiveModal(MODAL_FILTERS_GROUP)
+    window.history.pushState(MODAL_FILTERS_GROUP, 'MODAL_FILTERS_GROUP', `#${MODAL_FILTERS_GROUP}`)
+    setHistory([...history, MODAL_FILTERS_GROUP])
+  }, [history])
 
   const handleClickSettings = useCallback(() => {
-    setActivePanel('settings')
-  }, [])
+    forward(PANEL_SETTINGS)
+  }, [forward])
 
   const handleClickSearchGroup = useCallback(() => {
     onFetchGroups()
-    setActivePanel('searchGroup')
-  }, [onFetchGroups])
+    forward(PANEL_SEARCH_GROUP)
+  }, [forward, onFetchGroups])
 
   const handleClickSearchTeacher = useCallback(() => {
     onFetchTeachers()
-    setActivePanel('searchTeacher')
-  }, [onFetchTeachers])
+    forward(PANEL_SEARCH_TEACHER)
+  }, [forward, onFetchTeachers])
 
   const handleClickDisciplines = useCallback(() => {
     if (post === 'Преподаватель' && !teacherName) {
@@ -154,14 +196,14 @@ const Profile = (props) => {
       )
     } else {
       onFetchDisciplines()
-      setActivePanel('disciplines')
+      forward(PANEL_DISCIPLINES)
     }
-  }, [groupName, onFetchDisciplines, post, teacherName])
+  }, [forward, groupName, onFetchDisciplines, post, teacherName])
 
   const handleClickGroups = useCallback(() => {
     if (teacherName) {
       onFetchTeacherGroups()
-      setActivePanel('teacherGroups')
+      forward(PANEL_TEACHER_GROUPS)
     } else {
       setSnack(
         <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
@@ -169,12 +211,12 @@ const Profile = (props) => {
         </Snackbar>
       )
     }
-  }, [onFetchTeacherGroups, teacherName])
+  }, [forward, onFetchTeacherGroups, teacherName])
 
   const handleClickTeachers = useCallback(() => {
     if (groupName) {
       onFetchGroupTeachers()
-      setActivePanel('groupTeachers')
+      forward(PANEL_GROUP_TEACHERS)
     } else {
       setSnack(
         <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
@@ -182,11 +224,11 @@ const Profile = (props) => {
         </Snackbar>
       )
     }
-  }, [groupName, onFetchGroupTeachers])
+  }, [forward, groupName, onFetchGroupTeachers])
 
   const handleClickVedomosti = useCallback(() => {
     if (groupId) {
-      setActivePanel('vedomosti')
+      forward(PANEL_VEDOMOSTI)
     } else {
       setSnack(
         <Snackbar layout="vertical" duration="3000" onClose={() => setSnack(null)}>
@@ -194,11 +236,11 @@ const Profile = (props) => {
         </Snackbar>
       )
     }
-  }, [groupId])
+  }, [forward, groupId])
 
   const handleClickPersonalAccount = useCallback(() => {
-    setActivePanel('personal')
-  }, [])
+    forward(PANEL_PERSONAL)
+  }, [forward])
 
   const handleClickAddToDisplay = useCallback(async () => {
     const check = await bridge.send('VKWebAppAddToHomeScreenInfo')
@@ -361,261 +403,271 @@ const Profile = (props) => {
     [bridgeSupport, onClearSchedule, onSetPost]
   )
 
-  if (props.redirectToSearch && activePanel === 'main') {
+  useEffect(() => {
+    window.addEventListener('popstate', handleClickBack)
+
+    return () => window.removeEventListener('popstate', handleClickBack)
+  }, [handleClickBack])
+
+  if (props.redirectToSearch && activePanel === PANEL_MAIN) {
     if (props.redirectToSearch === 'group' && !groupName) handleClickSearchGroup()
     else if (props.redirectToSearch === 'teacher' && !teacherName) handleClickSearchTeacher()
   }
 
   return (
-    <View
-      id="profile"
-      activePanel={activePanel}
-      modal={
-        <ModalFilter
-          activeModal={activeModal}
-          onClickHide={handleClickModalHide}
-          onChangeFaculty={onChangeFaculty}
-          onChangeKurs={onChangeKurs}
-          facultyFilter={facultyFilter}
-          kursFilter={kursFilter}
-        />
-      }
-    >
-      <Panel id="main">
-        <PanelHeader> Профиль </PanelHeader>
-        <SimpleCell
-          onClick={handleClickPersonalAccount}
-          before={<Icon36UserCircleOutline width={24} height={24} />}
-          expandable={true}
-        >
-          Личный кабинет
-        </SimpleCell>
-
-        <SimpleCell
-          onClick={handleClickSettings}
-          before={<Icon28SettingsOutline width={24} height={24} />}
-          expandable={true}
-        >
-          Настройки
-        </SimpleCell>
-        <Div>
-          <SliderSwitch
-            title_1={'Студент'}
-            title_2={'Преподаватель'}
-            value={post}
-            onSwitch={onSwitchPost}
+    <ConfigProvider isWebView={true}>
+      <View
+        id="profile"
+        activePanel={activePanel}
+        modal={
+          <ModalFilter
+            activeModal={activeModal}
+            onClickHide={handleClickBack}
+            onChangeFaculty={onChangeFaculty}
+            onChangeKurs={onChangeKurs}
+            facultyFilter={facultyFilter}
+            kursFilter={kursFilter}
           />
-        </Div>
+        }
+        history={history}
+        onSwipeBack={handleClickBack}
+      >
+        <Panel id={PANEL_MAIN}>
+          <PanelHeader> Профиль </PanelHeader>
+          <SimpleCell
+            onClick={handleClickPersonalAccount}
+            before={<Icon36UserCircleOutline width={24} height={24} />}
+            expandable={true}
+          >
+            Личный кабинет
+          </SimpleCell>
 
-        {post === 'Студент' ? (
-          <>
-            <SimpleCell
-              before={<Icon20EducationOutline width={24} height={24} />}
-              description={faculty}
-              disabled
-            >
-              Факультет
-            </SimpleCell>
-            <SimpleCell
-              onClick={handleClickSearchGroup}
-              before={<Icon20Users3Outline width={24} height={24} />}
-              expandable={true}
-              indicator={!groupName && 'Выбрать'}
-              after={OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
-              description={groupName}
-            >
-              Группа
-            </SimpleCell>
-            <SimpleCell
-              onClick={handleClickTeachers}
-              before={<Icon24UsersOutline width={24} height={24} />}
-              expandable={true}
-            >
-              Преподаватели
-            </SimpleCell>
-            <SimpleCell
-              onClick={handleClickDisciplines}
-              before={<Icon28BookOutline width={24} height={24} />}
-              expandable={true}
-            >
-              Предметы
-            </SimpleCell>
-            {groupId && (
+          <SimpleCell
+            onClick={handleClickSettings}
+            before={<Icon28SettingsOutline width={24} height={24} />}
+            expandable={true}
+          >
+            Настройки
+          </SimpleCell>
+          <Div>
+            <SliderSwitch
+              title_1={'Студент'}
+              title_2={'Преподаватель'}
+              value={post}
+              onSwitch={onSwitchPost}
+            />
+          </Div>
+
+          {post === 'Студент' ? (
+            <>
               <SimpleCell
-                onClick={handleClickVedomosti}
-                before={<Icon24BillheadOutline width={24} height={24} />}
-                expandable={true}
+                before={<Icon20EducationOutline width={24} height={24} />}
+                description={faculty}
+                disabled
               >
-                Ведомости
+                Факультет
               </SimpleCell>
-            )}
-          </>
-        ) : (
-          <>
-            <SimpleCell
-              onClick={handleClickSearchTeacher}
-              before={<Icon24UserOutline width={24} height={24} />}
-              expandable={true}
-              indicator={!teacherName && 'Выбрать'}
-              after={OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
-              multiline={true}
-              description={teacherName}
-            >
-              ФИО
-            </SimpleCell>
-            <SimpleCell
-              onClick={handleClickGroups}
-              before={<Icon20Users3Outline width={24} height={24} />}
-              expandable={true}
-            >
-              Группы
-            </SimpleCell>
-            <SimpleCell
-              onClick={handleClickDisciplines}
-              before={<Icon28BookOutline width={24} height={24} />}
-              expandable={true}
-            >
-              Предметы
-            </SimpleCell>
-            {teacherName && (
               <SimpleCell
-                before={<Icon56UserBookOutline width={24} height={24} />}
+                onClick={handleClickSearchGroup}
+                before={<Icon20Users3Outline width={24} height={24} />}
                 expandable={true}
-                multiline={true}
+                indicator={!groupName && 'Выбрать'}
+                after={OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+                description={groupName}
               >
-                <Link
-                  target={'_blank'}
-                  href={`https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`}
+                Группа
+              </SimpleCell>
+              <SimpleCell
+                onClick={handleClickTeachers}
+                before={<Icon24UsersOutline width={24} height={24} />}
+                expandable={true}
+              >
+                Преподаватели
+              </SimpleCell>
+              <SimpleCell
+                onClick={handleClickDisciplines}
+                before={<Icon28BookOutline width={24} height={24} />}
+                expandable={true}
+              >
+                Предметы
+              </SimpleCell>
+              {groupId && (
+                <SimpleCell
+                  onClick={handleClickVedomosti}
+                  before={<Icon24BillheadOutline width={24} height={24} />}
+                  expandable={true}
                 >
-                  Страница преподавателя
-                </Link>
+                  Ведомости
+                </SimpleCell>
+              )}
+            </>
+          ) : (
+            <>
+              <SimpleCell
+                onClick={handleClickSearchTeacher}
+                before={<Icon24UserOutline width={24} height={24} />}
+                expandable={true}
+                indicator={!teacherName && 'Выбрать'}
+                after={OS !== 'ios' && <Icon24ChevronCompactRight style={{ marginLeft: 4 }} />}
+                multiline={true}
+                description={teacherName}
+              >
+                ФИО
               </SimpleCell>
-            )}
-          </>
-        )}
+              <SimpleCell
+                onClick={handleClickGroups}
+                before={<Icon20Users3Outline width={24} height={24} />}
+                expandable={true}
+              >
+                Группы
+              </SimpleCell>
+              <SimpleCell
+                onClick={handleClickDisciplines}
+                before={<Icon28BookOutline width={24} height={24} />}
+                expandable={true}
+              >
+                Предметы
+              </SimpleCell>
+              {teacherName && (
+                <SimpleCell
+                  before={<Icon56UserBookOutline width={24} height={24} />}
+                  expandable={true}
+                  multiline={true}
+                >
+                  <Link
+                    target={'_blank'}
+                    href={`https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`}
+                  >
+                    Страница преподавателя
+                  </Link>
+                </SimpleCell>
+              )}
+            </>
+          )}
 
-        {snack}
-      </Panel>
-      <Panel id="searchGroup">
-        <SearchGroup
-          groups={groups}
-          faculty={facultyFilter}
-          kurs={kursFilter}
-          onClickFilters={() => setActiveModal('filtersGroup')}
-          onChangeGroup={onChangeGroup}
-          onClickBack={handleClickBack}
-          fetching={fetchingGroups}
-        />
-        {snack}
-      </Panel>
-      <Panel id="searchTeacher">
-        <SearchTeacher
-          teachers={teachers}
-          onChangeTeacher={onChangeTeacher}
-          onClickBack={handleClickBack}
-          fetching={fetchingTeachers}
-        />
-        {snack}
-      </Panel>
-      <Panel id="disciplines">
-        <CustomList
-          list={disciplines}
-          header={'Список предметов'}
-          onClickBack={handleClickBack}
-          disabled={true}
-          fetching={fetchingDisciplines}
-        />
-        {snack}
-      </Panel>
-      <Panel id="teacherGroups">
-        <CustomList
-          list={teacherGroups}
-          header={'Список групп'}
-          onClickBack={handleClickBack}
-          disabled={true}
-          fetching={fetchingTeacherGroups}
-        />
-        {snack}
-      </Panel>
-      <Panel id="groupTeachers">
-        <CustomList
-          list={groupTeachers}
-          onClick={onChangeTeacher}
-          header={'Список преподавателей'}
-          onClickBack={handleClickBack}
-          objectList={true}
-          fetching={fetchingGroupTeachers}
-        />
-        {snack}
-      </Panel>
-      <Panel id="vedomosti" className={'PanelWithIframe'}>
-        <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />} separator={false}>
-          <Headline>Ведомости</Headline>
-        </PanelHeader>
-        <div className={'Iframe'}>
-          <iframe
-            title="ved"
-            src={`https://edu.donstu.ru/Ved/?group=${groupId}`}
-            width="100%"
-            height="100%"
-            frameBorder={0}
-          ></iframe>
-        </div>
-        {snack}
-      </Panel>
-      <Panel id="personal" className={'PanelWithIframe'}>
-        <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />} separator={false}>
-          <Headline>Личный кабинет</Headline>
-        </PanelHeader>
-        <div className={'Iframe'}>
-          <iframe
-            title="ved"
-            src={`https://edu.donstu.ru/WebApp/#`}
-            width="100%"
-            height="100%"
-            frameBorder={0}
-          ></iframe>
-        </div>
-        {snack}
-      </Panel>
-      <Panel id="settings">
-        <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />}>
-          <Headline>Настройки</Headline>
-        </PanelHeader>
-        <RichCell
-          disabled
-          before={<Avatar size={48} src={logo} />}
-          caption={
-            <Link className={classes.Link} href="https://vk.com/donstushedule">
-              Подпишитесь, чтобы поддержать автора
-            </Link>
-          }
-        >
-          ДГТУ - Расписание
-        </RichCell>
-        {bridgeSupport && (
-          <>
-            <SimpleCell onClick={handleClickAddToFavorite} expandable={true}>
-              Добавить в избранное
-            </SimpleCell>
-            <SimpleCell onClick={handleClickAddToDisplay} expandable={true} multiline={true}>
-              Добавить ярлык на главный экран
-            </SimpleCell>
-          </>
-        )}
-        <Div>
-          <SliderSwitch
-            title_1={'Темная тема'}
-            value_1={'space_gray'}
-            title_2={'Светлая тема'}
-            value_2={'bright_ligth'}
-            value={theme}
-            onSwitch={onSwitchTheme}
+          {snack}
+        </Panel>
+        <Panel id={PANEL_SEARCH_GROUP}>
+          <SearchGroup
+            groups={groups}
+            faculty={facultyFilter}
+            kurs={kursFilter}
+            onClickFilters={handleClickFilters}
+            onChangeGroup={onChangeGroup}
+            onClickBack={handleClickBack}
+            fetching={fetchingGroups}
           />
-        </Div>
-        {snack}
-      </Panel>
-    </View>
+          {snack}
+        </Panel>
+        <Panel id={PANEL_SEARCH_TEACHER}>
+          <SearchTeacher
+            teachers={teachers}
+            onChangeTeacher={onChangeTeacher}
+            onClickBack={handleClickBack}
+            fetching={fetchingTeachers}
+          />
+          {snack}
+        </Panel>
+        <Panel id={PANEL_DISCIPLINES}>
+          <CustomList
+            list={disciplines}
+            header={'Список предметов'}
+            onClickBack={handleClickBack}
+            disabled={true}
+            fetching={fetchingDisciplines}
+          />
+          {snack}
+        </Panel>
+        <Panel id={PANEL_TEACHER_GROUPS}>
+          <CustomList
+            list={teacherGroups}
+            header={'Список групп'}
+            onClickBack={handleClickBack}
+            disabled={true}
+            fetching={fetchingTeacherGroups}
+          />
+          {snack}
+        </Panel>
+        <Panel id={PANEL_GROUP_TEACHERS}>
+          <CustomList
+            list={groupTeachers}
+            onClick={onChangeTeacher}
+            header={'Список преподавателей'}
+            onClickBack={handleClickBack}
+            objectList={true}
+            fetching={fetchingGroupTeachers}
+          />
+          {snack}
+        </Panel>
+        <Panel id={PANEL_VEDOMOSTI} className={'PanelWithIframe'}>
+          <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />} separator={false}>
+            <Headline>Ведомости</Headline>
+          </PanelHeader>
+          <div className={'Iframe'}>
+            <iframe
+              title="ved"
+              src={`https://edu.donstu.ru/Ved/?group=${groupId}`}
+              width="100%"
+              height="100%"
+              frameBorder={0}
+            ></iframe>
+          </div>
+          {snack}
+        </Panel>
+        <Panel id={PANEL_PERSONAL} className={'PanelWithIframe'}>
+          <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />} separator={false}>
+            <Headline>Личный кабинет</Headline>
+          </PanelHeader>
+          <div className={'Iframe'}>
+            <iframe
+              title="ved"
+              src={`https://edu.donstu.ru/WebApp/#`}
+              width="100%"
+              height="100%"
+              frameBorder={0}
+            ></iframe>
+          </div>
+          {snack}
+        </Panel>
+        <Panel id={PANEL_SETTINGS}>
+          <PanelHeader left={<PanelHeaderBack onClick={handleClickBack} />}>
+            <Headline>Настройки</Headline>
+          </PanelHeader>
+          <RichCell
+            disabled
+            before={<Avatar size={48} src={logo} />}
+            caption={
+              <Link className={classes.Link} href="https://vk.com/donstushedule">
+                Подпишитесь, чтобы поддержать автора
+              </Link>
+            }
+          >
+            ДГТУ - Расписание
+          </RichCell>
+          {bridgeSupport && (
+            <>
+              <SimpleCell onClick={handleClickAddToFavorite} expandable={true}>
+                Добавить в избранное
+              </SimpleCell>
+              <SimpleCell onClick={handleClickAddToDisplay} expandable={true} multiline={true}>
+                Добавить ярлык на главный экран
+              </SimpleCell>
+            </>
+          )}
+          <Div>
+            <SliderSwitch
+              title_1={'Темная тема'}
+              value_1={'space_gray'}
+              title_2={'Светлая тема'}
+              value_2={'bright_ligth'}
+              value={theme}
+              onSwitch={onSwitchTheme}
+            />
+          </Div>
+          {snack}
+        </Panel>
+      </View>
+    </ConfigProvider>
   )
 }
 

@@ -11,6 +11,7 @@ import {
 } from '@vkontakte/vkui'
 import { Icon24Cancel, Icon24Done } from '@vkontakte/icons'
 
+const MODAL_FILTERS_GROUP = 'FILTERS_GROUP'
 const ModalFilter = ({
   activeModal,
   onClickHide,
@@ -24,7 +25,7 @@ const ModalFilter = ({
   return (
     <ModalRoot activeModal={activeModal}>
       <ModalPage
-        id="filtersGroup"
+        id={MODAL_FILTERS_GROUP}
         onClose={onClickHide}
         header={
           <ModalPageHeader
