@@ -118,12 +118,13 @@ const Profile = (props) => {
       state.fetchTeacherGroups.error
   )
   if (error && !snack) {
+    bridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' })
     setSnack(
       <Snackbar
         layout="vertical"
         onClose={() => setSnack(null)}
         before={<Icon28CancelCircleFillRed />}
-        duration="20000"
+        duration="15000"
       >
         {String(error)}
       </Snackbar>
@@ -333,6 +334,7 @@ const Profile = (props) => {
         localStorage.setItem('TEACHER_NAME', name)
         localStorage.setItem('POST', 'Преподаватель')
       }
+      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
 
       onSetPost('Преподаватель')
       onSetTeacher(String(id), name)
@@ -354,6 +356,7 @@ const Profile = (props) => {
         localStorage.setItem('GROUP_NAME', name)
         localStorage.setItem('FACULTY', facul)
       }
+      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
 
       onSetGroup(String(id), name, facul)
       onClearSchedule()
@@ -370,6 +373,8 @@ const Profile = (props) => {
     (value) => {
       const body = document.querySelector('body')
       onSetTheme(value)
+      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
+
       body.setAttribute('scheme', value)
       if (bridgeSupport) {
         bridge.send('VKWebAppStorageSet', { key: 'THEME', value: value })
@@ -391,7 +396,7 @@ const Profile = (props) => {
   const onSwitchPost = useCallback(
     (value) => {
       onSetPost(value)
-
+      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
       if (bridgeSupport) {
         bridge.send('VKWebAppStorageSet', { key: 'POST', value: value })
       } else {
@@ -415,7 +420,7 @@ const Profile = (props) => {
   }
 
   return (
-    <ConfigProvider isWebView={true}>
+    <ConfigProvider scheme={theme} isWebView={true}>
       <View
         id="profile"
         activePanel={activePanel}

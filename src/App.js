@@ -7,6 +7,7 @@ import {
   Icon28WarningTriangleOutline,
 } from '@vkontakte/icons'
 import '@vkontakte/vkui/dist/vkui.css'
+import bridge from '@vkontakte/vk-bridge'
 
 import Schedule from './views/schedule/Schedule'
 import Profile from './views/Profile/Profile'
@@ -26,7 +27,9 @@ const App = () => {
   } //при первом запуске отправляет в профиль
   const onStoryChange = (event) => {
     if (event.currentTarget.dataset.story === 'schedule') {
-      if (post === 'Студент' && !groupId)
+      if (post === 'Студент' && !groupId) {
+        bridge.send('VKWebAppTapticNotificationOccurred', { type: 'warning' })
+
         setSnack(
           <Snackbar
             layout="vertical"
@@ -39,7 +42,9 @@ const App = () => {
             Пожалуйста, сначала выберите группу
           </Snackbar>
         )
-      else if (post === 'Преподаватель' && !teacherId)
+      } else if (post === 'Преподаватель' && !teacherId) {
+        bridge.send('VKWebAppTapticNotificationOccurred', { type: 'warning' })
+
         setSnack(
           <Snackbar
             layout="vertical"
@@ -52,7 +57,7 @@ const App = () => {
             Пожалуйста, сначала выберите преподавателя
           </Snackbar>
         )
-      else setActiveStory(event.currentTarget.dataset.story)
+      } else setActiveStory(event.currentTarget.dataset.story)
     } else setActiveStory(event.currentTarget.dataset.story)
   }
 
