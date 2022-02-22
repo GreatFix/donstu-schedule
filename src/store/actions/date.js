@@ -3,9 +3,13 @@ import {
   SET_DATE,
   TOGGLE_OFF,
   SET_CURRENT_DATE,
+  SET_ACADEMIC_YEAR,
 } from '../actions/actionTypes'
 import { fetchSchedule } from './fetchSchedule'
 import { DateTime } from 'luxon'
+import { getListYears } from '../../api'
+
+const START_MONTH_ACADEMIC_YEAR = [1, 2, 3, 4, 5, 6, 7]
 
 export function setDateToggleWeek(date, toggleWeek) {
   return {
@@ -29,9 +33,44 @@ export function setCurrentDate() {
     dayWeekNum: formatDayWeek(DateTime.local().toISODate()),
   }
 }
+export function setAcademicYear(academicYear) {
+  return {
+    type: SET_ACADEMIC_YEAR,
+    academicYear,
+  }
+}
 export function toggleOff() {
   return {
     type: TOGGLE_OFF,
+  }
+}
+
+export function fetchAcademicYear() {
+  return async (dispatch) => {
+    let year = ''
+    try {
+      const res = await getListYears()
+
+      const { data } = res.data
+      const { years } = data
+
+      if (years?.length > 0) {
+        year = years[years.length - 1]
+      } else {
+        throw new Error('academic year undefined')
+      }
+    } catch (err) {
+      const currentYear = new Date().getFullYear()
+      const currentMonth = DateTime.local().month
+      const currentAcademicYearStart = START_MONTH_ACADEMIC_YEAR.includes(currentMonth)
+        ? currentYear - 1
+        : currentYear
+
+      year = `${currentAcademicYearStart}-${currentAcademicYearStart + 1}`
+    } finally {
+      await dispatch(setAcademicYear(year))
+      return year
+    }
   }
 }
 
@@ -72,7 +111,6 @@ export function nextWeek() {
 export function prevWeek() {
   return (dispatch, getStore) => {
     let date = DateTime.fromSQL(getStore().date.date)
-    console.log(date.weekday)
     switch (date.weekday) {
       case 0:
         date = date.minus({ days: 8 })

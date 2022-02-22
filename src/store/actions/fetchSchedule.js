@@ -1,7 +1,7 @@
 import { ERROR_SCHEDULE, SUCCESS_SCHEDULE, FETCHING_SCHEDULE, CLEAR_SCHEDULE } from './actionTypes'
-import axios from 'axios'
 import { toggleOff, setDate } from './date'
 import { DateTime } from 'luxon'
+import { getTeacherById, getGroupById } from '../../api'
 
 function error(error) {
   return {
@@ -31,7 +31,7 @@ export function fetchSchedule() {
     const store = getStore()
     const toggleWeek = store.date.toggleWeek
     const date = store.date.date
-    let url = ''
+    let promise = null
     const post = store.userData.post
     if (post === 'Студент') {
       const groupId = store.userData.groupId
@@ -39,23 +39,19 @@ export function fetchSchedule() {
         dispatch(error('Error: Группа не выбрана'))
         return
       }
-      url = `https://edu.donstu.ru/api/Rasp?idGroup=${groupId}&sdate=${date}`
+      promise = getGroupById(groupId, date)
     } else if (post === 'Преподаватель') {
       const teacherId = store.userData.teacherId
       if (!teacherId) {
         dispatch(error('Error: Преподаватель не выбран'))
         return
       }
-      url = `https://edu.donstu.ru/api/Rasp?idTeacher=${teacherId}&sdate=${date}`
+      promise = getTeacherById(teacherId, date)
     } else {
       dispatch(error('Error: Ошибка при определении должности. Сообщите разработчику..'))
       return
     }
-    axios({
-      url,
-      crossDomain: true,
-      timeout: 20000,
-    }).then(
+    promise.then(
       (res) => {
         if (res.data.data.info.group.name || res.data.data.info.prepod.name) {
           let tempData = dataTransformation(res.data.data)

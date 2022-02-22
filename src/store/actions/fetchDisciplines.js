@@ -1,5 +1,5 @@
 import { ERROR_DISCIPLINES, SUCCESS_DISCIPLINES, FETCHING_DISCIPLINES } from './actionTypes'
-import axios from 'axios'
+import { getTeacherById, getGroupById } from '../../api'
 
 function error(error) {
   return {
@@ -20,40 +20,35 @@ function fetching() {
 }
 
 export function fetchDisciplines() {
-  return (dispatch, getStore) => {
-    dispatch(fetching())
-    const store = getStore()
-    let url = ''
-    const post = store.userData.post
-    if (post === 'Студент') {
-      const groupId = store.userData.groupId
-      url = `https://edu.donstu.ru/api/Rasp?idGroup=${groupId}`
-    } else if (post === 'Преподаватель') {
-      const teacherId = store.userData.teacherId
-      url = `https://edu.donstu.ru/api/Rasp?idTeacher=${teacherId}`
-    } else {
-      dispatch(error('Error: Ошибка при определении должности.'))
-    }
+  return async (dispatch, getStore) => {
+    try {
+      await dispatch(fetching())
+      const { userData } = getStore()
+      let res = null
+      const post = userData.post
 
-    axios({
-      url,
-      crossDomain: true,
-      timeout: 15000,
-    }).then(
-      (res) => {
-        if (res.data.data.info.group.name) {
-          const disciplines = getDisciplines(res.data.data)
-          dispatch(success(disciplines))
-        }
-      },
-      (err) => {
-        dispatch(error(err))
+      if (post === 'Студент') {
+        const groupId = userData.groupId
+        res = await getGroupById(groupId)
+      } else if (post === 'Преподаватель') {
+        const teacherId = userData.teacherId
+        res = await getTeacherById(teacherId)
+      } else {
+        await dispatch(error('Error: Ошибка при определении должности.'))
       }
-    )
+
+      if (res?.data.data?.info?.group?.name) {
+        const disciplines = pullDisciplines(res.data.data)
+
+        await dispatch(success(disciplines))
+      }
+    } catch (err) {
+      await dispatch(error(err))
+    }
   }
 }
 
-function getDisciplines(data) {
+function pullDisciplines(data) {
   if (data) {
     let disciplines = new Set()
     let lessons = Object.keys(data.rasp)

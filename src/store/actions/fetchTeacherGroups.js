@@ -3,7 +3,7 @@ import {
   SUCCESS_TEACHER_GROUPS,
   FETCHING_TEACHER_GROUPS,
 } from '../actions/actionTypes'
-import axios from 'axios'
+import { getTeacherById } from '../../api'
 
 function error(error) {
   return {
@@ -28,16 +28,11 @@ export function fetchTeacherGroups() {
     dispatch(fetching())
     const store = getStore()
     const teacherId = store.userData.teacherId
-    const url = `https://edu.donstu.ru/api/Rasp?idTeacher=${teacherId}`
 
-    axios({
-      url,
-      crossDomain: true,
-      timeout: 15000,
-    }).then(
+    getTeacherById(teacherId).then(
       (res) => {
         if (res.data.data.info.prepod.name) {
-          const groups = getGroups(res.data.data)
+          const groups = pullGroups(res.data.data)
           dispatch(success(groups))
         }
       },
@@ -48,7 +43,7 @@ export function fetchTeacherGroups() {
   }
 }
 
-function getGroups(data) {
+function pullGroups(data) {
   if (data) {
     let groups = new Set()
     let lessons = Object.keys(data.rasp)

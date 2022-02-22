@@ -1,5 +1,6 @@
 import { ERROR_TEACHERS, SUCCESS_TEACHERS, FETCHING_TEACHERS } from '../actions/actionTypes'
-import axios from 'axios'
+import { fetchAcademicYear } from './date'
+import { getTeacherList } from '../../api'
 
 function error(error) {
   return {
@@ -19,23 +20,21 @@ function fetching() {
   }
 }
 export function fetchTeachers() {
-  return (dispatch) => {
-    dispatch(fetching())
-    //const store = getStore()
-    //const year = store.fetchScheduleGroup.schedule.year
-    const url = `https://edu.donstu.ru/api/raspTeacherlist?year=2020-2021`
-    axios({
-      url,
-      crossDomain: true,
-      timeout: 15000,
-    }).then(
-      (res) => {
-        const teachers = res.data.data
-        dispatch(success(teachers))
-      },
-      (err) => {
-        dispatch(error(err))
-      }
-    )
+  return async (dispatch, getStore) => {
+    try {
+      await dispatch(fetching())
+
+      const { date } = getStore()
+
+      const academicYear = date.academicYear || (await dispatch(fetchAcademicYear()))
+
+      const res = await getTeacherList(academicYear)
+
+      const teachers = res.data.data
+
+      await dispatch(success(teachers))
+    } catch (err) {
+      dispatch(error(err))
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { ERROR_GROUPS, SUCCESS_GROUPS, FETCHING_GROUPS } from './actionTypes'
-import axios from 'axios'
+import { fetchAcademicYear } from './date'
+import { getGroupList } from '../../api'
 
 function error(error) {
   return {
@@ -20,24 +21,22 @@ function fetching() {
   }
 }
 export function fetchGroups() {
-  return (dispatch) => {
-    dispatch(fetching())
-    //const store = getStore()
-    //const year = store.fetchScheduleGroup.schedule.year
-    const url = `https://edu.donstu.ru/api/raspGrouplist?year=2020-2021`
-    axios({
-      url,
-      crossDomain: true,
-      timeout: 15000,
-    }).then(
-      (res) => {
-        const groups = res.data.data
-        const faculties = Array.from(new Set(groups.map(({ facul }) => facul)))
-        dispatch(success(groups, faculties))
-      },
-      (err) => {
-        dispatch(error(err))
-      }
-    )
+  return async (dispatch, getStore) => {
+    try {
+      await dispatch(fetching())
+
+      const { date } = getStore()
+
+      const academicYear = date.academicYear || (await dispatch(fetchAcademicYear()))
+
+      const res = await getGroupList(academicYear)
+
+      const groups = res.data.data
+      const faculties = Array.from(new Set(groups.map(({ facul }) => facul)))
+
+      await dispatch(success(groups, faculties))
+    } catch (err) {
+      await dispatch(error(err))
+    }
   }
 }

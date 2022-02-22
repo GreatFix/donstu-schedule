@@ -3,12 +3,14 @@ import {
   SET_DATE,
   TOGGLE_OFF,
   SET_CURRENT_DATE,
+  SET_ACADEMIC_YEAR,
 } from '../actions/actionTypes'
 
 const initialState = {
   date: null,
   dayWeekNum: null,
   toggleWeek: null,
+  academicYear: null,
 }
 
 export function dateReducer(state = initialState, action) {
@@ -24,6 +26,8 @@ export function dateReducer(state = initialState, action) {
       return { ...state, date: action.date, dayWeekNum: action.dayWeekNum }
     case SET_CURRENT_DATE:
       return { ...state, date: action.date, dayWeekNum: action.dayWeekNum }
+    case SET_ACADEMIC_YEAR:
+      return { ...state, academicYear: action.academicYear }
     case TOGGLE_OFF:
       return { ...state, toggleWeek: null }
     default:
