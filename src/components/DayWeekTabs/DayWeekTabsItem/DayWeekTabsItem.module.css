@@ -1,8 +1,0 @@
-.TabsItem {
-  min-width: 0 !important; /*не помню как, но это помогает вместить все элементы  */
-}
-.DisabledTabsItem {
-  min-width: 0 !important;
-  transform: scale(0.7);
-  opacity: 0.5;
-}

@@ -1,0 +1,30 @@
+.Root {
+  position: relative;
+  background-color: var(--background_content, var(--vkui--color_background_content));
+  border-top: 1px solid var(--vkui--color_separator_primary);
+}
+
+.Root :global(.Tabs__in) {
+  display: flex;
+  justify-content: center;
+}
+
+.Swiper:not(.isMobile) {
+  width: calc(100% - 96px);
+}
+
+.NavigationPrev {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.NavigationNext {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}

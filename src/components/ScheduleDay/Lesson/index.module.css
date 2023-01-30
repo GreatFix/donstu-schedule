@@ -1,0 +1,130 @@
+.Lesson {
+  border-radius: 4px;
+  box-shadow: 0 0.5px 0 0 #d3d9de;
+  font-size: 12px;
+  display: grid;
+  grid-template-rows: 1fr 1fr 2fr 1fr 0.5fr;
+  grid-template-columns: 1fr 0.25fr 5fr;
+  grid-template-areas:
+    'Time Line Type'
+    'Time Line Description'
+    'Time Line Description'
+    'Time Line Description'
+    'Time Line Pagination';
+}
+
+.Lesson.current {
+  box-shadow: 0.25px 0.5px 1px 1px #2975cc;
+  background-color: #2975cc;
+}
+
+.Lesson.current .Time {
+  border-right: 2px solid;
+  border-left: 2px solid;
+  border-radius: 5px;
+}
+
+.Type {
+  grid-area: Type;
+  justify-self: center;
+  font-size: 0.8em;
+  font-weight: 700;
+  border-bottom: 2px solid;
+  border-radius: 5px;
+}
+
+.Time {
+  grid-area: Time;
+  justify-self: center;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr; /*  строки */
+  grid-template-columns: 1fr; /*  столбцы */
+  grid-template-areas:
+    'Start'
+    'Rect'
+    'End';
+}
+
+.Start {
+  grid-area: Start;
+  justify-self: end;
+  transition: 0.5s ease-in;
+}
+.Rect {
+  grid-area: Rect;
+  justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  min-width: 5%;
+  width: 80%;
+  height: 80%;
+  min-height: 80%;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.End {
+  grid-area: End;
+  justify-self: end;
+  align-self: flex-end;
+  transition: 0.5s ease-in;
+}
+.Line {
+  grid-area: Line;
+  width: 1px;
+}
+
+.SubName {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.SubGroup {
+  min-height: 20px;
+}
+
+.Description {
+  grid-area: Description;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.Aud {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.Name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.Pagination {
+  grid-area: Pagination;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .Lesson {
+    grid-template-rows: 1fr 1fr 2fr 1fr;
+    grid-template-columns: 1fr 0.25fr 5fr 0.25fr;
+    grid-template-areas:
+      'Time Line Type Type'
+      'Time Line Description  Pagination'
+      'Time Line Description  Pagination'
+      'Time Line Description  Pagination';
+  }
+
+  .Pagination {
+    flex-direction: column;
+    justify-content: space-around;
+  }
+}

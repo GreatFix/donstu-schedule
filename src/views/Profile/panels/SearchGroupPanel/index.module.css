@@ -1,0 +1,10 @@
+.Search {
+  margin-bottom: 8px;
+}
+
+.Skeleton {
+  padding: 0 4px;
+  margin-bottom: 4px;
+  height: var(--vkui--font_headline1--line_height--compact, 20px);
+  min-height: 40px;
+}
