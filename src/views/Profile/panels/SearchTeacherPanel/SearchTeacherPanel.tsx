@@ -1,3 +1,4 @@
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { Icon28FaceRecognitionOutline } from '@vkontakte/icons'
 import {
   Headline,
@@ -14,7 +15,14 @@ import { useTeacherList } from 'api/hooks/useTeacherList'
 //Styles
 import cn from 'classnames/bind'
 import { Skeleton } from 'components/Skeleton'
-import { ChangeEventHandler, MouseEventHandler, useCallback, useMemo, useState } from 'react'
+import {
+  ChangeEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useUserConfig } from 'shared/contexts/UserConfig'
 import { IWithId } from 'shared/types/extend'
 
@@ -65,28 +73,59 @@ export const SearchTeacherPanel = ({ id, backToMain }: ISearchTeacherPanelProps)
     [filteredTeachers, setTeacher, backToMain]
   )
 
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: filteredTeachers.length,
+    estimateSize: () => 48,
+    overscan: 5,
+    getScrollElement: () => wrapperRef.current,
+  })
+
   return (
-    <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />}>
+    <Panel className={cx('Panel')} id={id}>
+      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
         <Headline level={'2'}>Поиск преподавателя</Headline>
       </PanelHeader>
       <Search className={cx('Search')} value={search} onChange={onChange} />
 
-      <List>
-        {isFetching || !isFetched ? (
-          SKELETONS.map((key) => <Skeleton key={key} className={cx('Skeleton')} />)
-        ) : filteredTeachers.length ? (
-          filteredTeachers.map((teacher) => (
-            <SimpleCell onClick={handleClick} key={teacher.id} data-id={teacher.id}>
-              <span>{teacher.name}</span>
-            </SimpleCell>
-          ))
-        ) : (
-          <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
-            Не найдено
-          </Placeholder>
-        )}
-      </List>
+      <div className={cx('ListWrapper')} ref={wrapperRef}>
+        <List
+          className={cx('List')}
+          style={{
+            height: `${rowVirtualizer.getTotalSize() + 24}px`,
+          }}
+        >
+          {isFetching || !isFetched ? (
+            SKELETONS.map((key) => <Skeleton key={key} className={cx('Skeleton')} />)
+          ) : filteredTeachers.length ? (
+            rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const teacher = filteredTeachers[virtualRow.index]
+              return (
+                <SimpleCell
+                  onClick={handleClick}
+                  key={teacher.id}
+                  data-id={teacher.id}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  <span>{teacher.name}</span>
+                </SimpleCell>
+              )
+            })
+          ) : (
+            <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
+              Не найдено
+            </Placeholder>
+          )}
+        </List>
+      </div>
     </Panel>
   )
 }

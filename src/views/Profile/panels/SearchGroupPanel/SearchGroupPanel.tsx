@@ -1,6 +1,7 @@
-import { useVirtualizer, useWindowVirtualizer } from '@tanstack/react-virtual'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { Icon24Filter, Icon28FaceRecognitionOutline } from '@vkontakte/icons'
 import {
+  Badge,
   Headline,
   List,
   Panel,
@@ -15,7 +16,7 @@ import { useGroupList } from 'api/hooks/useGroupList'
 import cn from 'classnames/bind'
 import { Skeleton } from 'components/Skeleton'
 import { ChangeEventHandler, useCallback, useMemo, useRef, useState } from 'react'
-import { useSearchGroupFiltres } from 'shared/contexts/SearchGroupFiltres'
+import { useSearchGroupFilters } from 'shared/contexts/SearchGroupFilters'
 import { useUserConfig } from 'shared/contexts/UserConfig'
 import { IWithId } from 'shared/types/extend'
 
@@ -25,16 +26,16 @@ const cx = cn.bind(styles)
 const SKELETONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 export interface ISearchGroupPanelProps extends IWithId {
-  onOpenFiltres?: () => void
+  onOpenFilters?: () => void
   backToMain: () => void
 }
 
-export const SearchGroupPanel = ({ id, onOpenFiltres, backToMain }: ISearchGroupPanelProps) => {
+export const SearchGroupPanel = ({ id, onOpenFilters, backToMain }: ISearchGroupPanelProps) => {
   const [search, setSearch] = useState('')
 
   const { data, isFetching, isFetched } = useGroupList()
 
-  const { faculty, kurs } = useSearchGroupFiltres()
+  const { faculty, kurs } = useSearchGroupFilters()
 
   const { setGroup } = useUserConfig()
 
@@ -43,7 +44,7 @@ export const SearchGroupPanel = ({ id, onOpenFiltres, backToMain }: ISearchGroup
       data?.groups.filter((group) => {
         return (
           group.name.toLowerCase().indexOf(search.toLowerCase()) === 0 &&
-          (faculty ? group.facul === faculty : true) &&
+          (faculty ? group.facul.toLowerCase() === faculty.toLowerCase() : true) &&
           (kurs > 0 ? group.kurs === kurs : true)
         )
       }) || [],
@@ -70,16 +71,17 @@ export const SearchGroupPanel = ({ id, onOpenFiltres, backToMain }: ISearchGroup
     [backToMain, filteredGroups, setGroup]
   )
 
-  const panelRef = useRef<HTMLDivElement | null>(null)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
 
-  const rowVirtualizer = useWindowVirtualizer({
+  const rowVirtualizer = useVirtualizer({
     count: filteredGroups.length,
-    estimateSize: () => 35,
+    estimateSize: () => 48,
     overscan: 5,
+    getScrollElement: () => wrapperRef.current,
   })
 
   return (
-    <Panel getRootRef={panelRef} id={id}>
+    <Panel className={cx('Panel')} id={id}>
       <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
         <Headline level={'2'}>Поиск группы</Headline>
       </PanelHeader>
@@ -87,45 +89,54 @@ export const SearchGroupPanel = ({ id, onOpenFiltres, backToMain }: ISearchGroup
         className={cx('Search')}
         value={search}
         onChange={onChange}
-        icon={<Icon24Filter />}
-        onIconClick={onOpenFiltres}
+        icon={
+          <>
+            {(faculty || kurs > 0) && (
+              <Badge className={cx('Badge')} mode="new" aria-label="Есть выбранные фильтры" />
+            )}
+            <Icon24Filter />
+          </>
+        }
+        onIconClick={onOpenFilters}
       />
-      <List
-        style={{
-          height: `${rowVirtualizer.getTotalSize() + 24}px`,
-          position: 'relative',
-        }}
-      >
-        {isFetching || !isFetched ? (
-          SKELETONS.map((key) => <Skeleton key={key} className={cx('Skeleton')} />)
-        ) : filteredGroups.length ? (
-          rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const group = filteredGroups[virtualRow.index]
-            return (
-              <SimpleCell
-                onClick={handleClick}
-                key={virtualRow.index}
-                data-id={group.id}
-                indicator={group.facul}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 16,
-                  right: 16,
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                <span>{group.name}</span>
-              </SimpleCell>
-            )
-          })
-        ) : (
-          <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
-            Не найдено
-          </Placeholder>
-        )}
-      </List>
+      <div className={cx('ListWrapper')} ref={wrapperRef}>
+        <List
+          className={cx('List')}
+          style={{
+            height: `${rowVirtualizer.getTotalSize() + 24}px`,
+          }}
+        >
+          {isFetching || !isFetched ? (
+            SKELETONS.map((key) => <Skeleton key={key} className={cx('Skeleton')} />)
+          ) : filteredGroups.length ? (
+            rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const group = filteredGroups[virtualRow.index]
+              return (
+                <SimpleCell
+                  onClick={handleClick}
+                  key={virtualRow.index}
+                  data-id={group.id}
+                  indicator={group.facul}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  <span>{group.name}</span>
+                </SimpleCell>
+              )
+            })
+          ) : (
+            <Placeholder icon={<Icon28FaceRecognitionOutline width={56} height={56} />}>
+              Не найдено
+            </Placeholder>
+          )}
+        </List>
+      </div>
     </Panel>
   )
 }

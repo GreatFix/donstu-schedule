@@ -12,7 +12,7 @@ export const DisciplinesPanel = ({ id, backToMain }: IDisciplinesPanelProps) => 
 
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />}>
+      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
         <Headline>Список предметов</Headline>
       </PanelHeader>
       <CustomList list={data || []} disabled showSkeletons={isFetching} />

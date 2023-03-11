@@ -20,7 +20,7 @@ function pullTeachers(data?: IScheduleData): { name: string; id: string }[] {
       }
       const id = item.кодПреподавателя
 
-      return { ...acc, [id]: { name, id } }
+      return name ? { ...acc, [id]: { name, id } } : acc
     }, {})
 
     return Object.values(teachersObject)

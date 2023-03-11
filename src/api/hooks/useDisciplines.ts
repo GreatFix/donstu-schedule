@@ -34,7 +34,9 @@ function pullDisciplines(data?: IScheduleData): string[] {
     if (name.includes('(')) {
       ;[name] = name.split('(')
     }
-    disciplines.add(name)
+    if (name) {
+      disciplines.add(name)
+    }
   })
 
   return [...disciplines]

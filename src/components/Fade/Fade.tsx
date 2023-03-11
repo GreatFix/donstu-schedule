@@ -20,7 +20,7 @@ interface FadeProps {
 export const Fade = ({ children, transitionKey }: FadeProps) => {
   const nodeRef = useRef<HTMLElement | null>(null)
   return (
-    <SwitchTransition mode={'out-in'}>
+    <SwitchTransition>
       <CSSTransition
         key={transitionKey}
         timeout={300}

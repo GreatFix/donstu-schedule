@@ -7,14 +7,17 @@ export const TeacherLink = () => {
     data: { teacherName },
   } = useUserConfig()
 
+  const openYandex = () => {
+    window.open(
+      `https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`,
+      '_blank',
+      'noopener,noreferer'
+    )
+  }
+
   return (
-    <SimpleCell before={<Icon56UserBookOutline width={24} height={24} />} expandable multiline>
-      <Link
-        target="_blank"
-        href={`https://yandex.ru/search/?text=%22${teacherName}%22%20site%3Ahttps%3A%2F%2Fdonstu.ru%2Fstructure%2Fcadre%2F&lr=39`}
-      >
-        Страница преподавателя
-      </Link>
+    <SimpleCell before={<Icon56UserBookOutline width={24} height={24} />} onClick={openYandex}>
+      <Link>Страница преподавателя</Link>
     </SimpleCell>
   )
 }

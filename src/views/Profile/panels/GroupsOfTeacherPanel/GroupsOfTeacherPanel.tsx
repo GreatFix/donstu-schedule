@@ -12,7 +12,7 @@ export const GroupsOfTeacherPanel = ({ id, backToMain }: IGroupsOfTeacherPanelPr
 
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />}>
+      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
         <Headline>Список групп</Headline>
       </PanelHeader>
       <CustomList list={data || []} disabled showSkeletons={isFetching} />

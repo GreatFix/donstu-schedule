@@ -23,7 +23,7 @@ export const TeachersOfGroupPanel = ({ id, backToMain }: ITeachersOfGroupPanelPr
 
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />}>
+      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
         <Headline>Список преподавателей</Headline>
       </PanelHeader>
       <CustomList list={data || []} onSelect={handleSelectTeacher} showSkeletons={isFetching} />

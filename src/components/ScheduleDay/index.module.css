@@ -12,11 +12,3 @@
 .List {
   overflow: auto;
 }
-
-.Image {
-  display: block;
-  margin: 0 auto;
-  width: 50vh;
-  height: 50vh;
-  padding-top: 5%;
-}

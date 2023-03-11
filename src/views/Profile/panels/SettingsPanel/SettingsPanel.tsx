@@ -12,7 +12,7 @@ export const SettingsPanel = ({ id, backToMain }: ISettingsPanelProps) => {
   const { bridgeSupport } = useUserConfig()
   return (
     <Panel id={id}>
-      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />}>
+      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
         <Headline>Настройки</Headline>
       </PanelHeader>
       <AboutLink />

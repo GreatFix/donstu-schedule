@@ -17,7 +17,7 @@ export const enum PANEL_PROFILE_ENUM {
 }
 
 export const enum MODAL_PROFILE_ENUM {
-  FILTRES_OF_GROUP = 'FILTRES_OF_GROUP',
+  FILTERS_OF_GROUP = 'FILTERS_OF_GROUP',
 }
 
 export const enum PANEL_SCHEDULE_ENUM {

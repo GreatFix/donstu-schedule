@@ -1,10 +1,26 @@
 .Search {
   margin-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .Skeleton {
-  padding: 0 4px;
-  margin-bottom: 4px;
+  margin: 0 12px 4px;
+  width: auto;
   height: var(--vkui--font_headline1--line_height--compact, 20px);
   min-height: 40px;
+}
+
+.Panel :global(.Panel__in) {
+  overflow: hidden;
+  height: 100%;
+}
+
+.ListWrapper {
+  flex-grow: 1;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+.List {
+  position: relative;
 }

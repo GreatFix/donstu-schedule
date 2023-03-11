@@ -54,7 +54,7 @@ export const DayWeekTabsItem = ({
       <Caption className={cx('Day')} level="1" weight="2">
         {day}
       </Caption>
-      <Caption className={cx('Month')} level={isMobile ? '2' : '1'} weight="2">
+      <Caption className={cx('Month')} level={isMobile ? '4' : '1'} weight="2">
         {month}
       </Caption>
     </TabsItem>

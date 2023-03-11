@@ -1,6 +1,3 @@
-.Link {
-  font-size: 0.8em;
-}
-::-webkit-scrollbar {
-  width: 0;
+.Switcher :global(.SegmentedControlOption__content) {
+  font-size: 0.9em;
 }

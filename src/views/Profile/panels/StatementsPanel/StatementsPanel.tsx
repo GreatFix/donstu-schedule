@@ -18,11 +18,11 @@ export const StatementsPanel = ({ id, backToMain }: IStatementsPanelProps) => {
 
   return (
     <Panel id={id} className={cx('Panel')}>
-      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />} separator={false}>
+      <PanelHeader before={<PanelHeaderBack onClick={backToMain} />}>
         <Headline>Ведомости</Headline>
       </PanelHeader>
       <iframe
-        title="ved"
+        title="Ведомости"
         className={cx('Iframe')}
         src={`https://edu.donstu.ru/Ved/?group=${groupId}`}
       />

@@ -13,11 +13,15 @@ import { UserConfigProvider, useUserConfig } from './shared/contexts/UserConfig'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: Number.POSITIVE_INFINITY,
-      staleTime: 10 * 60 * 1000,
+      cacheTime: 10800,
+      staleTime: Infinity,
       refetchOnReconnect: false,
       retry: false,
       keepPreviousData: true,
+      refetchInterval: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchIntervalInBackground: false,
     },
   },
 })

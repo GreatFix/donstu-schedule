@@ -1,17 +1,19 @@
 import bridge from '@vkontakte/vk-bridge'
 //Components
 import { ModalRoot, SplitCol, SplitLayout, View } from '@vkontakte/vkui'
+import cn from 'classnames/bind'
 import { ModalFilter } from 'components/ModalFilter'
 //Hooks and helpers
-import { useCallback, useEffect } from 'react'
+import { ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle } from 'react'
 import {
   MODAL_PROFILE_ENUM,
   PANEL_PROFILE_ENUM,
   useModalControl,
   usePanelControl,
 } from 'shared/contexts/Navigation'
-import { SearchGroupFiltresProvider } from 'shared/contexts/SearchGroupFiltres'
+import { SearchGroupFiltersProvider } from 'shared/contexts/SearchGroupFilters'
 
+import styles from './index.module.css'
 import {
   DisciplinesPanel,
   GroupsOfTeacherPanel,
@@ -24,18 +26,23 @@ import {
   StatementsPanel,
   TeachersOfGroupPanel,
 } from './panels'
+const cx = cn.bind(styles)
 
 interface IProfileProps {
   id: string
-  redirectToSearch?: 'group' | 'teacher' | null
 }
 
-export const Profile = ({ id, redirectToSearch }: IProfileProps) => {
+const _Profile = (
+  { id }: IProfileProps,
+  ref: ForwardedRef<(panel: PANEL_PROFILE_ENUM) => void>
+) => {
   const {
     activePanel,
     back: panelBack,
     forward: panelForward,
   } = usePanelControl<PANEL_PROFILE_ENUM>(PANEL_PROFILE_ENUM.MAIN)
+
+  useImperativeHandle(ref, () => panelForward, [panelForward])
 
   const {
     activeModal,
@@ -46,7 +53,7 @@ export const Profile = ({ id, redirectToSearch }: IProfileProps) => {
   const isMainPanel = activePanel === PANEL_PROFILE_ENUM.MAIN
 
   const openFilters = useCallback(() => {
-    modalForward(MODAL_PROFILE_ENUM.FILTRES_OF_GROUP)
+    modalForward(MODAL_PROFILE_ENUM.FILTERS_OF_GROUP)
   }, [modalForward])
 
   const forwardToSearchGroup = () => {
@@ -91,11 +98,12 @@ export const Profile = ({ id, redirectToSearch }: IProfileProps) => {
   }, [isMainPanel])
 
   return (
-    <SearchGroupFiltresProvider>
+    <SearchGroupFiltersProvider>
       <SplitLayout
+        className={cx('Layout')}
         modal={
           <ModalRoot activeModal={activeModal}>
-            <ModalFilter id={MODAL_PROFILE_ENUM.FILTRES_OF_GROUP} onClose={modalClose} />
+            <ModalFilter id={MODAL_PROFILE_ENUM.FILTERS_OF_GROUP} onClose={modalClose} />
           </ModalRoot>
         }
       >
@@ -120,7 +128,7 @@ export const Profile = ({ id, redirectToSearch }: IProfileProps) => {
             <SearchGroupPanel
               id={PANEL_PROFILE_ENUM.SEARCH_GROUP}
               backToMain={backToMain}
-              onOpenFiltres={openFilters}
+              onOpenFilters={openFilters}
             />
             <SearchTeacherPanel id={PANEL_PROFILE_ENUM.SEARCH_TEACHER} backToMain={backToMain} />
             <SearchClassroomPanel
@@ -142,6 +150,8 @@ export const Profile = ({ id, redirectToSearch }: IProfileProps) => {
           </View>
         </SplitCol>
       </SplitLayout>
-    </SearchGroupFiltresProvider>
+    </SearchGroupFiltersProvider>
   )
 }
+
+export const Profile = forwardRef(_Profile)

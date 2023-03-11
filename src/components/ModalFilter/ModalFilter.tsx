@@ -1,4 +1,4 @@
-import { Icon24Cancel, Icon24Done } from '@vkontakte/icons'
+import { Icon24Done, Icon28ClearDataOutline } from '@vkontakte/icons'
 import {
   FormItem,
   FormLayout,
@@ -7,24 +7,27 @@ import {
   PanelHeaderButton,
   Platform,
   Select,
+  useAdaptivity,
   usePlatform,
 } from '@vkontakte/vkui'
 import { useGroupList } from 'api/hooks/useGroupList'
 import { ChangeEventHandler } from 'react'
-import { useSearchGroupFiltres } from 'shared/contexts/SearchGroupFiltres'
+import { useSearchGroupFilters } from 'shared/contexts/SearchGroupFilters'
 
 import { KURS_LIST } from './constants'
 
-interface IModalFiltres {
+interface IModalFilters {
   onClose: () => void
   id: string
 }
 
-export const ModalFilter = ({ id, onClose }: IModalFiltres) => {
-  const { data } = useGroupList()
+export const ModalFilter = ({ id, onClose }: IModalFilters) => {
+  const { data, isFetching } = useGroupList()
   const platform = usePlatform()
+  const { viewWidth } = useAdaptivity()
+  const isMobile = viewWidth < 3
 
-  const { setFaculty, setKurs, faculty, kurs } = useSearchGroupFiltres()
+  const { setFaculty, setKurs, reset, faculty, kurs } = useSearchGroupFilters()
 
   const handleChangeFaculty: ChangeEventHandler<HTMLSelectElement> = (e) => {
     setFaculty(e.target.value)
@@ -33,21 +36,27 @@ export const ModalFilter = ({ id, onClose }: IModalFiltres) => {
   const handleChangeKurs: ChangeEventHandler<HTMLSelectElement> = (e) => {
     setKurs(Number(e.target.value))
   }
+
+  const facultyOptions = [
+    ...(isMobile ? [] : [{ label: 'Не выбран', value: '' }]),
+    ...(data ? data.faculties.map((faculty) => ({ value: faculty, label: faculty })) : []),
+  ]
+
+  const kursOptions = [...(isMobile ? [] : [{ label: 'Не выбран', value: 0 }]), ...KURS_LIST]
+
   return (
     <ModalPage
       id={id}
       onClose={onClose}
       header={
         <ModalPageHeader
-          left={
-            (platform === Platform.ANDROID || platform === Platform.VKCOM) && (
-              <PanelHeaderButton onClick={onClose}>
-                <Icon24Cancel />
-              </PanelHeaderButton>
-            )
+          before={
+            <PanelHeaderButton onClick={reset} aria-label="Сбросить значения">
+              <Icon28ClearDataOutline width={24} height={24} />
+            </PanelHeaderButton>
           }
-          right={
-            <PanelHeaderButton onClick={onClose}>
+          after={
+            <PanelHeaderButton onClick={onClose} aria-label="Закрыть модальное окно">
               {platform === Platform.IOS ? 'Готово' : <Icon24Done />}
             </PanelHeaderButton>
           }
@@ -57,23 +66,22 @@ export const ModalFilter = ({ id, onClose }: IModalFiltres) => {
       }
     >
       <FormLayout>
-        {data && (
-          <FormItem top="Факультет">
-            <Select
-              onChange={handleChangeFaculty}
-              defaultValue={faculty}
-              options={data.faculties.map((faculty) => ({ value: faculty, label: faculty }))}
-              placeholder="Не выбран"
-            />
-          </FormItem>
-        )}
+        <FormItem top="Факультет">
+          <Select
+            onChange={handleChangeFaculty}
+            value={faculty}
+            options={facultyOptions}
+            placeholder="Не выбран"
+            fetching={isFetching}
+          />
+        </FormItem>
 
         <FormItem top="Курс">
           <Select
             onChange={handleChangeKurs}
-            defaultValue={kurs}
+            value={kurs}
             placeholder="Не выбран"
-            options={KURS_LIST}
+            options={kursOptions}
           />
         </FormItem>
       </FormLayout>

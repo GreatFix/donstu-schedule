@@ -1,4 +1,5 @@
 import { IScheduleData } from 'api/services/donstuAPI'
+import { AxiosError } from 'axios'
 import { DateTime } from 'luxon'
 import { useUserConfig } from 'shared/contexts/UserConfig'
 import { ISODate } from 'shared/types/date'
@@ -25,14 +26,15 @@ export const useSchedule = (date?: ISODate) => {
     data: { post },
   } = useUserConfig()
 
-  const { data, isFetching, error } = USE_HOOK[post](date)
+  const { data, isFetching, error, refetch } = USE_HOOK[post](date)
   const transformedData = dataTransformation(data)
 
   CACHE_DATA[post] = { ...CACHE_DATA[post], ...transformedData }
   return {
     data: CACHE_DATA[post],
     isFetching,
-    error,
+    error: error as AxiosError,
+    refetch,
   }
 }
 
@@ -61,15 +63,15 @@ function dataTransformation(data?: IScheduleData): Record<ISODate, IDay> {
       checkCurrentDay(currentDate, DateTime.fromISO(days[key].date)) //определение текущего занятия
 
     const typeIndex = les.дисциплина.indexOf(' ')
-    const typeCut = les.дисциплина.substring(0, typeIndex)
-    const fullName = les.дисциплина.substring(typeIndex)
+    const typeCut = les.дисциплина.substring(0, typeIndex).toLowerCase()
+    const fullName = les.дисциплина.substring(typeIndex).trim()
 
     let subgroup = '',
       name
-    if (fullName.includes('п/г')) {
-      const index = fullName.indexOf('п/г')
-      subgroup = fullName.substring(index - 1)
-      name = fullName.substring(0, index - 2)
+    if (fullName.toLowerCase().includes('п/г')) {
+      const index = fullName.toLowerCase().indexOf('п/г')
+      subgroup = fullName.substring(index - 1).trim()
+      name = fullName.substring(0, index - 2).trim()
     } else {
       name = fullName
     }
@@ -80,7 +82,9 @@ function dataTransformation(data?: IScheduleData): Record<ISODate, IDay> {
     const type = LESSON_TYPE_MAP[typeCut] || ''
     const number = LESSON_NUMBER_MAP[start] || 0
 
-    days[key].lessons[`${start}-${end}`][les.код] = {
+    const lesson = days[key].lessons[`${start}-${end}`]
+
+    lesson[les.код] = {
       start,
       end,
       name,
@@ -90,7 +94,7 @@ function dataTransformation(data?: IScheduleData): Record<ISODate, IDay> {
       type,
       number,
       currentLesson,
-      subgroup,
+      subgroup: subgroup || (Object.keys(lesson).length > 0 ? 'п/г 2' : 'п/г 1'),
     }
   })
 
@@ -135,6 +139,7 @@ const LESSON_TYPE_MAP: Record<string, ILessonSubGroup['type']> = {
 }
 
 const LESSON_NUMBER_MAP: Record<string, number> = {
+  '08:30': 1,
   '8:30': 1,
   '10:15': 2,
   '12:00': 3,

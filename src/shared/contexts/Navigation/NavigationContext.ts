@@ -6,11 +6,11 @@ import { PANEL_PROFILE_ENUM, VIEW_ENUM } from './navigation'
 interface INavigation {
   view: string
   panel: string
-  modal?: string | null
+  modal: string | null
 }
 
 export interface INavigationContext {
-  setNavigation: (cb: (currentNavigation: INavigation) => INavigation) => Promise<void>
+  setNavigation: (cb: (currentNavigation: INavigation) => INavigation) => void
   popState: () => void
   state: INavigation
 }
@@ -21,6 +21,7 @@ export const INITIAL_STATE: INavigationContext = {
   state: {
     view: VIEW_ENUM.PROFILE,
     panel: PANEL_PROFILE_ENUM.MAIN,
+    modal: null,
   },
 }
 

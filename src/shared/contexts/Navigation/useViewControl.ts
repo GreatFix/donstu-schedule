@@ -6,13 +6,14 @@ export function useViewControl<T extends string>(initialActive: T) {
 
   const forward = useCallback(
     (view: T) => setNavigation((prevState) => ({ ...prevState, view })),
-    []
+    [setNavigation]
   )
 
   useLayoutEffect(() => {
     if (!state.view) {
       forward(initialActive)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { activeView: state.view, forward }

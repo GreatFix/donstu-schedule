@@ -1,4 +1,5 @@
 import '@vkontakte/vkui/dist/vkui.css'
+import './documents.css'
 
 import {
   Icon20CalendarOutline,
@@ -7,8 +8,13 @@ import {
 } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
 import { Epic, Snackbar, Tabbar, TabbarItem } from '@vkontakte/vkui'
-import { memo, MouseEventHandler, useEffect, useState } from 'react'
-import { useNavigation, useViewControl, VIEW_ENUM } from 'shared/contexts/Navigation'
+import { memo, MouseEventHandler, useEffect, useRef } from 'react'
+import {
+  PANEL_PROFILE_ENUM,
+  useNavigation,
+  useViewControl,
+  VIEW_ENUM,
+} from 'shared/contexts/Navigation'
 import { Profile } from 'views/Profile/Profile'
 import { Schedule } from 'views/Schedule/Schedule'
 
@@ -18,15 +24,14 @@ import { useUserConfig } from './shared/contexts/UserConfig'
 
 const _App = () => {
   const {
-    data: { post, groupId, teacherId },
+    data: { post, groupId, teacherId, classroomId },
   } = useUserConfig()
   const { popState } = useNavigation()
 
   const { activeView, forward } = useViewControl<VIEW_ENUM>(VIEW_ENUM.SCHEDULE)
+  const profilePanelForwardRef = useRef<(panel: PANEL_PROFILE_ENUM) => void>(null)
 
   const { setSnack } = useSnack()
-
-  const [redirectToSearch, setRedirectToSearch] = useState<'group' | 'teacher' | null>(null)
 
   const onStoryChange: MouseEventHandler<HTMLButtonElement> = (event) => {
     if (event.currentTarget.dataset.story === VIEW_ENUM.SCHEDULE) {
@@ -34,15 +39,24 @@ const _App = () => {
         if (post === 'group' && !groupId) {
           return {
             action: 'Выбрать группу',
-            onActionClick: () => setRedirectToSearch('group'),
+            onActionClick: () => profilePanelForwardRef.current?.(PANEL_PROFILE_ENUM.SEARCH_GROUP),
             children: 'Пожалуйста, сначала выберите группу',
           }
         }
         if (post === 'teacher' && !teacherId) {
           return {
             action: 'Выбрать преподавателя',
-            onActionClick: () => setRedirectToSearch('teacher'),
+            onActionClick: () =>
+              profilePanelForwardRef.current?.(PANEL_PROFILE_ENUM.SEARCH_TEACHER),
             children: 'Пожалуйста, сначала выберите преподавателя',
+          }
+        }
+        if (post === 'classroom' && !classroomId) {
+          return {
+            action: 'Выбрать аудиторию',
+            onActionClick: () =>
+              profilePanelForwardRef.current?.(PANEL_PROFILE_ENUM.SEARCH_CLASSROOM),
+            children: 'Пожалуйста, сначала выберите аудиторию',
           }
         }
 
@@ -106,7 +120,7 @@ const _App = () => {
     >
       <Schedule id={VIEW_ENUM.SCHEDULE} />
 
-      <Profile id={VIEW_ENUM.PROFILE} redirectToSearch={redirectToSearch} />
+      <Profile ref={profilePanelForwardRef} id={VIEW_ENUM.PROFILE} />
     </Epic>
   )
 }
