@@ -92,9 +92,8 @@ const _Profile = (
     panelForward(PANEL_PROFILE_ENUM.MAIN)
   }
 
-  /** Включает закрытие приложения по свайпу на главной панели */
   useEffect(() => {
-    bridge.send('VKWebAppSetSwipeSettings', { history: isMainPanel })
+    bridge.send('VKWebAppSetSwipeSettings', { history: !isMainPanel })
   }, [isMainPanel])
 
   return (

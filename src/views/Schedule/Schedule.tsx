@@ -1,5 +1,6 @@
 //Hooks and helpers
 import { Icon24ReportOutline, Icon28CancelCircleFillRed } from '@vkontakte/icons'
+import bridge from '@vkontakte/vk-bridge'
 //Components
 import { Panel, PanelHeader, Placeholder, PullToRefresh, Snackbar, View } from '@vkontakte/vkui'
 import { useSchedule } from 'api/hooks/useSchedule'
@@ -9,6 +10,7 @@ import { DayWeekTabs } from 'components/DayWeekTabs'
 import { Fade } from 'components/Fade'
 import { ScheduleDay, ScheduleDaySkeleton } from 'components/ScheduleDay'
 import { DateTime } from 'luxon'
+import { useEffect } from 'react'
 import { PANEL_SCHEDULE_ENUM } from 'shared/contexts/Navigation'
 import { useScheduleDay } from 'shared/contexts/ScheduleDay'
 import { useSnack } from 'shared/contexts/Snack'
@@ -50,6 +52,10 @@ export const Schedule = ({ id }: IScheduleProps) => {
       </Snackbar>
     )
   }
+
+  useEffect(() => {
+    bridge.send('VKWebAppSetSwipeSettings', { history: false })
+  }, [])
 
   return (
     <View className={cx('View')} id={id} activePanel={PANEL_SCHEDULE_ENUM.MAIN}>
