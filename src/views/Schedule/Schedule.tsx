@@ -74,7 +74,7 @@ export const Schedule = ({ id }: IScheduleProps) => {
           slideThreshold={100}
         >
           {isLoading ? (
-            <ScheduleDaySkeleton />
+            <ScheduleDaySkeleton dayWeekName={selectedDay.dayWeekName} />
           ) : !error ? (
             <Fade transitionKey={selectedDate}>
               <ScheduleDay {...selectedDay} />
