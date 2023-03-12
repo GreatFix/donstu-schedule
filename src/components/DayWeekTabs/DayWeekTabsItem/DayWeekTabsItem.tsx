@@ -42,7 +42,7 @@ export const DayWeekTabsItem = ({
       after={
         countLessons > 0 && (
           <Counter className={cx('Counter')} size="s" mode="secondary">
-            <Caption level="4" weight="3">
+            <Caption level="2" weight="2">
               {countLessons}
             </Caption>
           </Counter>
