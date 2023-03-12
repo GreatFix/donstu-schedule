@@ -17,12 +17,12 @@ export const INITIAL_STATE: IUserConfigContext = {
     helpers: null,
   },
   bridgeSupport: false,
+  inited: false,
   setGroup: () => {},
   setPost: () => {},
   setTheme: () => {},
   setTeacher: () => {},
   setClassroom: () => {},
-  setBridgeSupport: () => {},
 }
 
 export const UserConfigContext = createContext<IUserConfigContext>(INITIAL_STATE)

@@ -84,8 +84,9 @@ export interface IScheduleData {
 
 export const donstuAPI = {
   instance: axios.create({
-    timeout: 15000,
+    timeout: 30000,
     baseURL: 'https://edu.donstu.ru/api',
+    timeoutErrorMessage: 'Превышено время ответа сервера',
   }),
 
   urls: {

@@ -1,20 +1,24 @@
 //Constants
+import { Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
+import { ConfigProvider, Snackbar } from '@vkontakte/vkui'
 //Hooks
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { IGroup } from 'shared/types/donstu'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
+import { useSnack } from '../Snack'
 //Types
 import { IUserConfigContext } from './types'
 import { INITIAL_STATE, UserConfigContext } from './UserConfigContext'
 
 interface IUserConfigProviderProps {
   children: React.ReactNode
+  bridgeSupport: boolean
 }
 
-export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
-  const [bridgeSupport, setBridgeSupport] = useState(false)
+export const UserConfigProvider = ({ children, bridgeSupport }: IUserConfigProviderProps) => {
   const [data, setData] = useState<IUserConfigContext['data']>(INITIAL_STATE.data)
+  const initedRef = useRef<boolean>(false)
+  const { setSnack } = useSnack()
 
   const initData = useCallback(async () => {
     let savedData: string | null = null
@@ -28,7 +32,16 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
 
         savedData = res.keys[0]?.value
       } catch (err) {
-        console.error('Ошибка получения конфигурации из bridge')
+        setSnack(
+          <Snackbar
+            layout="vertical"
+            onClose={() => setSnack(null)}
+            before={<Icon28CancelCircleFillRed />}
+            duration={3000}
+          >
+            Ошибка при получении конфигурации из VK bridge
+          </Snackbar>
+        )
       }
     }
 
@@ -41,7 +54,8 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
     if (savedData) {
       setData(JSON.parse(savedData))
     }
-  }, [bridgeSupport])
+    initedRef.current = true
+  }, [bridgeSupport, setSnack])
 
   useLayoutEffect(() => {
     initData()
@@ -56,15 +70,28 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
             value: JSON.stringify(data),
           })
           setData(data)
+          bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
         } catch (err) {
-          console.error('Ошибка сохранения конфигурации')
+          bridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' })
+
+          setSnack(
+            <Snackbar
+              layout="vertical"
+              onClose={() => setSnack(null)}
+              before={<Icon28CancelCircleFillRed />}
+              duration={3000}
+            >
+              Ошибка при сохранения конфигурации в VK bridge
+            </Snackbar>
+          )
         }
       } else {
         localStorage.setItem('USER_CONFIG_DATA', JSON.stringify(data))
         setData(data)
+        bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
       }
     },
-    [bridgeSupport]
+    [bridgeSupport, setSnack]
   )
 
   const setTeacher = useCallback<IUserConfigContext['setTeacher']>(
@@ -76,10 +103,6 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
       currentData.post = 'teacher'
 
       updateConfig(currentData)
-
-      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
-
-      // onSetCurrentDate()
     },
     [data, updateConfig]
   )
@@ -94,10 +117,6 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
       currentData.post = 'group'
 
       updateConfig(currentData)
-
-      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
-
-      // onSetCurrentDate()
     },
     [data, updateConfig]
   )
@@ -111,10 +130,6 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
       currentData.post = 'classroom'
 
       updateConfig(currentData)
-
-      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
-
-      // onSetCurrentDate()
     },
     [data, updateConfig]
   )
@@ -126,8 +141,6 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
       currentData.post = post
 
       updateConfig(currentData)
-
-      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
     },
     [data, updateConfig]
   )
@@ -139,8 +152,6 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
       currentData.theme = theme
 
       updateConfig(currentData)
-
-      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' })
     },
     [data, updateConfig]
   )
@@ -149,9 +160,9 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
     () => ({
       data,
       bridgeSupport,
+      inited: initedRef.current,
       setTeacher,
       setGroup,
-      setBridgeSupport,
       setPost,
       setTheme,
       setClassroom,
@@ -159,5 +170,9 @@ export const UserConfigProvider = ({ children }: IUserConfigProviderProps) => {
     [data, bridgeSupport, setTeacher, setGroup, setPost, setTheme, setClassroom]
   )
 
-  return <UserConfigContext.Provider value={value}>{children}</UserConfigContext.Provider>
+  return (
+    <UserConfigContext.Provider value={value}>
+      <ConfigProvider appearance={data.theme}>{children}</ConfigProvider>
+    </UserConfigContext.Provider>
+  )
 }

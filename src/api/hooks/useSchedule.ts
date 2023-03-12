@@ -21,12 +21,12 @@ const CACHE_DATA: Record<'teacher' | 'group' | 'classroom', Record<ISODate, IDay
   classroom: {},
 }
 
-export const useSchedule = (date?: ISODate) => {
+export const useSchedule = (date?: ISODate, onError?: (err: AxiosError) => void) => {
   const {
     data: { post },
   } = useUserConfig()
 
-  const { data, isFetching, error, refetch } = USE_HOOK[post](date)
+  const { data, isFetching, error, refetch } = USE_HOOK[post](date, onError)
   const transformedData = dataTransformation(data)
 
   CACHE_DATA[post] = { ...CACHE_DATA[post], ...transformedData }

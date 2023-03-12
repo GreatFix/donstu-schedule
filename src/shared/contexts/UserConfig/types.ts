@@ -17,10 +17,10 @@ export interface IUserData {
 export interface IUserConfigContext {
   data: IUserData
   bridgeSupport: boolean
+  inited: boolean
   setTeacher: (teacher: Pick<ITeacher, 'id' | 'name'>) => void
   setGroup: (group: Pick<IGroup, 'id' | 'name' | 'facul'>) => void
   setClassroom: (group: IClassroom) => void
   setPost: (post: IUserData['post']) => void
   setTheme: (theme: IUserData['theme']) => void
-  setBridgeSupport: (status: boolean) => void
 }

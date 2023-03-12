@@ -2,7 +2,15 @@
 import { Icon24ReportOutline, Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
 //Components
-import { Panel, PanelHeader, Placeholder, PullToRefresh, Snackbar, View } from '@vkontakte/vkui'
+import {
+  Panel,
+  PanelHeader,
+  Placeholder,
+  PullToRefresh,
+  Snackbar,
+  Title,
+  View,
+} from '@vkontakte/vkui'
 import { useSchedule } from 'api/hooks/useSchedule'
 import cn from 'classnames/bind'
 //Styles
@@ -28,30 +36,28 @@ const getWeekName = (date: ISODate) => DateTime.fromISO(date).weekdayLong
 
 export const Schedule = ({ id }: IScheduleProps) => {
   const { selectedDate, weekStartDate, selectDate } = useScheduleDay()
-  const { data, isFetching, error, refetch } = useSchedule(weekStartDate)
+  const { setSnack, closeSnack } = useSnack()
 
-  const { setSnack, closeSnack, snack } = useSnack()
-
-  const selectedDay: IDay = data[selectedDate] || {
-    dayWeekName: getWeekName(selectedDate),
-    lessons: [],
-  }
-  const handleUpdate = () => refetch()
-
-  if (error && !snack) {
+  const { data, isFetching, refetch, error } = useSchedule(weekStartDate, (error) => {
     setSnack(
       <Snackbar
         layout="vertical"
         onClose={closeSnack}
         onActionClick={handleUpdate}
-        action="Повторить загрузку"
+        action="Повторно запросить расписание"
         before={<Icon28CancelCircleFillRed />}
         duration={60000}
       >
         {error.message}
       </Snackbar>
     )
+  })
+
+  const selectedDay: IDay = data[selectedDate] || {
+    dayWeekName: getWeekName(selectedDate),
+    lessons: [],
   }
+  const handleUpdate = () => refetch()
 
   useEffect(() => {
     bridge.send('VKWebAppSetSwipeSettings', { history: false })
@@ -70,14 +76,23 @@ export const Schedule = ({ id }: IScheduleProps) => {
           {isFetching ? (
             <ScheduleDaySkeleton />
           ) : !error ? (
-            <>
-              <Fade transitionKey={selectedDate}>
-                <ScheduleDay {...selectedDay} />
-              </Fade>
-            </>
+            <Fade transitionKey={selectedDate}>
+              <ScheduleDay {...selectedDay} />
+            </Fade>
           ) : (
-            <Placeholder icon={<Icon24ReportOutline width={56} height={56} fill={'#FF0000'} />}>
-              Ошибка при получении данные от сервера ДГТУ
+            <Placeholder
+              icon={
+                <Icon24ReportOutline
+                  width={120}
+                  height={120}
+                  fill="var(--vkui--color_icon_negative)"
+                />
+              }
+            >
+              <Title level="3" weight="2">
+                Возникла ошибка при запросе расписания с сервера ДГТУ. <br />
+                Повторите попытку.
+              </Title>
             </Placeholder>
           )}
         </PullToRefresh>

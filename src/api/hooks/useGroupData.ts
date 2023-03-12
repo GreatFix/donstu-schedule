@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { donstuAPI } from 'api/services/donstuAPI'
+import { AxiosError } from 'axios'
 import { useUserConfig } from 'shared/contexts/UserConfig'
 import { ISODate } from 'shared/types/date'
 
-export const useGroupData = (date?: ISODate) => {
+export const useGroupData = (date?: ISODate, onError?: (err: AxiosError) => void) => {
   const {
     data: { groupId, post },
   } = useUserConfig()
@@ -23,6 +24,7 @@ export const useGroupData = (date?: ISODate) => {
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
       enabled: !!groupId && post === 'group',
+      onError,
     }
   )
 }

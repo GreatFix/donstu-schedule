@@ -8,7 +8,7 @@ import {
 } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
 import { Epic, Snackbar, Tabbar, TabbarItem } from '@vkontakte/vkui'
-import { memo, MouseEventHandler, useEffect, useRef } from 'react'
+import { memo, MouseEventHandler, useEffect, useLayoutEffect, useRef } from 'react'
 import {
   PANEL_PROFILE_ENUM,
   useNavigation,
@@ -25,6 +25,7 @@ import { useUserConfig } from './shared/contexts/UserConfig'
 const _App = () => {
   const {
     data: { post, groupId, teacherId, classroomId },
+    inited,
   } = useUserConfig()
   const { popState } = useNavigation()
 
@@ -33,17 +34,21 @@ const _App = () => {
 
   const { setSnack } = useSnack()
 
+  const postGroupAndNotSelected = post === 'group' && !groupId
+  const postTeacherAndNotSelected = post === 'teacher' && !teacherId
+  const postClassroomAndNotSelected = post === 'classroom' && !classroomId
+
   const onStoryChange: MouseEventHandler<HTMLButtonElement> = (event) => {
     if (event.currentTarget.dataset.story === VIEW_ENUM.SCHEDULE) {
       const props = (() => {
-        if (post === 'group' && !groupId) {
+        if (postGroupAndNotSelected) {
           return {
             action: 'Выбрать группу',
             onActionClick: () => profilePanelForwardRef.current?.(PANEL_PROFILE_ENUM.SEARCH_GROUP),
             children: 'Пожалуйста, сначала выберите группу',
           }
         }
-        if (post === 'teacher' && !teacherId) {
+        if (postTeacherAndNotSelected) {
           return {
             action: 'Выбрать преподавателя',
             onActionClick: () =>
@@ -51,7 +56,7 @@ const _App = () => {
             children: 'Пожалуйста, сначала выберите преподавателя',
           }
         }
-        if (post === 'classroom' && !classroomId) {
+        if (postClassroomAndNotSelected) {
           return {
             action: 'Выбрать аудиторию',
             onActionClick: () =>
@@ -70,7 +75,7 @@ const _App = () => {
           <Snackbar
             layout="vertical"
             onClose={() => setSnack(null)}
-            before={<Icon28WarningTriangleOutline />}
+            before={<Icon28WarningTriangleOutline fill="var(--vkui--color_icon_negative)" />}
             duration={3000}
             {...props}
           />
@@ -80,6 +85,21 @@ const _App = () => {
 
     forward(event.currentTarget.dataset.story as VIEW_ENUM)
   }
+
+  /** Не позволяет уйти с вкладки профиль, если не выбрана группа, препод. или аудитория соответственно выбранному post */
+  useLayoutEffect(() => {
+    if (activeView === VIEW_ENUM.PROFILE || !inited) return
+    if (postGroupAndNotSelected || postTeacherAndNotSelected || postClassroomAndNotSelected) {
+      forward(VIEW_ENUM.PROFILE)
+    }
+  }, [
+    activeView,
+    forward,
+    inited,
+    postClassroomAndNotSelected,
+    postGroupAndNotSelected,
+    postTeacherAndNotSelected,
+  ])
 
   useEffect(() => {
     const customPopState = (e: PopStateEvent) => {
