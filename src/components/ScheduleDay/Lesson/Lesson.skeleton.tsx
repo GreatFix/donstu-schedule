@@ -15,11 +15,16 @@ export const LessonSkeleton = ({ withSubGroups }: ILessonSkeletonProps) => {
   return (
     <Div className={cx('Lesson')}>
       <div className={cx('Time')}>
-        <Skeleton variant="text" className={cx('Start')} width={40} height={15} />
+        <span className={cx('Start')}>
+          <Skeleton variant="text" width={40} height={15} />
+        </span>
+
         <div className={cx('Rect')}>
-          <Skeleton variant="text" className={cx('Number')} width={40} height={15} />
+          <Skeleton variant="text" className={cx('Number')} width={40} height={20} />
         </div>
-        <Skeleton variant="text" className={cx('End')} width={40} height={15} />
+        <span className={cx('End')}>
+          <Skeleton variant="text" width={40} height={15} />
+        </span>
       </div>
       <Skeleton className={cx('Line')} variant="rectangular" height={120} />
 
@@ -28,7 +33,7 @@ export const LessonSkeleton = ({ withSubGroups }: ILessonSkeletonProps) => {
       <div className={cx('Description')}>
         <div className={cx('Aud')}>
           <Skeleton variant="rectangular" className={cx('ContentIcon')} width={20} height={20} />
-          <Skeleton variant="text" width={'10%'} height={20} />
+          <Skeleton variant="text" width={'20%'} height={20} />
         </div>
         <div className={cx('Name')}>
           <Skeleton variant="rectangular" className={cx('ContentIcon')} width={20} height={20} />
@@ -38,14 +43,21 @@ export const LessonSkeleton = ({ withSubGroups }: ILessonSkeletonProps) => {
         <div className={cx('SubName')}>
           <Skeleton variant="rectangular" className={cx('ContentIcon')} width={20} height={20} />
 
-          <Skeleton variant="text" width={'35%'} height={20} />
+          <Skeleton variant="text" width={'55%'} height={20} />
         </div>
       </div>
 
       {withSubGroups ? (
         <div className={cx('Pagination')}>
           {[1, 2].map((key) => {
-            return <Skeleton key={key} className={cx('SubGroup')} width={isMobile ? 56 : 80} />
+            return (
+              <Skeleton
+                key={key}
+                className={cx('SubGroup')}
+                style={{ marginRight: key === 1 ? 8 : 0 }}
+                width={isMobile ? 56 : 80}
+              />
+            )
           })}
         </div>
       ) : null}
