@@ -1,0 +1,14 @@
+.Root {
+  overflow: auto;
+}
+
+.Title {
+  position: relative;
+  padding: 8px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.List {
+  overflow: auto;
+}

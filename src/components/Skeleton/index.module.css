@@ -1,0 +1,73 @@
+.Root {
+  display: block;
+  background-color: var(--vkui--color_background_secondary);
+  width: 100%;
+}
+
+.Root.text {
+  border-radius: 12px;
+  position: relative;
+}
+.Root::before {
+  content: '\00a0';
+}
+
+.Root.rectangular {
+  height: 1.2em;
+}
+
+.Root.pulse {
+  animation: pulse_animation 1.5s ease-in-out 0.5s infinite normal none;
+}
+
+.Root.wave {
+  overflow: hidden;
+  position: relative;
+}
+
+.Root::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--vkui--color_text_primary), 0.04),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: wave_animation 1.6s linear 0.5s infinite normal none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+@keyframes pulse_animation {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes wave_animation {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    /* +0.5s of delay between each loop */
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}

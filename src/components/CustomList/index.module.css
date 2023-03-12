@@ -1,0 +1,6 @@
+.Skeleton {
+  height: var(--vkui--font_headline1--line_height--compact, 20px);
+  min-height: 44px;
+  margin: 0 12px 2px;
+  width: auto;
+}

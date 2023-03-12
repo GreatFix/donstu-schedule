@@ -1,0 +1,7 @@
+.Panel > div {
+  height: 100%;
+}
+
+.Content {
+  overflow: auto;
+}
