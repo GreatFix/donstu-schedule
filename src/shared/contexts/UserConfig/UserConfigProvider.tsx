@@ -3,7 +3,7 @@ import { Icon28CancelCircleFillRed } from '@vkontakte/icons'
 import bridge from '@vkontakte/vk-bridge'
 import { ConfigProvider, Snackbar } from '@vkontakte/vkui'
 //Hooks
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 
 import { useSnack } from '../Snack'
 //Types
@@ -17,7 +17,7 @@ interface IUserConfigProviderProps {
 
 export const UserConfigProvider = ({ children, bridgeSupport }: IUserConfigProviderProps) => {
   const [data, setData] = useState<IUserConfigContext['data']>(INITIAL_STATE.data)
-  const initedRef = useRef<boolean>(false)
+  const [inited, setInited] = useState<boolean>(false)
   const { setSnack } = useSnack()
 
   const initData = useCallback(async () => {
@@ -54,7 +54,7 @@ export const UserConfigProvider = ({ children, bridgeSupport }: IUserConfigProvi
     if (savedData) {
       setData(JSON.parse(savedData))
     }
-    initedRef.current = true
+    setInited(true)
   }, [bridgeSupport, setSnack])
 
   useLayoutEffect(() => {
@@ -160,14 +160,14 @@ export const UserConfigProvider = ({ children, bridgeSupport }: IUserConfigProvi
     () => ({
       data,
       bridgeSupport,
-      inited: initedRef.current,
+      inited,
       setTeacher,
       setGroup,
       setPost,
       setTheme,
       setClassroom,
     }),
-    [data, bridgeSupport, setTeacher, setGroup, setPost, setTheme, setClassroom]
+    [data, bridgeSupport, inited, setTeacher, setGroup, setPost, setTheme, setClassroom]
   )
 
   return (
