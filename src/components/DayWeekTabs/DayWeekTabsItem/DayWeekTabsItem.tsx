@@ -16,6 +16,7 @@ export interface SelectableDay {
 export interface DayWeekTabsItemProps extends SelectableDay {
   disabled?: boolean
   selected?: boolean
+  today?: boolean
   countLessons?: number
   onChangeDate: (date: SelectableDay['date']) => void
 }
@@ -28,6 +29,7 @@ export const DayWeekTabsItem = ({
   selected,
   disabled,
   countLessons = 0,
+  today,
   onChangeDate,
 }: DayWeekTabsItemProps) => {
   const { viewWidth } = useAdaptivity()
@@ -48,13 +50,13 @@ export const DayWeekTabsItem = ({
       }
       aria-controls={PANEL_SCHEDULE_ENUM.MAIN}
     >
-      <Headline className={cx('WeekName')} level="2" weight="1">
+      <Headline className={cx('WeekName', { today })} level="2" weight="1">
         {week}
       </Headline>
-      <Caption className={cx('Day')} level="1" weight="2">
+      <Caption className={cx('Day', { today })} level="1" weight="2">
         {day}
       </Caption>
-      <Caption className={cx('Month')} level={isMobile ? '4' : '1'} weight="2">
+      <Caption className={cx('Month', { today })} level={isMobile ? '4' : '1'} weight="2">
         {month}
       </Caption>
     </TabsItem>

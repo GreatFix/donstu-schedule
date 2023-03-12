@@ -33,7 +33,7 @@ interface IDayWeekTabsProps extends Pick<DayWeekTabsItemProps, 'onChangeDate'> {
 const _DayWeekTabs = ({ schedule = {}, selectedDate, onChangeDate }: IDayWeekTabsProps) => {
   const [swiper, initSwiper] = useState<ISwiper | null>(null)
   const { viewWidth } = useAdaptivity()
-  const { weekStartDate, setWeekStartDate } = useScheduleDay()
+  const { weekStartDate, setWeekStartDate, today } = useScheduleDay()
   const isMobile = viewWidth < 3
   const isFirstRenderRef = useRef(true)
 
@@ -112,6 +112,7 @@ const _DayWeekTabs = ({ schedule = {}, selectedDate, onChangeDate }: IDayWeekTab
               {...day}
               selected={selectedDate === day.date}
               disabled={!(day.date in schedule)}
+              today={today === day.date}
               countLessons={getCountLessons(schedule[day.date])}
               onChangeDate={onChangeDate}
             />

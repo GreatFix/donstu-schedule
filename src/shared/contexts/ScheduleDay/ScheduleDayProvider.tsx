@@ -9,7 +9,9 @@ interface ScheduleDayProviderProps {
 }
 
 export const ScheduleDayProvider = ({ children }: ScheduleDayProviderProps) => {
-  const [selectedDate, selectDate] = useState<ISODate>(() => DateTime.now().toISODate() as ISODate)
+  const today = DateTime.now().toISODate() as ISODate
+
+  const [selectedDate, selectDate] = useState<ISODate>(today)
   const [weekStartDate, setWeekStartDate] = useState<ISODate>(() => {
     const date = DateTime.fromISO(selectedDate)
 
@@ -18,7 +20,7 @@ export const ScheduleDayProvider = ({ children }: ScheduleDayProviderProps) => {
 
   return (
     <ScheduleDayContext.Provider
-      value={{ selectDate, setWeekStartDate, selectedDate, weekStartDate }}
+      value={{ selectDate, setWeekStartDate, selectedDate, weekStartDate, today }}
     >
       {children}
     </ScheduleDayContext.Provider>

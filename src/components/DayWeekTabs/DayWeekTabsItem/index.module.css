@@ -16,6 +16,11 @@
 .Month {
   text-align: center;
 }
+.Day.today,
+.WeekName.today,
+.Month.today {
+  color: var(--vkui--color_text_positive);
+}
 
 .Counter {
   position: absolute;
