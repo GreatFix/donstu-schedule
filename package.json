@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host --port=10888",
     "build": "tsc && vite build",
-    "preview": "vite preview --host",
+    "preview": "vite preview --host --port=10888",
     "predeploy": "npm run build",
     "deploy": "vk-miniapps-deploy",
     "tunel": "vk-tunnel --insecure=1 --http-protocol=http --ws-protocol=wss --host=localhost --port=10888 app_id=7690503",
@@ -17,17 +17,16 @@
   "dependencies": {
     "@tanstack/react-query": "^4.19.1",
     "@tanstack/react-virtual": "^3.0.0-beta.41",
-    "@types/react-transition-group": "^4.4.5",
     "@vkontakte/icons": "^2.1.1",
     "@vkontakte/vk-bridge": "^2.7.2",
     "@vkontakte/vk-miniapps-deploy": "^0.0.26",
     "@vkontakte/vk-tunnel": "^0.1.1",
     "@vkontakte/vkui": "^4.40.0",
     "axios": "^1.2.1",
+    "framer-motion": "^10.2.4",
     "luxon": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-transition-group": "^4.4.5",
     "swiper": "^8.4.6"
   },
   "devDependencies": {

@@ -38,7 +38,7 @@ export const Schedule = ({ id }: IScheduleProps) => {
   const { selectedDate, weekStartDate, selectDate } = useScheduleDay()
   const { setSnack, closeSnack } = useSnack()
 
-  const { data, isFetching, refetch, error } = useSchedule(weekStartDate, (error) => {
+  const { data, isFetching, isLoading, refetch, error } = useSchedule(weekStartDate, (error) => {
     setSnack(
       <Snackbar
         layout="vertical"
@@ -73,7 +73,7 @@ export const Schedule = ({ id }: IScheduleProps) => {
           isFetching={isFetching}
           slideThreshold={100}
         >
-          {isFetching ? (
+          {isLoading ? (
             <ScheduleDaySkeleton />
           ) : !error ? (
             <Fade transitionKey={selectedDate}>

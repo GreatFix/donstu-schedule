@@ -26,13 +26,14 @@ export const useSchedule = (date?: ISODate, onError?: (err: AxiosError) => void)
     data: { post },
   } = useUserConfig()
 
-  const { data, isFetching, error, refetch } = USE_HOOK[post](date, onError)
+  const { data, isFetching, error, refetch, isLoading } = USE_HOOK[post](date, onError)
   const transformedData = dataTransformation(data)
 
   CACHE_DATA[post] = { ...CACHE_DATA[post], ...transformedData }
   return {
     data: CACHE_DATA[post],
     isFetching,
+    isLoading,
     error: error as AxiosError,
     refetch,
   }
