@@ -10,7 +10,7 @@ interface INavigation {
 }
 
 export interface INavigationContext {
-  setNavigation: (cb: (currentNavigation: INavigation) => INavigation) => void
+  setNavigation: (cb: (currentNavigation: INavigation) => INavigation, replace?: boolean) => void
   popState: () => void
   state: INavigation
 }

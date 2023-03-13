@@ -20,10 +20,11 @@ export const NavigationProvider = ({ children }: INavigationProviderProps) => {
     stateFromSearch(window.location.search)
   )
 
-  const setNavigation = useCallback<INavigationContext['setNavigation']>((cb) => {
+  const setNavigation = useCallback<INavigationContext['setNavigation']>((cb, replace) => {
     setState((prevState) => {
       const newState = cb(prevState)
-      window.history.pushState(
+      const method = replace ? 'replaceState' : 'pushState'
+      window.history[method](
         null,
         '',
         '?' + Object.entries(newState).map(addAsSearchParam).join('&')

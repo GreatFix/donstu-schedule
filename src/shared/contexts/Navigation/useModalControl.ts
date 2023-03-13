@@ -5,12 +5,12 @@ export function useModalControl<T extends string>() {
   const { setNavigation, popState, state } = useNavigation()
 
   const forward = useCallback(
-    (modal: T) => setNavigation((prevState) => ({ ...prevState, modal })),
+    (modal: T) => setNavigation((prevState) => ({ ...prevState, modal }), true),
     [setNavigation]
   )
 
   const close = useCallback(
-    async () => setNavigation((prevState) => ({ ...prevState, modal: null })),
+    async () => setNavigation((prevState) => ({ ...prevState, modal: null }), true),
     [setNavigation]
   )
 

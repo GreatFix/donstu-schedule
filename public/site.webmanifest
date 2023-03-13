@@ -1,6 +1,7 @@
 {
-    "name": "\u0414\u0413\u0422\u0423 \u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435",
-    "short_name": "\u0414\u0413\u0422\u0423 \u0420\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435",
+    "id": "donstu-schedule",
+    "name": "Расписание - ДГТУ",
+    "short_name": "Расписание",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -15,5 +16,6 @@
     ],
     "theme_color": "#000000",
     "background_color": "#000000",
-    "display": "fullscreen"
+    "display": "standalone",
+    "orientation": "portrait"
 }

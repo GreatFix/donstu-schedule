@@ -32,7 +32,7 @@ export const ClassroomCells = ({ forwardToSearchClassroom }: IClassroomCellsProp
           </Button>
         }
       >
-        Выберите аудиторию, расписание которого хотите посмотреть
+        Выберите аудиторию, расписание которой хотите посмотреть
       </Placeholder>
     </Group>
   )
